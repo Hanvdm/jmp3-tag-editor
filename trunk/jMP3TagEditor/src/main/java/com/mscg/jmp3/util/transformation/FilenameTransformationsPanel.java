@@ -3,6 +3,8 @@ package com.mscg.jmp3.util.transformation;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -19,10 +21,12 @@ import javax.swing.JSeparator;
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
+import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.listener.filetotag.AddTransformationListener;
 import com.mscg.jmp3.ui.listener.filetotag.EditTransformationListener;
 import com.mscg.jmp3.ui.listener.filetotag.RemoveTransformationsListener;
 import com.mscg.jmp3.ui.listener.filetotag.TransformationsListChangeListener;
+import com.mscg.jmp3.ui.renderer.elements.StringTransformatorElement;
 import com.mscg.jmp3.ui.util.contextmenu.JPopupMenuFactory;
 import com.mscg.jmp3.ui.util.contextmenu.StringTransformatorsListHandler;
 
@@ -90,6 +94,17 @@ public class FilenameTransformationsPanel extends JPanel {
         transformationList.addMouseListener(new StringTransformatorsListHandler(transformationList,
                                                                                 new RemoveTransformationsPopupFactory()));
         transformationListModel.addListDataListener(listener);
+    }
+
+    public List<StringTransformator> getTransformators() {
+        List<StringTransformator> trasformators = new LinkedList<StringTransformator>();
+
+        for(Object element : transformationListModel.toArray()) {
+            StringTransformatorElement trElem = (StringTransformatorElement)element;
+            trasformators.add(trElem.getTransformator());
+        }
+
+        return trasformators;
     }
 
     private class RemoveTransformationsPopupFactory implements JPopupMenuFactory {

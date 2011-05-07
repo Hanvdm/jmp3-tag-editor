@@ -24,7 +24,8 @@ public class ThemeManager {
         STOP("stop"),
         ADD_SMALL("add-small"),
         REMOVE_SMALL("remove-small"),
-        EDIT_SMALL("edit-small");
+        EDIT_SMALL("edit-small"),
+        RUN_SMALL("run-small");
 
         private String fileName;
 

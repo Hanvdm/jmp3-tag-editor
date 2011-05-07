@@ -18,6 +18,7 @@ public abstract class GenericCard extends JPanel {
 
     public GenericCard(MainWindow mainWindow) throws FileNotFoundException {
         LOG = LoggerFactory.getLogger(this.getClass());
+
         this.mainWindow = mainWindow;
 
         initComponents();

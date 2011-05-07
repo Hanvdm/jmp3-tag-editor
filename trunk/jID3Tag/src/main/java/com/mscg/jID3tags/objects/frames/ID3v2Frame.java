@@ -157,11 +157,12 @@ public class ID3v2Frame {
     protected int declaredSize;
 
     protected ID3v2Frame() {
-
+        setFlags(new ID3v2FrameFlags());
     }
 
     public ID3v2Frame(String frameId) throws ID3v2BadFrameIdLengthException {
         setFrameId(frameId);
+        setFlags(new ID3v2FrameFlags());
     }
 
     public ID3v2FrameFlags getFlags() {
