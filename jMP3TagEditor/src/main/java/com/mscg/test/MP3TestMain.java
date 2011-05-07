@@ -1,15 +1,8 @@
 package com.mscg.test;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-
-import org.apache.commons.io.IOUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.mscg.jID3tags.exception.SynchsafeBadIntegerValueException;
-import com.mscg.jID3tags.file.MP3File;
-import com.mscg.jID3tags.objects.frames.ID3v2APICFrame;
-import com.mscg.jID3tags.objects.frames.contents.ID3v2FrameContentImage;
 
 /**
  *
@@ -198,18 +191,30 @@ public class MP3TestMain {
 //            e.printStackTrace();
 //        }
 
-        OutputStream os = null;
-        try {
-            MP3File mp3 = new MP3File("./files/Jet - 01 - L'esprit d'escalier.mp3");
-            ID3v2APICFrame imageFrame = (ID3v2APICFrame)mp3.getID3v2tag().getFrame(ID3v2APICFrame.id);
-            ID3v2FrameContentImage imageContent = (ID3v2FrameContentImage)imageFrame.getContent();
-            File outImage = new File("./files/cover_image.jpg");
-            os = new FileOutputStream(outImage);
-            IOUtils.copy(new ByteArrayInputStream(imageContent.getPictureData()), os);
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(os);
+//        OutputStream os = null;
+//        try {
+//            MP3File mp3 = new MP3File("./files/Jet - 01 - L'esprit d'escalier.mp3");
+//            ID3v2APICFrame imageFrame = (ID3v2APICFrame)mp3.getID3v2tag().getFrame(ID3v2APICFrame.id);
+//            ID3v2FrameContentImage imageContent = (ID3v2FrameContentImage)imageFrame.getContent();
+//            File outImage = new File("./files/cover_image.jpg");
+//            os = new FileOutputStream(outImage);
+//            IOUtils.copy(new ByteArrayInputStream(imageContent.getPictureData()), os);
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            IOUtils.closeQuietly(os);
+//        }
+
+        String testString = "stringa di prova,con la virgola.e il punto";
+        StringBuffer ret = new StringBuffer(testString);
+        Pattern pattern = Pattern.compile("\\b(\\w{3})");
+        Matcher matcher = pattern.matcher(testString);
+        while(matcher.find()) {
+            String group = matcher.group(1);
+            String substring = testString.substring(matcher.start(1), matcher.end(1));
+            ret.setCharAt(matcher.start(1), substring.toUpperCase().charAt(0));
+            System.out.println(group + " - " + substring);
         }
+        System.out.println(ret);
     }
 }
