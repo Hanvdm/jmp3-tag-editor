@@ -14,15 +14,17 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 
 import com.mscg.i18n.Messages;
 import com.mscg.jmp3.ui.listener.filetotag.AddTransformationListener;
+import com.mscg.jmp3.ui.listener.filetotag.EditTransformationListener;
 import com.mscg.jmp3.ui.listener.filetotag.RemoveTransformationsListener;
 import com.mscg.jmp3.ui.listener.filetotag.TransformationsListChangeListener;
 import com.mscg.theme.ThemeManager;
 import com.mscg.theme.ThemeManager.IconType;
-import com.mscg.util.contextmenu.ContextMenuListHandler;
 import com.mscg.util.contextmenu.JPopupMenuFactory;
+import com.mscg.util.contextmenu.StringTransformatorsListHandler;
 
 public class FilenameTransformationsPanel extends JPanel {
 
@@ -36,6 +38,7 @@ public class FilenameTransformationsPanel extends JPanel {
     private JButton removeButton;
     private ImageIcon addButtonIcon;
     private ImageIcon removeButtonIcon;
+    private ImageIcon editButtonIcon;
 
     public FilenameTransformationsPanel() throws FileNotFoundException {
         super();
@@ -52,6 +55,7 @@ public class FilenameTransformationsPanel extends JPanel {
 
         addButtonIcon = new ImageIcon(ThemeManager.getIcon(IconType.ADD_SMALL));
         removeButtonIcon = new ImageIcon(ThemeManager.getIcon(IconType.REMOVE_SMALL));
+        editButtonIcon = new ImageIcon(ThemeManager.getIcon(IconType.EDIT_SMALL));
 
         transformationListModel = new DefaultListModel();
         transformationList = new JList(transformationListModel);
@@ -83,8 +87,8 @@ public class FilenameTransformationsPanel extends JPanel {
 
         TransformationsListChangeListener listener = new TransformationsListChangeListener(transformationList, removeButton);
         transformationList.addListSelectionListener(listener);
-        transformationList.addMouseListener(new ContextMenuListHandler(transformationList,
-                                                                       new RemoveTransformationsPopupFactory()));
+        transformationList.addMouseListener(new StringTransformatorsListHandler(transformationList,
+                                                                                new RemoveTransformationsPopupFactory()));
         transformationListModel.addListDataListener(listener);
     }
 
@@ -92,6 +96,9 @@ public class FilenameTransformationsPanel extends JPanel {
 
         private JPopupMenu contextMenu;
         private RemoveTransformationsListener removeTransformationListener;
+        private EditTransformationListener editTransformationListener;
+        private JMenuItem editSelectedMenuItem;
+        private JSeparator separator;
         private JMenuItem removeMenuItem;
         private JMenuItem removeAllSelectedMenuItem;
 
@@ -103,17 +110,31 @@ public class FilenameTransformationsPanel extends JPanel {
                                                removeButtonIcon);
                 removeTransformationListener = new RemoveTransformationsListener(list);
                 removeMenuItem.addActionListener(removeTransformationListener);
+
                 removeAllSelectedMenuItem = new JMenuItem(Messages.getString("operations.file.maintransform.remove.tooltip"),
                                                           removeButtonIcon);
                 removeAllSelectedMenuItem .addActionListener(new RemoveTransformationsListener(list));
 
+                editSelectedMenuItem = new JMenuItem(Messages.getString("operations.file.maintransform.edit.context"),
+                                                     editButtonIcon);
+                editTransformationListener = new EditTransformationListener(list);
+                editSelectedMenuItem.addActionListener(editTransformationListener);
+
+
+                contextMenu.add(editSelectedMenuItem);
+                separator = new JSeparator(JSeparator.HORIZONTAL);
+                contextMenu.add(separator);
                 contextMenu.add(removeMenuItem);
                 contextMenu.add(removeAllSelectedMenuItem);
             }
             removeTransformationListener.setListIndex(index);
+            editTransformationListener.setListIndex(index);
 
             removeAllSelectedMenuItem.setVisible(list.getSelectedIndices().length > 1);
-            removeMenuItem.setVisible(!removeAllSelectedMenuItem.isVisible());
+
+            editSelectedMenuItem.setVisible(!removeAllSelectedMenuItem.isVisible());
+            separator.setVisible(editSelectedMenuItem.isVisible());
+            removeMenuItem.setVisible(editSelectedMenuItem.isVisible());
 
             return contextMenu;
         }

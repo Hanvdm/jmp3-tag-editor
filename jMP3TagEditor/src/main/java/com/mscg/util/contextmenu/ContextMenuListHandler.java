@@ -12,10 +12,10 @@ import javax.swing.event.PopupMenuListener;
 
 public class ContextMenuListHandler extends MouseAdapter implements PopupMenuListener {
 
-    private int idx;
+    protected int idx;
 
-    private JList list;
-    private JPopupMenuFactory popupMenuFactory;
+    protected JList list;
+    protected JPopupMenuFactory popupMenuFactory;
 
     public ContextMenuListHandler(JList list, JPopupMenuFactory popupMenuFactory) {
         super();
@@ -24,9 +24,13 @@ public class ContextMenuListHandler extends MouseAdapter implements PopupMenuLis
         this.popupMenuFactory = popupMenuFactory;
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         if (e.isPopupTrigger()) {
             idx = list.locationToIndex(new Point(e.getX(), e.getY()));
+
+            if(idx < 0)
+                return;
 
             JPopupMenu contextMenu = popupMenuFactory.getPopupMenu(list, idx);
 

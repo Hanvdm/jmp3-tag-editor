@@ -15,6 +15,11 @@ public class LowerCaseTransformator implements StringTransformator {
     }
 
     @Override
+    public String getListValue() {
+        return getName();
+    }
+
+    @Override
     public String[] getParametersNames() {
         return new String[]{};
     }
@@ -22,6 +27,11 @@ public class LowerCaseTransformator implements StringTransformator {
     @Override
     public void setParameter(int index, String parameter) throws InvalidParameterException {
         throw new InvalidParameterException(this.getClass().getSimpleName() + " doesn't need parameters");
+    }
+
+    @Override
+    public String[] getParameters() {
+        return new String[0];
     }
 
     @Override
