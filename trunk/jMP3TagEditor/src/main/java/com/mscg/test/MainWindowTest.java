@@ -20,7 +20,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
-import com.mscg.i18n.Messages;
+import com.mscg.jmp3.i18n.Messages;
 
 /**
  *

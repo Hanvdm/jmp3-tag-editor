@@ -5,9 +5,9 @@ import java.io.Serializable;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import com.mscg.jmp3.theme.ThemeManager;
+import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.renderer.IconedListElement;
-import com.mscg.theme.ThemeManager;
-import com.mscg.theme.ThemeManager.IconType;
 
 public class IconAndTextListElement implements IconedListElement, Serializable {
 

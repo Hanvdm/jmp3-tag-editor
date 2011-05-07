@@ -21,16 +21,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
-import com.mscg.i18n.Messages;
+import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.main.AppLaunch;
+import com.mscg.jmp3.theme.ThemeManager;
+import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.listener.filelist.AddFilesListener;
 import com.mscg.jmp3.ui.listener.filelist.RemoveFilesListener;
 import com.mscg.jmp3.ui.renderer.IconedListCellRenderer;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
-import com.mscg.theme.ThemeManager;
-import com.mscg.theme.ThemeManager.IconType;
-import com.mscg.util.filefilter.MP3FileFilter;
+import com.mscg.jmp3.util.filefilter.MP3FileFilter;
 
 public class FileChooseCard extends GenericCard {
 

@@ -30,13 +30,13 @@ import javax.swing.border.EtchedBorder;
 
 import org.apache.log4j.Logger;
 
-import com.mscg.i18n.Messages;
+import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.settings.Settings;
+import com.mscg.jmp3.theme.ThemeManager;
+import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.listener.CloseWindowClickListener;
 import com.mscg.jmp3.ui.panel.FileChooseCard;
 import com.mscg.jmp3.ui.panel.FilenameOperationsCard;
-import com.mscg.settings.Settings;
-import com.mscg.theme.ThemeManager;
-import com.mscg.theme.ThemeManager.IconType;
 
 public class MainWindow extends JFrame implements ActionListener, ComponentListener, WindowStateListener {
 

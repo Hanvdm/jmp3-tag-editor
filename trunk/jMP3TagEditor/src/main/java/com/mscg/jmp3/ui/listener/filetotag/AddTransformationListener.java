@@ -9,7 +9,7 @@ import javax.swing.JList;
 import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.renderer.elements.StringTransformatorElement;
-import com.mscg.util.transformation.AddTransformationDialog;
+import com.mscg.jmp3.util.transformation.AddTransformationDialog;
 
 public class AddTransformationListener extends GenericFilenameToTagListener {
 

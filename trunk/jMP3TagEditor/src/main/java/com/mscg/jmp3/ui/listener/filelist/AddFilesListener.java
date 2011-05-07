@@ -9,12 +9,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 
-import com.mscg.i18n.Messages;
+import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.settings.Settings;
+import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
-import com.mscg.settings.Settings;
-import com.mscg.theme.ThemeManager;
-import com.mscg.util.filefilter.MP3FileFilter;
+import com.mscg.jmp3.util.filefilter.MP3FileFilter;
 
 public class AddFilesListener extends GenericFileListListener implements ActionListener {
 

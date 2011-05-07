@@ -2,7 +2,7 @@ package com.mscg.jmp3.transformator.impl;
 
 import java.security.InvalidParameterException;
 
-import com.mscg.i18n.Messages;
+import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.transformator.StringTransformator;
 
 public class ReplaceStringTransformator implements StringTransformator {
