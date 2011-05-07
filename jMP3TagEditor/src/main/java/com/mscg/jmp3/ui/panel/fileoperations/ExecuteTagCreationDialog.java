@@ -128,7 +128,7 @@ public class ExecuteTagCreationDialog extends JDialog {
         buttonPanel.add(Box.createHorizontalGlue());
         JButton stopButton = new JButton(null, new ImageIcon(ThemeManager.getIcon(IconType.STOP)));
         stopButton.setToolTipText(Messages.getString("operations.stop"));
-        stopButton.addActionListener(new StopJobListener(createTagRunnable, this, stopButton));
+        stopButton.addActionListener(new StopJobListener(createTagRunnable, stopButton));
         buttonPanel.add(stopButton);
         buttonPanel.add(Box.createHorizontalGlue());
         contentPanel.add(buttonPanel, BorderLayout.PAGE_END);
