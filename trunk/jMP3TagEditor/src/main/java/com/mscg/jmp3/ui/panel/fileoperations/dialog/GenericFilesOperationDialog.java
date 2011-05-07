@@ -1,4 +1,4 @@
-package com.mscg.jmp3.ui.panel.fileoperations;
+package com.mscg.jmp3.ui.panel.fileoperations.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
@@ -6,15 +6,11 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -23,79 +19,59 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.listener.StopJobListener;
-import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
 import com.mscg.jmp3.util.pool.InterruptibleRunnable;
 import com.mscg.jmp3.util.pool.ThreadPoolManager;
-import com.mscg.jmp3.util.pool.runnable.CreateTagsRunnable;
 
-public class ExecuteTagCreationDialog extends JDialog {
+public abstract class GenericFilesOperationDialog extends JDialog {
 
-    private static final long serialVersionUID = 8774582234015557326L;
+    private static final long serialVersionUID = -3655004463544639864L;
 
-    private TagFromFilenameTab tab;
-    private InterruptibleRunnable createTagRunnable;
-    private List<File> files;
+    protected InterruptibleRunnable createTagRunnable;
 
-    private JLabel actualFileName;
-    private JProgressBar progressBar;
+    protected JLabel actualFileName;
+    protected JProgressBar progressBar;
 
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab) throws FileNotFoundException {
+    public GenericFilesOperationDialog() throws FileNotFoundException {
         super();
-        initComponents(tab);
     }
 
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Dialog owner, boolean modal) throws FileNotFoundException {
+    public GenericFilesOperationDialog( Dialog owner, boolean modal) throws FileNotFoundException {
         super(owner, modal);
-        initComponents(tab);
     }
 
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Dialog owner) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Dialog owner) throws FileNotFoundException {
         super(owner);
-        initComponents(tab);
     }
 
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Frame owner, boolean modal) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Frame owner, boolean modal) throws FileNotFoundException {
         super(owner, modal);
-        initComponents(tab);
     }
 
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Frame owner) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Frame owner) throws FileNotFoundException {
         super(owner);
-        initComponents(tab);
     }
 
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Window owner, ModalityType modalityType) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Window owner, ModalityType modalityType) throws FileNotFoundException {
         super(owner, modalityType);
-        initComponents(tab);
     }
 
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Window owner) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Window owner) throws FileNotFoundException {
         super(owner);
-        initComponents(tab);
     }
 
-    protected void initComponents(TagFromFilenameTab tab) throws FileNotFoundException {
-        this.tab = tab;
-        initComponents();
-    }
+    protected abstract String getDialogTitle();
+
+    protected abstract InterruptibleRunnable getRunnable();
 
     protected void initComponents() throws FileNotFoundException {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        setTitle(Messages.getString("operations.file.taginfo.execute.title"));
+        setTitle(getDialogTitle());
         setIconImage(Toolkit.getDefaultToolkit().getImage(ThemeManager.getIcon(IconType.RUN_SMALL)));
 
-        files = new LinkedList<File>();
-        DefaultListModel listModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
-        for(Object listElement : listModel.toArray()) {
-            IconAndFileListElement fileListEl = (IconAndFileListElement) listElement;
-            files.add(fileListEl.getFile());
-        }
-
-        createTagRunnable = new CreateTagsRunnable(files, this);
+        createTagRunnable = getRunnable();
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -147,20 +123,6 @@ public class ExecuteTagCreationDialog extends JDialog {
         if(visible)
             ThreadPoolManager.getInstance().execute(createTagRunnable);
         super.setVisible(visible);
-    }
-
-    /**
-     * @return the tab
-     */
-    public TagFromFilenameTab getTab() {
-        return tab;
-    }
-
-    /**
-     * @param tab the tab to set
-     */
-    public void setTab(TagFromFilenameTab tab) {
-        this.tab = tab;
     }
 
     /**
