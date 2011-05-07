@@ -19,9 +19,9 @@ import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.frame.MainWindow;
-import com.mscg.jmp3.ui.panel.fileoperations.ExecuteTagCreationDialog;
 import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
+import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
 
 public class FilenameOperationsCard extends GenericCard {
 

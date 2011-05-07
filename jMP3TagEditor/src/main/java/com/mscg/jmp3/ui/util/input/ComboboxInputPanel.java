@@ -11,14 +11,24 @@ public class ComboboxInputPanel extends InputPanel {
 
     private JComboBox combobox;
     private ComboBoxModel comboboxModel;
+    private boolean editable;
 
     public ComboboxInputPanel(String label, ComboBoxModel comboboxModel) {
-        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel);
+        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, false);
     }
 
     public ComboboxInputPanel(String label, int topBorder, int bottomBorder, ComboBoxModel comboboxModel) {
+        this(label, topBorder, bottomBorder, comboboxModel, false);
+    }
+
+    public ComboboxInputPanel(String label, ComboBoxModel comboboxModel, boolean editable) {
+        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, editable);
+    }
+
+    public ComboboxInputPanel(String label, int topBorder, int bottomBorder, ComboBoxModel comboboxModel, boolean editable) {
         super(label, topBorder, bottomBorder, false);
         this.comboboxModel = comboboxModel;
+        this.editable = editable;
         initComponent(topBorder, bottomBorder);
     }
 
@@ -27,6 +37,8 @@ public class ComboboxInputPanel extends InputPanel {
         if(combobox == null) {
             combobox = new JComboBox();
             combobox.setModel(comboboxModel);
+            combobox.setEditable(editable);
+            combobox.setSelectedIndex(0);
         }
         return combobox;
     }

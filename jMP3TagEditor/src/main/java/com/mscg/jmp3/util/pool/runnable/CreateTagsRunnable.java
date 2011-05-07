@@ -15,8 +15,8 @@ import com.mscg.jmp3.exception.InvalidTagValueException;
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.transformator.StringTransformator;
-import com.mscg.jmp3.ui.panel.fileoperations.ExecuteTagCreationDialog;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
+import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
 import com.mscg.jmp3.util.pool.InterruptibleRunnable;
 
 public class CreateTagsRunnable extends InterruptibleRunnable {
