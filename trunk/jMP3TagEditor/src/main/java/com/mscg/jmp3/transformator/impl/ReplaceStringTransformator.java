@@ -18,6 +18,13 @@ public class ReplaceStringTransformator implements StringTransformator {
     }
 
     @Override
+    public String getListValue() {
+        return Messages.getString("transform.string.replace.list").
+            replace("${orig}", origString).
+            replace("${replace}", replaceString);
+    }
+
+    @Override
     public String[] getParametersNames() {
         return new String[]{Messages.getString("transform.string.replace.param.orig"),
                             Messages.getString("transform.string.replace.param.replace")};
@@ -27,21 +34,26 @@ public class ReplaceStringTransformator implements StringTransformator {
     public void setParameter(int index, String parameter) throws InvalidParameterException {
         switch(index) {
         case 0:
-            if(parameter == null || parameter.trim().length() == 0)
+            if(parameter == null || parameter.length() == 0)
                 throw new InvalidParameterException(this.getClass().getSimpleName() +
                                                     " requires that the original string must not be empty");
             origString = parameter;
             break;
         case 1:
-            if(parameter == null || parameter.trim().length() == 0)
-                throw new InvalidParameterException(this.getClass().getSimpleName() +
-                                                    " requires that the replace string must not be empty");
             replaceString = parameter;
             break;
         default:
             throw new InvalidParameterException(this.getClass().getSimpleName() +
                                                 " requires exactly 2 parameters.");
         }
+    }
+
+    @Override
+    public String[] getParameters() {
+        String params[] = new String[2];
+        params[0] = origString;
+        params[1] = replaceString;
+        return params;
     }
 
     @Override

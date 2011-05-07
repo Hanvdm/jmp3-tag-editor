@@ -9,7 +9,7 @@ import com.mscg.jmp3.ui.listener.ListIndexAwareListener;
 
 public class RemoveTransformationsListener extends GenericFilenameToTagListener implements ListIndexAwareListener{
 
-    private Integer index;
+    protected Integer index;
 
     public RemoveTransformationsListener(JList actionsList) {
         this(actionsList, null);

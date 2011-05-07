@@ -1,6 +1,7 @@
 package com.mscg.util.transformation;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -156,6 +157,40 @@ public class AddTransformationDialog extends JDialog {
         return transformator;
     }
 
+    /**
+     * @param transformator the transformator to set
+     */
+    public void setTransformator(StringTransformator transformator) {
+        if(transformator != null) {
+            this.transformator = transformator;
+
+            int index = 0;
+            int j = 0;
+            for(StringTransformator tmp : transformatorInstances) {
+                if(tmp.getClass() == transformator.getClass()) {
+                    index = j;
+                    break;
+                }
+                j++;
+            }
+            transformators.setSelectedIndex(index);
+
+            int parametersCount = parametersPanel.getComponentCount();
+            if(parametersCount != 0) {
+                for(int i = 0; i < parametersCount; i++) {
+                    ParameterPanel paramPanel = null;
+                    Component childComponent = parametersPanel.getComponent(i);
+                    if(!(childComponent instanceof ParameterPanel))
+                        continue;
+
+                    paramPanel = (ParameterPanel)parametersPanel.getComponent(i);
+                    paramPanel.setParameterValue(transformator.getParameters()[i]);
+                }
+            }
+
+        }
+    }
+
     protected void initTransformatorsModel() {
         transformatorsModel = new DefaultComboBoxModel();
         List<Class<? extends StringTransformator>> transformatorsClasses = StringTransformatorFactory.getStringTransformators();
@@ -211,12 +246,11 @@ public class AddTransformationDialog extends JDialog {
             if(parametersCount != 0) {
                 for(int i = 0; i < parametersCount; i++) {
                     ParameterPanel paramPanel = null;
-                    try {
-                        paramPanel = (ParameterPanel)parametersPanel.getComponent(i);
-                    } catch(Exception e) {
-                        AppLaunch.showError(e);
-                        return;
-                    }
+                    Component childComponent = parametersPanel.getComponent(i);
+                    if(!(childComponent instanceof ParameterPanel))
+                        continue;
+
+                    paramPanel = (ParameterPanel)parametersPanel.getComponent(i);
 
                     try {
                         transformator.setParameter(i, paramPanel.getParameterValue());
@@ -257,15 +291,11 @@ public class AddTransformationDialog extends JDialog {
         private JTextField paramValue;
 
         public ParameterPanel(String paramName) {
-            this(paramName, null);
-        }
-
-        public ParameterPanel(String paramName, String defaultValue) {
             this.paramName = paramName;
-            initComponents(defaultValue);
+            initComponents();
         }
 
-        private void initComponents(String defaultValue) {
+        private void initComponents() {
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
             setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
 
@@ -277,8 +307,7 @@ public class AddTransformationDialog extends JDialog {
             paramValue.setMaximumSize(new Dimension(300, 20));
             paramValue.setMinimumSize(new Dimension(300, 20));
             paramValue.setPreferredSize(new Dimension(300, 20));
-            if(defaultValue != null)
-                paramValue.setText(defaultValue);
+
             add(paramValue);
         }
 
@@ -288,6 +317,10 @@ public class AddTransformationDialog extends JDialog {
 
         public String getParameterValue() {
             return paramValue.getText();
+        }
+
+        public void setParameterValue(String value) {
+            paramValue.setText(value);
         }
     }
 
