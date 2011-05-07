@@ -11,12 +11,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.mscg.i18n.Messages;
+import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.theme.ThemeManager;
+import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
-import com.mscg.theme.ThemeManager;
-import com.mscg.theme.ThemeManager.IconType;
 
 public class FilenameOperationsCard extends GenericCard {
 

@@ -5,9 +5,9 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mscg.i18n.Messages;
+import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.ui.frame.MainWindow;
-import com.mscg.settings.Settings;
 
 public class AppLaunch {
 
