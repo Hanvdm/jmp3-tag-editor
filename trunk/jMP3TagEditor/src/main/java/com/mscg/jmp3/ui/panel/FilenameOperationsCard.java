@@ -15,7 +15,6 @@ import com.mscg.i18n.Messages;
 import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
-import com.mscg.jmp3.ui.panel.fileoperations.TagFromInfoTab;
 import com.mscg.theme.ThemeManager;
 import com.mscg.theme.ThemeManager.IconType;
 
@@ -52,8 +51,6 @@ public class FilenameOperationsCard extends GenericCard {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab(Messages.getString("operations.file.tagfromfile"), null,
                           new TagFromFilenameTab(), Messages.getString("operations.file.tagfromfile.tooltip"));
-        tabbedPane.addTab(Messages.getString("operations.file.tagfrominfo"), null,
-                          new TagFromInfoTab(), Messages.getString("operations.file.tagfrominfo.tooltip"));
         tabbedPane.addTab(Messages.getString("operations.file.renamefile"), null,
                           new RenameFileTab(), Messages.getString("operations.file.renamefile.tooltip"));
         add(tabbedPane, BorderLayout.CENTER);

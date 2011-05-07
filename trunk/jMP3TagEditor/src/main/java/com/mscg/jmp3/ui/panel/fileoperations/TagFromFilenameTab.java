@@ -26,6 +26,10 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
         transformationsPanel.setBorder(BorderFactory.createTitledBorder(Messages.getString("operations.file.maintransform.title")));
         add(transformationsPanel, BorderLayout.PAGE_START);
 
+        JPanel infoPanel = new JPanel(new BorderLayout());
+        infoPanel.setBorder(BorderFactory.createTitledBorder(Messages.getString("operations.file.taginfo.title")));
+        add(infoPanel, BorderLayout.CENTER);
+
     }
 
 }
