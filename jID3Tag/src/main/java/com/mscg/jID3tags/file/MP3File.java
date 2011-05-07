@@ -511,7 +511,7 @@ public class MP3File {
 
     public void copyID3v2ToID3v11() throws MP3FileException {
         if (!hasID3v2tag())
-            throw new MP3FileException("This MP3 file doesn't have an ID3v1.1 tag.");
+            throw new MP3FileException("This MP3 file doesn't have an ID3v2 tag.");
         if (!hasID3v11tag())
             setID3v11tag(new ID3v11Tag());
 

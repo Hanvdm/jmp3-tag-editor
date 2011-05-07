@@ -5,11 +5,16 @@ import java.io.FileNotFoundException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.mscg.jID3tags.util.Costants;
 import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.ui.util.input.CheckboxInputPanel;
+import com.mscg.jmp3.ui.util.input.ComboboxInputPanel;
 import com.mscg.jmp3.ui.util.input.InputPanel;
+import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
 import com.mscg.jmp3.util.transformation.FilenameTransformationsPanel;
 
 
@@ -21,8 +26,10 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
     private InputPanel albumPanel;
     private InputPanel titlePanel;
     private InputPanel numberPanel;
-    private InputPanel panel;
+    private InputPanel genrePanel;
     private InputPanel yearPanel;
+    private InputPanel removeTagsPanel;
+    private FilenameTransformationsPanel transformationsPanel;
 
     public TagFromFilenameTab() throws FileNotFoundException {
         super();
@@ -32,7 +39,7 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
     protected void initComponents() throws FileNotFoundException {
         setLayout(new BorderLayout());
 
-        JPanel transformationsPanel = new FilenameTransformationsPanel();
+        transformationsPanel = new FilenameTransformationsPanel();
         transformationsPanel.setBorder(BorderFactory.createTitledBorder(Messages.getString("operations.file.maintransform.title")));
         add(transformationsPanel, BorderLayout.PAGE_START);
 
@@ -43,20 +50,87 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
         infoScroller.setViewportView(infoPanel);
         add(infoScroller, BorderLayout.CENTER);
 
-        regExpPanel = new InputPanel(Messages.getString("operations.file.taginfo.info.regex"), 0, 10);
+        regExpPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.regex"), 0, 10);
         infoPanel.add(regExpPanel);
-        authorPanel = new InputPanel(Messages.getString("operations.file.taginfo.info.author"));
+        authorPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.author"));
         infoPanel.add(authorPanel);
-        albumPanel = new InputPanel(Messages.getString("operations.file.taginfo.info.album"));
+        albumPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.album"));
         infoPanel.add(albumPanel);
-        titlePanel = new InputPanel(Messages.getString("operations.file.taginfo.info.title"));
+        titlePanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.title"));
         infoPanel.add(titlePanel);
-        numberPanel = new InputPanel(Messages.getString("operations.file.taginfo.info.number"));
+        numberPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.number"));
         infoPanel.add(numberPanel);
-        panel = new InputPanel(Messages.getString("operations.file.taginfo.info.genre"));
-        infoPanel.add(panel);
-        yearPanel = new InputPanel(Messages.getString("operations.file.taginfo.info.year"));
+        DefaultComboBoxModel genreModel = new DefaultComboBoxModel(Costants.ID3v1Genre.values());
+        genrePanel = new ComboboxInputPanel(Messages.getString("operations.file.taginfo.info.genre"),
+                                            genreModel);
+        infoPanel.add(genrePanel);
+        yearPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.year"));
         infoPanel.add(yearPanel);
+        removeTagsPanel = new CheckboxInputPanel(Messages.getString("operations.file.taginfo.info.removeold"));
+        infoPanel.add(removeTagsPanel);
+    }
+
+    /**
+     * @return the transformationsPanel
+     */
+    public FilenameTransformationsPanel getTransformationsPanel() {
+        return transformationsPanel;
+    }
+
+    /**
+     * @return the regExpPanel
+     */
+    public InputPanel getRegExpPanel() {
+        return regExpPanel;
+    }
+
+    /**
+     * @return the authorPanel
+     */
+    public InputPanel getAuthorPanel() {
+        return authorPanel;
+    }
+
+    /**
+     * @return the albumPanel
+     */
+    public InputPanel getAlbumPanel() {
+        return albumPanel;
+    }
+
+    /**
+     * @return the titlePanel
+     */
+    public InputPanel getTitlePanel() {
+        return titlePanel;
+    }
+
+    /**
+     * @return the numberPanel
+     */
+    public InputPanel getNumberPanel() {
+        return numberPanel;
+    }
+
+    /**
+     * @return the genrePanel
+     */
+    public InputPanel getGenrePanel() {
+        return genrePanel;
+    }
+
+    /**
+     * @return the yearPanel
+     */
+    public InputPanel getYearPanel() {
+        return yearPanel;
+    }
+
+    /**
+     * @return the removeTagsPanel
+     */
+    public InputPanel getRemoveTagsPanel() {
+        return removeTagsPanel;
     }
 
 }

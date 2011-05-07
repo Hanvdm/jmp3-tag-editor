@@ -130,6 +130,7 @@ public class ID3v2Tag {
         this.majorVersion = majorVersion;
         this.minorVersion = minorVersion;
         frames = new LinkedHashMap<String, ID3v2Frame>();
+        setFlags(new ID3v2TagFlags());
     }
 
     public ID3v2TagFlags getFlags() {

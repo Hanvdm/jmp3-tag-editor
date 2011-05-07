@@ -12,14 +12,12 @@ public class IconAndFileListElement extends IconAndTextListElement {
 
     public IconAndFileListElement(Icon icon, File file) {
         super(icon, file.getName());
-    }
-
-    public IconAndFileListElement(Icon icon) {
-        super(icon);
+        this.file = file;
     }
 
     public IconAndFileListElement(File file) {
         super(file.getName());
+        this.file = file;
     }
 
     public File getFile() {

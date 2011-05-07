@@ -97,6 +97,13 @@ public class FileChooseCard extends GenericCard {
         parseParameters();
     }
 
+    /**
+     * @return the filesList
+     */
+    public JList getFilesList() {
+        return filesList;
+    }
+
     private void parseParameters() throws FileNotFoundException {
         FileFilter mp3Filter = new MP3FileFilter();
         for(String param : AppLaunch.applicationArguments) {

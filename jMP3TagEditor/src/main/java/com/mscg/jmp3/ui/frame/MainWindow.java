@@ -31,6 +31,7 @@ import javax.swing.border.EtchedBorder;
 import org.apache.log4j.Logger;
 
 import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
@@ -52,6 +53,9 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
     int cardsCount;
     private boolean maximized;
 
+    private FileChooseCard fileChooseCard;
+    private FilenameOperationsCard filenameOperationsCard;
+
     public MainWindow() throws FileNotFoundException {
         this.maximized = Boolean.parseBoolean(Settings.getSetting("window.maximixed"));
 
@@ -71,7 +75,7 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
                 setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
         }
         catch(Exception e){
-            LOG.error("Cannot change Look-And-Feel of the application.", e);
+            AppLaunch.manageError(e);
         }
     }
 
@@ -132,8 +136,10 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
 
         // add the cards to the main panel
         cardIndex = 0;
-        mainPanel.add(new FileChooseCard(this), "0");
-        mainPanel.add(new FilenameOperationsCard(this), "1");
+        fileChooseCard = new FileChooseCard(this);
+        mainPanel.add(fileChooseCard, "0");
+        filenameOperationsCard = new FilenameOperationsCard(this);
+        mainPanel.add(filenameOperationsCard, "1");
         cardsCount = mainPanel.getComponentCount();
 
         addComponentListener(this);
@@ -164,6 +170,14 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
 
     public JButton getPrevButton() {
         return prevButton;
+    }
+
+    public FileChooseCard getFileChooseCard() {
+        return fileChooseCard;
+    }
+
+    public FilenameOperationsCard getFilenameOperationsCard() {
+        return filenameOperationsCard;
     }
 
     //------------------------------------------------------------
