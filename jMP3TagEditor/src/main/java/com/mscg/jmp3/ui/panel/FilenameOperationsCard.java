@@ -21,7 +21,9 @@ import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
+import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteRenameFilesDialog;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
+import com.mscg.jmp3.ui.panel.fileoperations.dialog.GenericFilesOperationDialog;
 
 public class FilenameOperationsCard extends GenericCard {
 
@@ -71,13 +73,13 @@ public class FilenameOperationsCard extends GenericCard {
         @Override
         public void actionPerformed(ActionEvent ev) {
             Component shownCard = tabbedPane.getSelectedComponent();
+            GenericFilesOperationDialog dialog = null;
             if(shownCard == tagFromFilenameTab) {
                 LOG.debug("Starting tag creation");
                 try {
-                    ExecuteTagCreationDialog dialog = new ExecuteTagCreationDialog(tagFromFilenameTab,
-                                                                                   AppLaunch.mainWindow,
-                                                                                   true);
-                    dialog.setTab(tagFromFilenameTab);
+                    dialog = new ExecuteTagCreationDialog(tagFromFilenameTab,
+                                                          AppLaunch.mainWindow,
+                                                          true);
                     dialog.setVisible(true);
                 } catch(Exception e) {
                     LOG.error("Cannot show tag creation dialog", e);
@@ -86,6 +88,15 @@ public class FilenameOperationsCard extends GenericCard {
             }
             else if(shownCard == renameFileTab) {
                 LOG.debug("Starting file rename");
+                LOG.debug("Starting tag creation");
+                try {
+                    dialog = new ExecuteRenameFilesDialog(AppLaunch.mainWindow,
+                                                          true);
+                    dialog.setVisible(true);
+                } catch(Exception e) {
+                    LOG.error("Cannot show file rename dialog", e);
+                    AppLaunch.showError(e);
+                }
             }
             else {
                 LOG.warn("Cannot determine which panel is active");

@@ -17,19 +17,17 @@ import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
-import com.mscg.jmp3.util.pool.InterruptibleRunnable;
 
-public class CreateTagsRunnable extends InterruptibleRunnable {
+public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
     private List<File> files;
     private TagFromFilenameTab tab;
-    private ExecuteTagCreationDialog dialog;
     private Pattern regExGroupPattern;
 
     public CreateTagsRunnable(List<File> files, ExecuteTagCreationDialog dialog) {
+        super(dialog);
         this.files = files;
         this.tab = dialog.getTab();
-        this.dialog = dialog;
         regExGroupPattern = Pattern.compile("^\\s*%(\\d+)\\s*$");
     }
 

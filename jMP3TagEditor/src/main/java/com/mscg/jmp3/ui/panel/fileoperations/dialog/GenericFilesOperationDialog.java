@@ -29,7 +29,7 @@ public abstract class GenericFilesOperationDialog extends JDialog {
 
     private static final long serialVersionUID = -3655004463544639864L;
 
-    protected InterruptibleRunnable createTagRunnable;
+    protected InterruptibleRunnable filesOperationRunnable;
 
     protected JLabel actualFileName;
     protected JProgressBar progressBar;
@@ -71,7 +71,7 @@ public abstract class GenericFilesOperationDialog extends JDialog {
         setTitle(getDialogTitle());
         setIconImage(Toolkit.getDefaultToolkit().getImage(ThemeManager.getIcon(IconType.RUN_SMALL)));
 
-        createTagRunnable = getRunnable();
+        filesOperationRunnable = getRunnable();
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -104,7 +104,7 @@ public abstract class GenericFilesOperationDialog extends JDialog {
         buttonPanel.add(Box.createHorizontalGlue());
         JButton stopButton = new JButton(null, new ImageIcon(ThemeManager.getIcon(IconType.STOP)));
         stopButton.setToolTipText(Messages.getString("operations.stop"));
-        stopButton.addActionListener(new StopJobListener(createTagRunnable, stopButton));
+        stopButton.addActionListener(new StopJobListener(filesOperationRunnable, stopButton));
         buttonPanel.add(stopButton);
         buttonPanel.add(Box.createHorizontalGlue());
         contentPanel.add(buttonPanel, BorderLayout.PAGE_END);
@@ -121,7 +121,7 @@ public abstract class GenericFilesOperationDialog extends JDialog {
     @Override
     public void setVisible(boolean visible) {
         if(visible)
-            ThreadPoolManager.getInstance().execute(createTagRunnable);
+            ThreadPoolManager.getInstance().execute(filesOperationRunnable);
         super.setVisible(visible);
     }
 
