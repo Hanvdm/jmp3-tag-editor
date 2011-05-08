@@ -2,6 +2,7 @@ package com.mscg.jmp3.util.pool.runnable;
 
 import java.io.File;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
 
 import org.apache.commons.io.FileExistsException;
@@ -28,11 +29,22 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
     @Override
     public void executeInterruptible() {
         File newFile = null;
+        BoundedRangeModel rangeModel = dialog.getProgressBar().getModel();
+        rangeModel.setMinimum(0);
+        rangeModel.setMaximum(2 * filesListModel.size());
         try {
             String value = null;
+            int progess = 0;
             for(Object elem : filesListModel.toArray()) {
+                if(isInterrupted())
+                    return;
+
                 IconAndFileListElement fileElem = (IconAndFileListElement)elem;
                 File file = fileElem.getFile();
+
+                dialog.getActualFileName().setText(file.getName());
+                rangeModel.setValue(++progess);
+
                 String ext = "";
                 int pointIndex = file.getName().lastIndexOf('.');
                 if(pointIndex >= 0)
@@ -75,6 +87,8 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
                 }
                 file.renameTo(newFile);
                 fileElem.setFile(newFile);
+
+                rangeModel.setValue(++progess);
             }
 
             AppLaunch.showMessage(Messages.getString("operations.file.rename.execute.done.title"),
