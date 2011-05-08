@@ -1,4 +1,4 @@
-package com.mscg.jmp3.util.transformation;
+package com.mscg.jmp3.ui.util.transformation;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

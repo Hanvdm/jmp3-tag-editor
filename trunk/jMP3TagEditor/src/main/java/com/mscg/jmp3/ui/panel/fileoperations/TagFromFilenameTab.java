@@ -17,7 +17,7 @@ import com.mscg.jmp3.ui.util.input.CheckboxInputPanel;
 import com.mscg.jmp3.ui.util.input.ComboboxInputPanel;
 import com.mscg.jmp3.ui.util.input.InputPanel;
 import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
-import com.mscg.jmp3.util.transformation.FilenameTransformationsPanel;
+import com.mscg.jmp3.ui.util.transformation.FilenameTransformationsPanel;
 
 
 public class TagFromFilenameTab extends GenericFileoperationTab {
