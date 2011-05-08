@@ -38,7 +38,8 @@ public class EditTransformationListener extends RemoveTransformationsListener {
             }
 
         } catch (Exception e) {
-            AppLaunch.manageError(e);
+            LOG.error("Cannot launch transformation editor", e);
+            AppLaunch.showError(e);
         }
     }
 

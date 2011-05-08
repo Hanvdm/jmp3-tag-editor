@@ -12,7 +12,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
@@ -30,6 +32,8 @@ import com.mscg.jmp3.ui.listener.filelist.AddFilesListener;
 import com.mscg.jmp3.ui.listener.filelist.RemoveFilesListener;
 import com.mscg.jmp3.ui.renderer.IconedListCellRenderer;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
+import com.mscg.jmp3.ui.util.contextmenu.FilesListHandler;
+import com.mscg.jmp3.ui.util.contextmenu.JPopupMenuFactory;
 import com.mscg.jmp3.util.filefilter.MP3FileFilter;
 
 public class FileChooseCard extends GenericCard {
@@ -41,6 +45,7 @@ public class FileChooseCard extends GenericCard {
 
     private JButton addButton;
     private JButton removeButton;
+    private RemoveFilesListener removeFilesListener;
 
     public FileChooseCard(MainWindow mainWindow) throws FileNotFoundException {
         super(mainWindow);
@@ -83,6 +88,7 @@ public class FileChooseCard extends GenericCard {
         filesList = new JList(listModel);
         filesList.setCellRenderer(new IconedListCellRenderer());
         filesList.addListSelectionListener(selectionListener);
+        filesList.addMouseListener(new FilesListHandler(filesList, new RemoveFilesPopupFactory()));
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(filesList);
         titledPanel.add(scrollPane, BorderLayout.CENTER);
@@ -92,7 +98,8 @@ public class FileChooseCard extends GenericCard {
         selectionListener.checkEmptinessAndSelection();
 
         addButton.addActionListener(new AddFilesListener(filesList, mainWindow));
-        removeButton.addActionListener(new RemoveFilesListener(filesList));
+        removeFilesListener = new RemoveFilesListener(filesList);
+        removeButton.addActionListener(removeFilesListener);
 
         parseParameters();
     }
@@ -140,6 +147,41 @@ public class FileChooseCard extends GenericCard {
                                     filesList != null &&
                                     filesList.getSelectedIndices().length != 0);
             mainWindow.getNextButton().setEnabled(listModel.getSize() != 0);
+        }
+
+    }
+
+    private class RemoveFilesPopupFactory implements JPopupMenuFactory {
+
+        private JPopupMenu contextMenu;
+        private JMenuItem removeMenuItem;
+        private JMenuItem removeAllSelectedMenuItem;
+
+        @Override
+        public JPopupMenu getPopupMenu(JList list, int index) {
+            if(contextMenu == null) {
+                ImageIcon removeButtonIcon = null;
+                try {
+                    removeButtonIcon = new ImageIcon(ThemeManager.getIcon(IconType.REMOVE_SMALL));
+                } catch(Exception e){}
+
+                contextMenu = new JPopupMenu();
+                removeMenuItem = new JMenuItem(Messages.getString("files.remove.context"),
+                                               removeButtonIcon);
+                removeMenuItem.addActionListener(removeFilesListener);
+
+                removeAllSelectedMenuItem = new JMenuItem(Messages.getString("files.remove"),
+                                                          removeButtonIcon);
+                removeAllSelectedMenuItem.addActionListener(removeFilesListener);
+
+                contextMenu.add(removeMenuItem);
+                contextMenu.add(removeAllSelectedMenuItem);
+            }
+
+            removeAllSelectedMenuItem.setVisible(list.getSelectedIndices().length > 1);
+            removeMenuItem.setVisible(!removeAllSelectedMenuItem.isVisible());
+
+            return contextMenu;
         }
 
     }
