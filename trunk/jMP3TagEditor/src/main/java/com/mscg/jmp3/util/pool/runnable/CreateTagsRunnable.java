@@ -1,12 +1,14 @@
 package com.mscg.jmp3.util.pool.runnable;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultListModel;
 
 import com.mscg.jID3tags.file.MP3File;
 import com.mscg.jID3tags.id3v2.ID3v2Tag;
@@ -17,6 +19,7 @@ import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
+import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
 
 public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
@@ -24,9 +27,14 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
     private TagFromFilenameTab tab;
     private Pattern regExGroupPattern;
 
-    public CreateTagsRunnable(List<File> files, ExecuteTagCreationDialog dialog) {
+    public CreateTagsRunnable(ExecuteTagCreationDialog dialog) {
         super(dialog);
-        this.files = files;
+        this.files = new LinkedList<File>();
+        DefaultListModel listModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
+        for(Object listElement : listModel.toArray()) {
+            IconAndFileListElement fileListEl = (IconAndFileListElement) listElement;
+            files.add(fileListEl.getFile());
+        }
         this.tab = dialog.getTab();
         regExGroupPattern = Pattern.compile("^\\s*%(\\d+)\\s*$");
     }
@@ -80,33 +88,56 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                     }
 
                     fieldKey = "operations.file.taginfo.info.author";
-                    value = parseValue(tab.getAuthorPanel().getValue(), fileNameMatcher);
-                    mp3File.setArtist(value);
+                    value = tab.getAuthorPanel().getValue();
+                    if(value.trim().length() != 0) {
+                        value = parseValue(value, fileNameMatcher);
+                        mp3File.setArtist(value);
+                    }
 
                     fieldKey = "operations.file.taginfo.info.album";
-                    value = parseValue(tab.getAlbumPanel().getValue(), fileNameMatcher);
-                    mp3File.setAlbum(value);
+                    value = tab.getAlbumPanel().getValue();
+                    if(value.trim().length() != 0) {
+                        value = parseValue(value, fileNameMatcher);
+                        mp3File.setAlbum(value);
+                    }
 
                     fieldKey = "operations.file.taginfo.info.title";
-                    value = parseValue(tab.getTitlePanel().getValue(), fileNameMatcher);
-                    mp3File.setTitle(value);
+                    value = tab.getTitlePanel().getValue();
+                    if(value.trim().length() != 0) {
+                        value = parseValue(value, fileNameMatcher);
+                        mp3File.setTitle(value);
+                    }
 
                     fieldKey = "operations.file.taginfo.info.number";
-                    value = parseValue(tab.getNumberPanel().getValue(), fileNameMatcher);
-                    mp3File.setTrack(value);
+                    value = tab.getNumberPanel().getValue();
+                    if(value.trim().length() != 0) {
+                        value = parseValue(value, fileNameMatcher);
+                        try {
+                            Integer.parseInt(value, 10);
+                        } catch(NumberFormatException e){
+                            throw new InvalidTagValueException(e);
+                        }
+                        mp3File.setTrack(value);
+                    }
 
                     fieldKey = "operations.file.taginfo.info.genre";
-                    value = parseValue(tab.getGenrePanel().getValue(), fileNameMatcher);
-                    mp3File.setGenre(value);
+                    value = tab.getGenrePanel().getValue();
+                    if(value.trim().length() != 0) {
+                        value = parseValue(value, fileNameMatcher);
+                        mp3File.setGenre(value);
+                    }
 
                     fieldKey = "operations.file.taginfo.info.year";
-                    value = parseValue(tab.getYearPanel().getValue(), fileNameMatcher);
-                    try {
-                        Integer.parseInt(value);
-                    } catch(NumberFormatException e){
-                        throw new InvalidTagValueException(e);
+                    value = tab.getYearPanel().getValue();
+                    if(value.trim().length() != 0) {
+                        value = parseValue(tab.getYearPanel().getValue(), fileNameMatcher);
+                        try {
+                            Integer.parseInt(value);
+                        } catch(NumberFormatException e){
+                            throw new InvalidTagValueException(e);
+                        }
+                        mp3File.setYear(value);
                     }
-                    mp3File.setYear(value);
 
                     mp3File.copyID3v2ToID3v11();
 
@@ -129,6 +160,7 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                     AppLaunch.showError(new Exception(
                         Messages.getString("operations.file.error.regex.undefined").
                             replace("${field}", Messages.getString(fieldKey))));
+                    return;
                 } catch(Exception e) {
                     LOG.error("Cannot generate tag for file \"" + file.getAbsolutePath() + "\"", e);
                     AppLaunch.showError(e);
@@ -137,10 +169,14 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
                 rangeModel.setValue(++progess);
             }
+
+            AppLaunch.showMessage(Messages.getString("operations.file.taginfo.execute.done.title"),
+                                  Messages.getString("operations.file.taginfo.execute.done.message").
+                                      replace("${number}", "" + files.size()));
         } catch(PatternSyntaxException e) {
             LOG.error("Invalid regular expression", e);
             AppLaunch.showError(new Exception(Messages.getString("operations.file.error.regex").
-                                              replace("${regEx}", value)));
+                                                  replace("${regEx}", value)));
         } catch(Exception e) {
             LOG.error("Cannot generate tags", e);
             AppLaunch.showError(e);

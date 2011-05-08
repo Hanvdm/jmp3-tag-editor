@@ -13,6 +13,8 @@ import com.mscg.jmp3.settings.Settings;
 public class ThemeManager {
 
     public static enum IconType {
+        ICON_SMALL("icon-small"),
+        ICON_LARGE("icon-large"),
         NEXT("arrow_right"),
         PREV("arrow_left"),
         EXIT("exit"),

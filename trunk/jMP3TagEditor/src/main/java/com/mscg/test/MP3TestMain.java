@@ -1,7 +1,4 @@
 package com.mscg.test;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.mscg.jID3tags.exception.SynchsafeBadIntegerValueException;
 
 /**
@@ -205,16 +202,19 @@ public class MP3TestMain {
 //            IOUtils.closeQuietly(os);
 //        }
 
-        String testString = "stringa di prova,con la virgola.e il punto";
-        StringBuffer ret = new StringBuffer(testString);
-        Pattern pattern = Pattern.compile("\\b(\\w{3})");
-        Matcher matcher = pattern.matcher(testString);
-        while(matcher.find()) {
-            String group = matcher.group(1);
-            String substring = testString.substring(matcher.start(1), matcher.end(1));
-            ret.setCharAt(matcher.start(1), substring.toUpperCase().charAt(0));
-            System.out.println(group + " - " + substring);
-        }
-        System.out.println(ret);
+//        String testString = "stringa di prova,con la virgola.e il punto";
+//        StringBuffer ret = new StringBuffer(testString);
+//        Pattern pattern = Pattern.compile("\\b(\\w{3})");
+//        Matcher matcher = pattern.matcher(testString);
+//        while(matcher.find()) {
+//            String group = matcher.group(1);
+//            String substring = testString.substring(matcher.start(1), matcher.end(1));
+//            ret.setCharAt(matcher.start(1), substring.toUpperCase().charAt(0));
+//            System.out.println(group + " - " + substring);
+//        }
+//        System.out.println(ret);
+
+        int value = 3;
+        System.out.println(String.format("%02d", value));
     }
 }

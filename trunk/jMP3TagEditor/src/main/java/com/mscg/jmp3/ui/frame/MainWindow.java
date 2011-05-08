@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -28,8 +29,6 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
-import org.apache.log4j.Logger;
-
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.settings.Settings;
@@ -43,7 +42,7 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
 
     private static final long serialVersionUID = -2803783276903439771L;
 
-    private static Logger LOG = Logger.getLogger(MainWindow.class);
+    //private static Logger LOG = Logger.getLogger(MainWindow.class);
 
     private JButton nextButton;
     private JButton prevButton;
@@ -82,6 +81,7 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
     private void initComponents() throws FileNotFoundException {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle(Messages.getString("application.title"));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(ThemeManager.getIcon(IconType.ICON_SMALL)));
 
         getContentPane().setLayout(new BorderLayout());
 

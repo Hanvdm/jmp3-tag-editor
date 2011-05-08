@@ -17,6 +17,7 @@ import com.mscg.jmp3.ui.util.input.InputPanel;
 public class RenameFileTab extends GenericFileoperationTab {
 
     private static final long serialVersionUID = -257273605874322878L;
+    private InputPanel filenamePatternPanel;
 
     public RenameFileTab() throws FileNotFoundException {
         super();
@@ -31,11 +32,14 @@ public class RenameFileTab extends GenericFileoperationTab {
         patternModel.addElement("${artist} - ${track} - ${title}");
         patternModel.addElement("${track} - ${artist} - ${title}");
         patternModel.addElement("${track} - ${title}");
+        patternModel.addElement("${year} - ${artist} - ${track} - ${title}");
+        patternModel.addElement("${year} - ${track} - ${artist} - ${title}");
+        patternModel.addElement("${year} - ${track} - ${title}");
 
-        InputPanel filenamePatternPanel = new ComboboxInputPanel(Messages.getString("operations.file.rename.label"),
-                                                                 0, 10,
-                                                                 patternModel,
-                                                                 true);
+        filenamePatternPanel = new ComboboxInputPanel(Messages.getString("operations.file.rename.label"),
+                                                      0, 10,
+                                                      patternModel,
+                                                      true);
 
         add(filenamePatternPanel);
 
@@ -43,6 +47,13 @@ public class RenameFileTab extends GenericFileoperationTab {
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.add(infoLabel, BorderLayout.PAGE_START);
         add(wrapper);
+    }
+
+    /**
+     * @return the filenamePatternPanel
+     */
+    public InputPanel getFilenamePatternPanel() {
+        return filenamePatternPanel;
     }
 
 }

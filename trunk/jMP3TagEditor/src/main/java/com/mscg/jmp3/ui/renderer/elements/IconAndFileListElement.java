@@ -11,17 +11,22 @@ public class IconAndFileListElement extends IconAndTextListElement {
     protected File file;
 
     public IconAndFileListElement(Icon icon, File file) {
-        super(icon, file.getName());
-        this.file = file;
+        super(icon, null);
+        setFile(file);
     }
 
     public IconAndFileListElement(File file) {
-        super(file.getName());
-        this.file = file;
+        super(null, null);
+        setFile(file);
     }
 
     public File getFile() {
         return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+        text = file.getName();
     }
 
 }

@@ -2,6 +2,8 @@ package com.mscg.jmp3.ui.panel.fileoperations;
 
 import java.awt.BorderLayout;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -60,9 +62,14 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
         infoPanel.add(titlePanel);
         numberPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.number"));
         infoPanel.add(numberPanel);
-        DefaultComboBoxModel genreModel = new DefaultComboBoxModel(Costants.ID3v1Genre.values());
+        List<String> genres = new LinkedList<String>();
+        genres.add("");
+        for(Costants.ID3v1Genre genre : Costants.ID3v1Genre.values()) {
+            genres.add(genre.toString());
+        }
+        DefaultComboBoxModel genreModel = new DefaultComboBoxModel(genres.toArray());
         genrePanel = new ComboboxInputPanel(Messages.getString("operations.file.taginfo.info.genre"),
-                                            genreModel);
+                                            genreModel, genres.get(1));
         infoPanel.add(genrePanel);
         yearPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.year"));
         infoPanel.add(yearPanel);
