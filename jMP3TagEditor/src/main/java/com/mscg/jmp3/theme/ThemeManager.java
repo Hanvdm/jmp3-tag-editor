@@ -13,8 +13,6 @@ import com.mscg.jmp3.settings.Settings;
 public class ThemeManager {
 
     public static enum IconType {
-        ICON_SMALL("icon-small"),
-        ICON_LARGE("icon-large"),
         NEXT("arrow_right"),
         PREV("arrow_left"),
         EXIT("exit"),
@@ -64,6 +62,18 @@ public class ThemeManager {
         if(mp3Icon == null)
             mp3Icon = new ImageIcon(getIcon(IconType.MP3));
         return mp3Icon;
+    }
+
+    public static URL getMainIcon(boolean small) throws FileNotFoundException {
+        String fileName = "./icon/icon-" + (small ? "small" : "large") + ".png";
+        try {
+            File file = new File(fileName);
+            if(!file.exists())
+                throw new FileNotFoundException("Can't open file \"" + fileName + "\"");
+            return file.toURI().toURL();
+        } catch(MalformedURLException e) {
+            throw new FileNotFoundException("Can't open file \"" + fileName + "\": " + e.getMessage());
+        }
     }
 
 }

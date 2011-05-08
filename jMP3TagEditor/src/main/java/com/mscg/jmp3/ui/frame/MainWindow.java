@@ -72,8 +72,7 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
 
             if(maximized)
                 setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
-        }
-        catch(Exception e){
+        } catch(Exception e){
             AppLaunch.manageError(e);
         }
     }
@@ -81,7 +80,7 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
     private void initComponents() throws FileNotFoundException {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle(Messages.getString("application.title"));
-        setIconImage(Toolkit.getDefaultToolkit().getImage(ThemeManager.getIcon(IconType.ICON_SMALL)));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(ThemeManager.getMainIcon(true)));
 
         getContentPane().setLayout(new BorderLayout());
 

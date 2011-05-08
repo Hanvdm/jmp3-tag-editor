@@ -305,9 +305,9 @@ public class AddTransformationDialog extends JDialog {
 
             paramValue = new JTextField();
             paramValue.setToolTipText(paramName);
-            paramValue.setMaximumSize(new Dimension(300, 20));
-            paramValue.setMinimumSize(new Dimension(300, 20));
-            paramValue.setPreferredSize(new Dimension(300, 20));
+            paramValue.setMaximumSize(new Dimension(290, 20));
+            paramValue.setMinimumSize(paramValue.getMaximumSize());
+            paramValue.setPreferredSize(paramValue.getMaximumSize());
 
             add(paramValue);
         }
