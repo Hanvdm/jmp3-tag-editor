@@ -52,6 +52,12 @@ public class AppLaunch {
                                       JOptionPane.ERROR_MESSAGE, null, buttons, buttons[0]);
      }
 
+     public static void showMessage(String title, String message) {
+         String buttons[] = {Messages.getString("error.close")};
+         JOptionPane.showOptionDialog(mainWindow, message, title, JOptionPane.DEFAULT_OPTION,
+                                      JOptionPane.INFORMATION_MESSAGE, null, buttons, buttons[0]);
+     }
+
      public static void manageError(Exception e) {
          LOG.error("An error occurred and the application will close.", e);
          showError(e);

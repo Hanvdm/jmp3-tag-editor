@@ -6,6 +6,7 @@ import java.awt.Window;
 import java.io.FileNotFoundException;
 
 import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.util.pool.InterruptibleRunnable;
 import com.mscg.jmp3.util.pool.runnable.RenameFilesRunnable;
 
@@ -13,32 +14,53 @@ public class ExecuteRenameFilesDialog extends GenericFilesOperationDialog {
 
     private static final long serialVersionUID = -3630221636283924977L;
 
-    public ExecuteRenameFilesDialog() throws FileNotFoundException {
+    private RenameFileTab tab;
+
+    public ExecuteRenameFilesDialog(RenameFileTab tab) throws FileNotFoundException {
         super();
+        initComponents(tab);
     }
 
-    public ExecuteRenameFilesDialog(Dialog owner, boolean modal) throws FileNotFoundException {
+    public ExecuteRenameFilesDialog(RenameFileTab tab, Dialog owner, boolean modal) throws FileNotFoundException {
         super(owner, modal);
+        initComponents(tab);
     }
 
-    public ExecuteRenameFilesDialog(Dialog owner) throws FileNotFoundException {
+    public ExecuteRenameFilesDialog(RenameFileTab tab, Dialog owner) throws FileNotFoundException {
         super(owner);
+        initComponents(tab);
     }
 
-    public ExecuteRenameFilesDialog(Frame owner, boolean modal) throws FileNotFoundException {
+    public ExecuteRenameFilesDialog(RenameFileTab tab, Frame owner, boolean modal) throws FileNotFoundException {
         super(owner, modal);
+        initComponents(tab);
     }
 
-    public ExecuteRenameFilesDialog(Frame owner) throws FileNotFoundException {
+    public ExecuteRenameFilesDialog(RenameFileTab tab, Frame owner) throws FileNotFoundException {
         super(owner);
+        initComponents(tab);
     }
 
-    public ExecuteRenameFilesDialog(Window owner, ModalityType modalityType) throws FileNotFoundException {
+    public ExecuteRenameFilesDialog(RenameFileTab tab, Window owner, ModalityType modalityType) throws FileNotFoundException {
         super(owner, modalityType);
+        initComponents(tab);
     }
 
-    public ExecuteRenameFilesDialog(Window owner) throws FileNotFoundException {
+    public ExecuteRenameFilesDialog(RenameFileTab tab, Window owner) throws FileNotFoundException {
         super(owner);
+        initComponents(tab);
+    }
+
+    protected void initComponents(RenameFileTab tab) throws FileNotFoundException {
+        this.tab = tab;
+        initComponents();
+    }
+
+    /**
+     * @return the tab
+     */
+    public RenameFileTab getTab() {
+        return tab;
     }
 
     @Override

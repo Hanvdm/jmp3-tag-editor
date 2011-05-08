@@ -90,7 +90,8 @@ public class FilenameOperationsCard extends GenericCard {
                 LOG.debug("Starting file rename");
                 LOG.debug("Starting tag creation");
                 try {
-                    dialog = new ExecuteRenameFilesDialog(AppLaunch.mainWindow,
+                    dialog = new ExecuteRenameFilesDialog(renameFileTab,
+                                                          AppLaunch.mainWindow,
                                                           true);
                     dialog.setVisible(true);
                 } catch(Exception e) {

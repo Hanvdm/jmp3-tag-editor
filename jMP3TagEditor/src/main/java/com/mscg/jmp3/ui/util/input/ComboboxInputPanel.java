@@ -11,24 +11,46 @@ public class ComboboxInputPanel extends InputPanel {
 
     private JComboBox combobox;
     private ComboBoxModel comboboxModel;
+    private Object selectedItem;
     private boolean editable;
 
     public ComboboxInputPanel(String label, ComboBoxModel comboboxModel) {
-        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, false);
+        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, false, null);
+    }
+
+    public ComboboxInputPanel(String label, ComboBoxModel comboboxModel, Object selectedItem) {
+        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, false, selectedItem);
     }
 
     public ComboboxInputPanel(String label, int topBorder, int bottomBorder, ComboBoxModel comboboxModel) {
-        this(label, topBorder, bottomBorder, comboboxModel, false);
+        this(label, topBorder, bottomBorder, comboboxModel, false, null);
+    }
+
+    public ComboboxInputPanel(String label, int topBorder, int bottomBorder, ComboBoxModel comboboxModel,
+                              Object selectedItem) {
+        this(label, topBorder, bottomBorder, comboboxModel, false, selectedItem);
     }
 
     public ComboboxInputPanel(String label, ComboBoxModel comboboxModel, boolean editable) {
-        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, editable);
+        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, editable, null);
     }
 
-    public ComboboxInputPanel(String label, int topBorder, int bottomBorder, ComboBoxModel comboboxModel, boolean editable) {
+    public ComboboxInputPanel(String label, ComboBoxModel comboboxModel, boolean editable,
+                              Object selectedItem) {
+        this(label, defaultTopBorder, defaultBottomBorder, comboboxModel, editable, selectedItem);
+    }
+
+    public ComboboxInputPanel(String label, int topBorder, int bottomBorder, ComboBoxModel comboboxModel,
+                              boolean editable) {
+        this(label, topBorder, bottomBorder, comboboxModel, editable, null);
+    }
+
+    public ComboboxInputPanel(String label, int topBorder, int bottomBorder, ComboBoxModel comboboxModel,
+                              boolean editable, Object selectedItem) {
         super(label, topBorder, bottomBorder, false);
         this.comboboxModel = comboboxModel;
         this.editable = editable;
+        this.selectedItem = selectedItem;
         initComponent(topBorder, bottomBorder);
     }
 
@@ -38,7 +60,14 @@ public class ComboboxInputPanel extends InputPanel {
             combobox = new JComboBox();
             combobox.setModel(comboboxModel);
             combobox.setEditable(editable);
-            combobox.setSelectedIndex(0);
+            if(comboboxModel.getSize() >= 1) {
+                if(selectedItem == null)
+                    combobox.setSelectedIndex(0);
+                else {
+                    combobox.setSelectedItem(selectedItem);
+                    selectedItem = null;
+                }
+            }
         }
         return combobox;
     }
