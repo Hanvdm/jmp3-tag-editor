@@ -1,4 +1,8 @@
 package com.mscg.test;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
 import com.mscg.jID3tags.exception.SynchsafeBadIntegerValueException;
 
 /**
@@ -214,7 +218,14 @@ public class MP3TestMain {
 //        }
 //        System.out.println(ret);
 
-        int value = 3;
-        System.out.println(String.format("%02d", value));
+//        int value = 3;
+//        System.out.println(String.format("%02d", value));
+
+        try {
+            File file = new File("./files/out.mp3");
+            Desktop.getDesktop().open(file.getCanonicalFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -9,6 +9,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class ContextMenuListHandler extends MouseAdapter implements PopupMenuListener {
 
@@ -17,8 +20,12 @@ public class ContextMenuListHandler extends MouseAdapter implements PopupMenuLis
     protected JList list;
     protected JPopupMenuFactory popupMenuFactory;
 
+    protected Logger LOG;
+
     public ContextMenuListHandler(JList list, JPopupMenuFactory popupMenuFactory) {
         super();
+
+        LOG = LoggerFactory.getLogger(this.getClass());
 
         this.list = list;
         this.popupMenuFactory = popupMenuFactory;
