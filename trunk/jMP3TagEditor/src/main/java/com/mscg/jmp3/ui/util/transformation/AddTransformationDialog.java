@@ -35,7 +35,7 @@ import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.transformator.StringTransformatorFactory;
-import com.mscg.jmp3.ui.util.Util;
+import com.mscg.jmp3.util.Util;
 
 public class AddTransformationDialog extends JDialog {
 

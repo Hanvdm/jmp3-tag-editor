@@ -1,4 +1,4 @@
-package com.mscg.jmp3.ui.util;
+package com.mscg.jmp3.util;
 
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
