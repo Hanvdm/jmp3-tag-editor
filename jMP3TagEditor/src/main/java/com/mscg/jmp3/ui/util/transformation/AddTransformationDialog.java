@@ -35,10 +35,13 @@ import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.transformator.StringTransformatorFactory;
+import com.mscg.jmp3.ui.util.Util;
 
 public class AddTransformationDialog extends JDialog {
 
     private static final long serialVersionUID = 7630936043764420978L;
+
+    private static Integer panelSize;
 
     protected Logger LOG;
 
@@ -139,7 +142,7 @@ public class AddTransformationDialog extends JDialog {
         setPreferredSize(getMinimumSize());
         setResizable(false);
 
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(getOwner());
 
     }
 
@@ -296,6 +299,11 @@ public class AddTransformationDialog extends JDialog {
         }
 
         private void initComponents() {
+            paramValue = new JTextField();
+            if(panelSize == null) {
+                panelSize = Util.getPanelHeightForFont(paramValue.getFont());
+            }
+
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
             setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
 
@@ -303,9 +311,8 @@ public class AddTransformationDialog extends JDialog {
 
             add(Box.createHorizontalGlue());
 
-            paramValue = new JTextField();
             paramValue.setToolTipText(paramName);
-            paramValue.setMaximumSize(new Dimension(290, 20));
+            paramValue.setMaximumSize(new Dimension(290, panelSize));
             paramValue.setMinimumSize(paramValue.getMaximumSize());
             paramValue.setPreferredSize(paramValue.getMaximumSize());
 

@@ -115,7 +115,7 @@ public abstract class GenericFilesOperationDialog extends JDialog {
         setPreferredSize(getMinimumSize());
         setResizable(false);
 
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(getOwner());
     }
 
     @Override
