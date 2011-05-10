@@ -33,7 +33,25 @@ public class ContextMenuListHandler extends MouseAdapter implements PopupMenuLis
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger()) {
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("Is popup trigger: " + e.isPopupTrigger());
+            switch(e.getButton()) {
+            case MouseEvent.BUTTON1:
+                LOG.debug("Button 1 pressed");
+                break;
+            case  MouseEvent.BUTTON2:
+                LOG.debug("Button 2 pressed");
+                break;
+            case  MouseEvent.BUTTON3:
+                LOG.debug("Button 3 pressed");
+                break;
+            case  MouseEvent.NOBUTTON:
+                LOG.debug("No button pressed");
+                break;
+            }
+        }
+
+        if (e.isPopupTrigger() || e.getButton() != MouseEvent.BUTTON1) {
             idx = list.locationToIndex(new Point(e.getX(), e.getY()));
 
             if(idx < 0)
