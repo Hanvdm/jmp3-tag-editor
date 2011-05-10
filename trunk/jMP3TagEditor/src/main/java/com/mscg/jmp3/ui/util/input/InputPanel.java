@@ -2,6 +2,9 @@ package com.mscg.jmp3.ui.util.input;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -40,6 +43,7 @@ public abstract class InputPanel extends JPanel {
     }
 
     protected void initComponent(int topBorder, int bottomBorder) {
+        JLabel inputLabel = new JLabel(label.endsWith(":") ? label : label + ":");
         Component valueBox = getValueComponent();
 
         if(panelSize == null) {
@@ -50,11 +54,15 @@ public abstract class InputPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(topBorder, 0, bottomBorder, 0));
         setMaximumSize(new Dimension(Short.MAX_VALUE, panelSize + topBorder + bottomBorder));
 
+        Font font = inputLabel.getFont();
+        Rectangle2D bounds = font.getStringBounds(inputLabel.getText(),
+                                                  new FontRenderContext(font.getTransform(), true, false));
+
         JPanel wrapper = new JPanel();
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.LINE_AXIS));
-        wrapper.setMinimumSize(new Dimension(140, panelSize));
+        wrapper.setMinimumSize(new Dimension(Math.max(140, (int)bounds.getWidth()), panelSize));
         wrapper.setPreferredSize(wrapper.getMinimumSize());
-        wrapper.add(new JLabel(label.endsWith(":") ? label : label + ":"));
+        wrapper.add(inputLabel);
         add(wrapper);
 
         add(valueBox);

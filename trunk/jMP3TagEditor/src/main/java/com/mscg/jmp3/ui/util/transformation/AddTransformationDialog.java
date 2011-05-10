@@ -4,11 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.LinkedList;
@@ -299,22 +302,28 @@ public class AddTransformationDialog extends JDialog {
         }
 
         private void initComponents() {
+            JLabel label = new JLabel(paramName.endsWith(":") ? paramName : paramName + ":");
             paramValue = new JTextField();
+            paramValue.setToolTipText(paramName);
+
             if(panelSize == null) {
                 panelSize = Util.getPanelHeightForFont(paramValue.getFont());
             }
 
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
             setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
+            setMaximumSize(new Dimension(Short.MAX_VALUE, panelSize + 0 + 2));
 
-            add(new JLabel(paramName.endsWith(":") ? paramName : paramName + ":"));
+            Font font = label.getFont();
+            Rectangle2D bounds = font.getStringBounds(label.getText(),
+                                                      new FontRenderContext(font.getTransform(), true, false));
 
-            add(Box.createHorizontalGlue());
-
-            paramValue.setToolTipText(paramName);
-            paramValue.setMaximumSize(new Dimension(290, panelSize));
-            paramValue.setMinimumSize(paramValue.getMaximumSize());
-            paramValue.setPreferredSize(paramValue.getMaximumSize());
+            JPanel wrapper = new JPanel();
+            wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.LINE_AXIS));
+            wrapper.setMinimumSize(new Dimension(Math.max(140, (int)bounds.getWidth()), panelSize));
+            wrapper.setPreferredSize(wrapper.getMinimumSize());
+            wrapper.add(label);
+            add(wrapper);
 
             add(paramValue);
         }
