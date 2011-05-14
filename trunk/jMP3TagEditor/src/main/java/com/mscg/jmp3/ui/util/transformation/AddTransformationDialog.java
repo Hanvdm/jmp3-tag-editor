@@ -136,7 +136,7 @@ public class AddTransformationDialog extends JDialog {
 
         setContentPane(contentPanel);
 
-        setMinimumSize(new Dimension(450, 250));
+        setMinimumSize(new Dimension(500, 250));
         setPreferredSize(getMinimumSize());
         setResizable(false);
 
