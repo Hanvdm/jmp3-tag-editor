@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -17,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.ListModel;
 
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.theme.ThemeManager;
@@ -30,6 +32,7 @@ import com.mscg.jmp3.ui.listener.filetotag.TransformationsListChangeListener;
 import com.mscg.jmp3.ui.renderer.elements.StringTransformatorElement;
 import com.mscg.jmp3.ui.util.contextmenu.JPopupMenuFactory;
 import com.mscg.jmp3.ui.util.contextmenu.StringTransformatorsListHandler;
+import com.mscg.jmp3.util.Util;
 
 public class FilenameTransformationsPanel extends JPanel {
 
@@ -39,6 +42,7 @@ public class FilenameTransformationsPanel extends JPanel {
 
     private JList transformationList;
     private DefaultListModel transformationListModel;
+    private TransformationsPreviewPanel transformationsPreviewPanel;
     private JButton addButton;
     private JButton removeButton;
     private ImageIcon addButtonIcon;
@@ -67,7 +71,7 @@ public class FilenameTransformationsPanel extends JPanel {
         moveDownIcon = new ImageIcon(ThemeManager.getIcon(IconType.ARROW_DOWN));
 
         transformationListModel = new DefaultListModel();
-        transformationList = new JList(transformationListModel);
+        transformationList = new UpdatePreviewOnInvalidateList(transformationListModel);
 
         JScrollPane transformationScroll = new JScrollPane();
         transformationScroll.setViewportView(transformationList);
@@ -77,15 +81,20 @@ public class FilenameTransformationsPanel extends JPanel {
         transformationScroll.setPreferredSize(new Dimension(100, 80));
 
         JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0 ,0));
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
         add(buttonsPanel, BorderLayout.LINE_END);
 
         addButton = new JButton(null, addButtonIcon);
         addButton.setToolTipText(Messages.getString("operations.file.maintransform.add.tooltip"));
         addButton.addActionListener(new AddTransformationListener(transformationList));
+        addButton.setMaximumSize(Util.maxSmallIconButtonSize);
+        addButton.setPreferredSize(Util.maxSmallIconButtonSize);
         removeButton = new JButton(null, removeButtonIcon);
         removeButton.setToolTipText(Messages.getString("operations.file.maintransform.remove.tooltip"));
         removeButton.addActionListener(new RemoveTransformationsListener(transformationList));
+        removeButton.setMaximumSize(Util.maxSmallIconButtonSize);
+        removeButton.setPreferredSize(Util.maxSmallIconButtonSize);
         removeButton.setEnabled(false);
 
         buttonsPanel.add(Box.createVerticalGlue());
@@ -94,11 +103,17 @@ public class FilenameTransformationsPanel extends JPanel {
         buttonsPanel.add(removeButton);
         buttonsPanel.add(Box.createVerticalGlue());
 
-        TransformationsListChangeListener listener = new TransformationsListChangeListener(transformationList, removeButton);
+        transformationsPreviewPanel = new TransformationsPreviewPanel(transformationListModel);
+        add(transformationsPreviewPanel, BorderLayout.PAGE_END);
+
+        TransformationsListChangeListener listener = new TransformationsListChangeListener(transformationList,
+                                                                                           removeButton,
+                                                                                           transformationsPreviewPanel);
         transformationList.addListSelectionListener(listener);
         transformationList.addMouseListener(new StringTransformatorsListHandler(transformationList,
                                                                                 new ManageTransformationsPopupFactory()));
         transformationListModel.addListDataListener(listener);
+
     }
 
     public List<StringTransformator> getTransformators() {
@@ -182,6 +197,22 @@ public class FilenameTransformationsPanel extends JPanel {
             removeMenuItem.setVisible(editSelectedMenuItem.isVisible());
 
             return contextMenu;
+        }
+
+    }
+
+    private class UpdatePreviewOnInvalidateList extends JList {
+
+        private static final long serialVersionUID = 2917443708204457907L;
+
+        public UpdatePreviewOnInvalidateList(ListModel dataModel) {
+            super(dataModel);
+        }
+
+        @Override
+        public void invalidate() {
+            super.invalidate();
+            transformationsPreviewPanel.updatePreview();
         }
 
     }

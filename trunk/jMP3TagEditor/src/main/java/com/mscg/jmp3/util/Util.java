@@ -1,5 +1,6 @@
 package com.mscg.jmp3.util;
 
+import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JPanel;
@@ -8,6 +9,8 @@ import javax.swing.JTextField;
 public class Util {
 
     public static Integer panelHeight;
+
+    public static Dimension maxSmallIconButtonSize = new Dimension(27, 27);
 
     public static int getPanelHeightForFont(Font font) {
         if(panelHeight == null) {
