@@ -72,4 +72,9 @@ public abstract class InputPanel extends JPanel {
 
     public abstract String getValue();
 
+    public abstract void setValue(String value);
+
+    public String getInputLabel() {
+        return label;
+    }
 }

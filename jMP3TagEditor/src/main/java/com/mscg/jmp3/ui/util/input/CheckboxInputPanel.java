@@ -36,4 +36,9 @@ public class CheckboxInputPanel extends InputPanel {
         return Boolean.toString(checkbox.isSelected());
     }
 
+    @Override
+    public void setValue(String value) {
+        checkbox.setSelected(Boolean.parseBoolean(value));
+    }
+
 }

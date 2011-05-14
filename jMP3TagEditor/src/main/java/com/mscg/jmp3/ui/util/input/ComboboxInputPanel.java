@@ -81,4 +81,15 @@ public class ComboboxInputPanel extends InputPanel {
             return null;
     }
 
+    @Override
+    public void setValue(String value) {
+        for(int i = 0, l = comboboxModel.getSize(); i < l; i++) {
+            Object element = comboboxModel.getElementAt(i);
+            if(element.toString().equals(value)) {
+                combobox.setSelectedItem(value);
+                break;
+            }
+        }
+    }
+
 }

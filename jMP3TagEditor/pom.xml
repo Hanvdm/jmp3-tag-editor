@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mscg</groupId>
 	<artifactId>jMP3TagEditor</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.5</version>
 	<name>jMP3TagEditor</name>
 	<description>jMP3TagEditor</description>
 	<dependencies>
