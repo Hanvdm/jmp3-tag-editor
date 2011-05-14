@@ -4,14 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.LinkedList;
@@ -27,7 +24,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,13 +34,12 @@ import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.transformator.StringTransformatorFactory;
-import com.mscg.jmp3.util.Util;
+import com.mscg.jmp3.ui.util.input.InputPanel;
+import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
 
 public class AddTransformationDialog extends JDialog {
 
     private static final long serialVersionUID = 7630936043764420978L;
-
-    private static Integer panelSize;
 
     protected Logger LOG;
 
@@ -184,13 +179,13 @@ public class AddTransformationDialog extends JDialog {
             int parametersCount = parametersPanel.getComponentCount();
             if(parametersCount != 0) {
                 for(int i = 0; i < parametersCount; i++) {
-                    ParameterPanel paramPanel = null;
+                    InputPanel paramPanel = null;
                     Component childComponent = parametersPanel.getComponent(i);
-                    if(!(childComponent instanceof ParameterPanel))
+                    if(!(childComponent instanceof InputPanel))
                         continue;
 
-                    paramPanel = (ParameterPanel)parametersPanel.getComponent(i);
-                    paramPanel.setParameterValue(transformator.getParameters()[i]);
+                    paramPanel = (InputPanel)parametersPanel.getComponent(i);
+                    paramPanel.setValue(transformator.getParameters()[i]);
                 }
             }
 
@@ -223,7 +218,7 @@ public class AddTransformationDialog extends JDialog {
 
             if(transformator.getParametersNames() != null && transformator.getParametersNames().length != 0) {
                 for(String parameterName : transformator.getParametersNames()) {
-                    parametersPanel.add(new ParameterPanel(parameterName));
+                    parametersPanel.add(new TextBoxInputPanel(parameterName));
                 }
             }
             else {
@@ -251,20 +246,20 @@ public class AddTransformationDialog extends JDialog {
             int parametersCount = parametersPanel.getComponentCount();
             if(parametersCount != 0) {
                 for(int i = 0; i < parametersCount; i++) {
-                    ParameterPanel paramPanel = null;
+                    InputPanel paramPanel = null;
                     Component childComponent = parametersPanel.getComponent(i);
-                    if(!(childComponent instanceof ParameterPanel))
+                    if(!(childComponent instanceof InputPanel))
                         continue;
 
-                    paramPanel = (ParameterPanel)parametersPanel.getComponent(i);
+                    paramPanel = (InputPanel)parametersPanel.getComponent(i);
 
                     try {
-                        transformator.setParameter(i, paramPanel.getParameterValue());
+                        transformator.setParameter(i, paramPanel.getValue());
                     } catch(InvalidParameterException e) {
                         LOG.error("Cannot set parameter " + i + " for transformator " +
                                   transformator.getClass().getCanonicalName(), e);
                         String message = Messages.getString("operations.file.maintransform.adddialod.save.error").
-                                         replace("${paramName}", paramPanel.getParamName());
+                                         replace("${paramName}", paramPanel.getInputLabel());
                         AppLaunch.showError(new Exception(message));
                         return;
                     } catch(Exception e) {
@@ -288,57 +283,6 @@ public class AddTransformationDialog extends JDialog {
             super.actionPerformed(e);
         }
 
-    }
-
-    protected class ParameterPanel extends JPanel {
-        private static final long serialVersionUID = -4907069163199554627L;
-
-        private String paramName;
-        private JTextField paramValue;
-
-        public ParameterPanel(String paramName) {
-            this.paramName = paramName;
-            initComponents();
-        }
-
-        private void initComponents() {
-            JLabel label = new JLabel(paramName.endsWith(":") ? paramName : paramName + ":");
-            paramValue = new JTextField();
-            paramValue.setToolTipText(paramName);
-
-            if(panelSize == null) {
-                panelSize = Util.getPanelHeightForFont(paramValue.getFont());
-            }
-
-            setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-            setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
-            setMaximumSize(new Dimension(Short.MAX_VALUE, panelSize + 0 + 2));
-
-            Font font = label.getFont();
-            Rectangle2D bounds = font.getStringBounds(label.getText(),
-                                                      new FontRenderContext(font.getTransform(), true, false));
-
-            JPanel wrapper = new JPanel();
-            wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.LINE_AXIS));
-            wrapper.setMinimumSize(new Dimension(Math.max(140, (int)bounds.getWidth()), panelSize));
-            wrapper.setPreferredSize(wrapper.getMinimumSize());
-            wrapper.add(label);
-            add(wrapper);
-
-            add(paramValue);
-        }
-
-        public String getParamName() {
-            return paramName;
-        }
-
-        public String getParameterValue() {
-            return paramValue.getText();
-        }
-
-        public void setParameterValue(String value) {
-            paramValue.setText(value);
-        }
     }
 
 }

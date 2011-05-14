@@ -32,4 +32,9 @@ public class TextBoxInputPanel extends InputPanel {
         return valueBox.getText();
     }
 
+    @Override
+    public void setValue(String value) {
+        valueBox.setText(value == null ? "" : value);
+    }
+
 }
