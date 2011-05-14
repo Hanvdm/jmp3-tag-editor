@@ -7,14 +7,18 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.mscg.jmp3.ui.util.transformation.TransformationsPreviewPanel;
+
 public class TransformationsListChangeListener implements ListDataListener, ListSelectionListener {
 
     private JList list;
     private JButton button;
+    private TransformationsPreviewPanel previewPanel;
 
-    public TransformationsListChangeListener(JList list, JButton button) {
+    public TransformationsListChangeListener(JList list, JButton button, TransformationsPreviewPanel previewPanel) {
         this.list = list;
         this.button = button;
+        this.previewPanel = previewPanel;
     }
 
     @Override
@@ -41,6 +45,8 @@ public class TransformationsListChangeListener implements ListDataListener, List
         button.setEnabled(list.getModel().getSize() != 0 &&
                           list != null &&
                           list.getSelectedIndices().length != 0);
+
+        previewPanel.updatePreview();
     }
 
 }

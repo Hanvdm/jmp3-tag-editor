@@ -1,5 +1,6 @@
 package com.mscg.jmp3.main;
 
+import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import javax.swing.JOptionPane;
@@ -33,9 +34,9 @@ public class AppLaunch {
 
              Toolkit.getDefaultToolkit().getSystemEventQueue().push(new CutAndPasteEventQueue());
 
-             java.awt.EventQueue.invokeLater(new Runnable() {
+             EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                     try {
+                    try {
                         mainWindow = new MainWindow();
                         mainWindow.setVisible(true);
                     } catch (Exception e) {
