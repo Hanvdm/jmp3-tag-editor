@@ -1,6 +1,8 @@
 package com.mscg.jmp3.util.pool.runnable;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
@@ -19,11 +21,13 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
 
     private DefaultListModel filesListModel;
     private RenameFileTab tab;
+    private Pattern cleanFilenamePattern;
 
     public RenameFilesRunnable(ExecuteRenameFilesDialog dialog) {
         super(dialog);
         tab = dialog.getTab();
         filesListModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
+        cleanFilenamePattern = Pattern.compile("[\\?\\\\\\/:\\*\"<>\\|]");
     }
 
     @Override
@@ -77,6 +81,7 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
                     newFileName = newFileName.replace("${year}", value);
                 }
 
+                newFileName = clearFilename(newFileName);
                 newFile = new File(file.getParentFile(), newFileName);
                 if(newFile.exists()) {
                     throw new FileExistsException(newFile);
@@ -104,6 +109,11 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
         } finally {
             dialog.setVisible(false);
         }
+    }
+
+    protected String clearFilename(String filename) {
+        Matcher matcher = cleanFilenamePattern.matcher(filename);
+        return matcher.replaceAll("");
     }
 
 }
