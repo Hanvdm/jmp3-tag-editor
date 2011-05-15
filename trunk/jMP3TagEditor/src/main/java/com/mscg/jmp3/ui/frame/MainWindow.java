@@ -35,6 +35,7 @@ import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.listener.CloseWindowClickListener;
+import com.mscg.jmp3.ui.panel.EncodeFileCard;
 import com.mscg.jmp3.ui.panel.FileChooseCard;
 import com.mscg.jmp3.ui.panel.FilenameOperationsCard;
 
@@ -54,6 +55,7 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
 
     private FileChooseCard fileChooseCard;
     private FilenameOperationsCard filenameOperationsCard;
+    private EncodeFileCard encodeFileCard;
 
     public MainWindow() throws FileNotFoundException {
         this.maximized = Boolean.parseBoolean(Settings.getSetting("window.maximixed"));
@@ -139,6 +141,8 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
         mainPanel.add(fileChooseCard, "0");
         filenameOperationsCard = new FilenameOperationsCard(this);
         mainPanel.add(filenameOperationsCard, "1");
+        encodeFileCard = new EncodeFileCard(this);
+        mainPanel.add(encodeFileCard, "2");
         cardsCount = mainPanel.getComponentCount();
 
         addComponentListener(this);
