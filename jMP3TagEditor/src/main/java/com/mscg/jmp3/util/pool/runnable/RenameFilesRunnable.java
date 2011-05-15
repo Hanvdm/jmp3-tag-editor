@@ -21,13 +21,16 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
 
     private DefaultListModel filesListModel;
     private RenameFileTab tab;
-    private Pattern cleanFilenamePattern;
+    private static Pattern cleanFilenamePattern;
+
+    static {
+        cleanFilenamePattern = Pattern.compile("[\\?\\\\\\/:\\*\"<>\\|]");
+    }
 
     public RenameFilesRunnable(ExecuteRenameFilesDialog dialog) {
         super(dialog);
         tab = dialog.getTab();
         filesListModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
-        cleanFilenamePattern = Pattern.compile("[\\?\\\\\\/:\\*\"<>\\|]");
     }
 
     @Override
