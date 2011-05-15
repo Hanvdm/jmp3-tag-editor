@@ -1,23 +1,14 @@
 package com.mscg.jmp3.ui.panel;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.main.AppLaunch;
-import com.mscg.jmp3.theme.ThemeManager;
-import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
@@ -25,10 +16,10 @@ import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteRenameFilesDialog;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.GenericFilesOperationDialog;
 
-public class FilenameOperationsCard extends GenericCard {
+public class FilenameOperationsCard extends GenericStartableCard {
 
     private static final long serialVersionUID = -2264127654101769869L;
-    private JButton startButton;
+
     private JTabbedPane tabbedPane;
     private TagFromFilenameTab tagFromFilenameTab;
     private RenameFileTab renameFileTab;
@@ -38,26 +29,12 @@ public class FilenameOperationsCard extends GenericCard {
     }
 
     @Override
-    protected void initComponents() throws FileNotFoundException {
-        setLayout(new BorderLayout());
+    protected ActionListener getStartButtonListener() {
+        return new StartButtonListener();
+    }
 
-        // buttons panel
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 0));
-
-        buttonsPanel.add(Box.createVerticalGlue());
-
-        startButton = new JButton();
-        startButton.setIcon(new ImageIcon(ThemeManager.getIcon(IconType.START)));
-        startButton.setToolTipText(Messages.getString("operations.start"));
-        startButton.addActionListener(new StartButtonListener());
-        buttonsPanel.add(startButton);
-
-        buttonsPanel.add(Box.createVerticalGlue());
-
-        add(buttonsPanel, BorderLayout.LINE_END);
-
+    @Override
+    protected Component getCenterComponent() throws FileNotFoundException {
         tabbedPane = new JTabbedPane();
         tagFromFilenameTab = new TagFromFilenameTab();
         tabbedPane.addTab(Messages.getString("operations.file.tagfromfile"), null,
@@ -65,7 +42,7 @@ public class FilenameOperationsCard extends GenericCard {
         renameFileTab = new RenameFileTab();
         tabbedPane.addTab(Messages.getString("operations.file.renamefile"), null,
                           renameFileTab, Messages.getString("operations.file.renamefile.tooltip"));
-        add(tabbedPane, BorderLayout.CENTER);
+        return tabbedPane;
     }
 
     private class StartButtonListener implements ActionListener {
