@@ -27,4 +27,20 @@ public class Util {
 //        return ((int)Math.floor((bound.getHeight() - bound.getY()) / 10) * 10);
     }
 
+    public static boolean isEmpty(String string) {
+        return string == null || string.length() == 0;
+    }
+
+    public static boolean isEmptyOrWhiteSpaceOnly(String string) {
+        return isEmpty(string) || string.trim().length() == 0;
+    }
+
+    public static boolean isNotEmpty(String string) {
+        return !isEmpty(string);
+    }
+
+    public static boolean isNotEmptyOrWhiteSpaceOnly(String string) {
+        return !isEmptyOrWhiteSpaceOnly(string);
+    }
+
 }

@@ -19,7 +19,7 @@ public class TextBoxInputPanel extends InputPanel {
     }
 
     @Override
-    protected Component getValueComponent() {
+    public Component getValueComponent() {
         if(valueBox == null) {
             valueBox = new JTextField();
             valueBox.setToolTipText(label);
