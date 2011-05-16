@@ -68,7 +68,7 @@ public abstract class InputPanel extends JPanel {
         add(valueBox);
     }
 
-    protected abstract Component getValueComponent();
+    public abstract Component getValueComponent();
 
     public abstract String getValue();
 

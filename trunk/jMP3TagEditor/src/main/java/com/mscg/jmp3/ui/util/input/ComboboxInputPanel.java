@@ -55,7 +55,7 @@ public class ComboboxInputPanel extends InputPanel {
     }
 
     @Override
-    protected Component getValueComponent() {
+    public Component getValueComponent() {
         if(combobox == null) {
             combobox = new JComboBox();
             combobox.setModel(comboboxModel);

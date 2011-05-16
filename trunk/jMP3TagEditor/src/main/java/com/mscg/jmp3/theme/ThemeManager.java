@@ -27,7 +27,8 @@ public class ThemeManager {
         EDIT_SMALL("edit-small"),
         RUN_SMALL("run-small"),
         ARROW_UP("arrow-up"),
-        ARROW_DOWN("arrow-down");
+        ARROW_DOWN("arrow-down"),
+        FOLDER("folder");
 
         private String fileName;
 

@@ -22,7 +22,7 @@ public class ConstantInputPanel extends InputPanel {
     }
 
     @Override
-    protected Component getValueComponent() {
+    public Component getValueComponent() {
         if(value == null) {
             value = new JLabel();
             value.setToolTipText(label);

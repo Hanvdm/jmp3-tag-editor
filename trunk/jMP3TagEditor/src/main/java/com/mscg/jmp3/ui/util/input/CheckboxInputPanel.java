@@ -14,21 +14,35 @@ public class CheckboxInputPanel extends InputPanel {
     private JCheckBox checkbox;
 
     public CheckboxInputPanel(String label, int topBorder, int bottomBorder) {
-        super(label, topBorder, bottomBorder);
+        this(label, topBorder, bottomBorder, false);
     }
 
     public CheckboxInputPanel(String label) {
+        this(label, false);
+    }
+
+    public CheckboxInputPanel(String label, int topBorder, int bottomBorder, boolean selected) {
+        super(label, topBorder, bottomBorder);
+        checkbox.setSelected(selected);
+    }
+
+    public CheckboxInputPanel(String label, boolean selected) {
         super(label);
+        checkbox.setSelected(selected);
     }
 
     @Override
-    protected Component getValueComponent() {
+    public Component getValueComponent() {
         if(checkbox == null) {
             checkbox = new JCheckBox();
             wrapper = new JPanel(new BorderLayout());
             wrapper.add(checkbox, BorderLayout.CENTER);
         }
         return wrapper;
+    }
+
+    public JCheckBox getCheckbox() {
+        return checkbox;
     }
 
     @Override
