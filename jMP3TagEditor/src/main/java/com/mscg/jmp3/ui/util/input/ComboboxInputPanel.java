@@ -74,11 +74,16 @@ public class ComboboxInputPanel extends InputPanel {
 
     @Override
     public String getValue() {
-        int selected = combobox.getSelectedIndex();
-        if(selected >= 0)
-            return combobox.getItemAt(selected).toString();
-        else
-            return null;
+        if(combobox.isEditable()) {
+            return combobox.getSelectedItem().toString();
+        }
+        else {
+            int selected = combobox.getSelectedIndex();
+            if(selected >= 0)
+                return combobox.getItemAt(selected).toString();
+            else
+                return null;
+        }
     }
 
     @Override
