@@ -90,7 +90,7 @@ public class TransformationsPreviewPanel extends JPanel implements ComponentList
         nextButton = new JButton(new ImageIcon(ThemeManager.getIcon(IconType.ARROW_DOWN)));
         nextButton.setMaximumSize(Util.maxSmallIconButtonSize);
         nextButton.setPreferredSize(Util.maxSmallIconButtonSize);
-        nextButton.setToolTipText(Messages.getString("operations.file.maintransform.preview.previous"));
+        nextButton.setToolTipText(Messages.getString("operations.file.maintransform.preview.next"));
         nextButton.addActionListener(this);
         buttonsWrapper.add(nextButton);
 
