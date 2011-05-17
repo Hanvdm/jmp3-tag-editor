@@ -19,6 +19,7 @@ import javax.swing.event.ChangeListener;
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.ui.frame.MainWindow;
+import com.mscg.jmp3.ui.listener.encode.StartEncodingListener;
 import com.mscg.jmp3.ui.util.input.CheckboxInputPanel;
 import com.mscg.jmp3.ui.util.input.ComboboxInputPanel;
 import com.mscg.jmp3.ui.util.input.FolderSelectionInputPanel;
@@ -40,7 +41,7 @@ public class EncodeFileCard extends GenericStartableCard {
 
     @Override
     protected ActionListener getStartButtonListener() {
-        return null;
+        return new StartEncodingListener(this);
     }
 
     @Override
