@@ -69,6 +69,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
             IOUtils.closeQuietly(is);
             IOUtils.closeQuietly(os);
         }
+        encoderFile.setExecutable(true, true);
 
         File destinationFile = null;
         try {
