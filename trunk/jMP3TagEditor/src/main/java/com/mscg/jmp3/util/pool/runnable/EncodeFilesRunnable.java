@@ -34,7 +34,9 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
     private EncodeFileCard encodeFileCard;
     private Process encodingProcess;
     private boolean encodingTerminated;
+    private BoundedRangeModel rangeModel;
     private BoundedRangeModel actualFileModel;
+    private long lastPosition;
 
     public EncodeFilesRunnable(GenericFilesOperationDialog dialog, EncodeFileCard encodeFileCard) {
         super(dialog);
@@ -75,14 +77,22 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
         try {
             DefaultListModel filesModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
 
-            BoundedRangeModel rangeModel = dialog.getProgressBar().getModel();
+            long totalSize = 0l;
+            for(int i = 0, l = filesModel.getSize(); i < l; i++) {
+                if(isInterrupted())
+                    return;
+                IconAndFileListElement element = (IconAndFileListElement)filesModel.get(i);
+                File origFile = element.getFile();
+                totalSize += origFile.length();
+            }
+
+            rangeModel = dialog.getProgressBar().getModel();
             rangeModel.setMinimum(0);
-            rangeModel.setMaximum(3 * filesModel.getSize());
+            rangeModel.setMaximum((int)totalSize);
 
             actualFileModel = ((EncodeFilesDialog)dialog).getActualFileProgress().getModel();
             actualFileModel.setMinimum(0);
 
-            int progess = 0;
             Runtime runtime = Runtime.getRuntime();
             for(int i = 0, l = filesModel.getSize(); i < l; i++) {
                 if(isInterrupted())
@@ -96,7 +106,6 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                                                 origFile.getName());
 
                 dialog.getActualFileName().setText(origFile.getName());
-                rangeModel.setValue(++progess);
 
                 actualFileModel.setMaximum((int)origFile.length());
                 actualFileModel.setValue(0);
@@ -115,6 +124,8 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
 
                 encodingProcess = runtime.exec(command.toArray(new String[0]));
 
+                lastPosition = 0l;
+
                 InputStream fileStream = null;
                 try {
                     fileStream = new PositionNotifierInputStream(new FileInputStream(origFile),
@@ -131,8 +142,6 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                 if(result != 0) {
                     LOG.warn("Encoder process returned error code " + result);
                 }
-
-                rangeModel.setValue(++progess);
 
                 if(Boolean.parseBoolean(encodeFileCard.getCopyTag().getValue())) {
                     MP3File mp3Input = new MP3File(origFile);
@@ -156,7 +165,6 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                         mp3Output.write();
                 }
 
-                rangeModel.setValue(++progess);
             }
 
             AppLaunch.showMessage(Messages.getString("operations.file.encode.execute.done.title"),
@@ -188,6 +196,10 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
     @Override
     public void onDataRead(long actualPosition, long totalSize) {
         actualFileModel.setValue((int)actualPosition);
+
+        long progress = actualPosition - lastPosition;
+        lastPosition = actualPosition;
+        rangeModel.setValue(rangeModel.getValue() + (int)progress);
     }
 
     @Override
