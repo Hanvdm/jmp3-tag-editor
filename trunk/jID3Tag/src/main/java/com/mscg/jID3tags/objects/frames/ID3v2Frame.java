@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.mscg.jID3tags.exception.ID3v2BadDataLengthException;
 import com.mscg.jID3tags.exception.ID3v2BadFrameIdLengthException;
+import com.mscg.jID3tags.exception.ID3v2Exception;
 import com.mscg.jID3tags.exception.MP3TagIntegerException;
 import com.mscg.jID3tags.exception.SynchsafeBadIntegerValueException;
 import com.mscg.jID3tags.id3v2.ID3v2Tag;
@@ -72,14 +73,12 @@ public class ID3v2Frame {
             return ret;
         }
 
-        public static ID3v2Frame parse(byte bytes[], int majorVersion, int minorVersion) throws ID3v2BadDataLengthException,
-                                                                                        IOException, MP3TagIntegerException {
+        public static ID3v2Frame parse(byte bytes[], int majorVersion, int minorVersion) throws IOException, MP3TagIntegerException, ID3v2Exception {
             ByteArrayInputStream input = new ByteArrayInputStream(bytes);
             return parse(input, majorVersion, minorVersion);
         }
 
-        public static ID3v2Frame parse(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException,
-                                                                                             IOException, MP3TagIntegerException {
+        public static ID3v2Frame parse(InputStream input, int majorVersion, int minorVersion) throws IOException, MP3TagIntegerException, ID3v2Exception {
             ID3v2Frame frame = parseHeader(input, majorVersion, minorVersion);
             frame.parseBody(input, majorVersion, minorVersion);
             return frame;
@@ -261,7 +260,7 @@ public class ID3v2Frame {
         return getStreamInt().toByteArray();
     }
 
-    protected void parseBody(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException {
+    protected void parseBody(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException, ID3v2Exception {
         // use a buffer with a maximum of 100 bytes
         int bufferSize = Math.min(100, getDeclaredSize());
         ID3v2FrameContentBinary dataContent = new ID3v2FrameContentBinary(getDeclaredSize());

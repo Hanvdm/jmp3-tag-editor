@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.mscg.jID3tags.exception.ID3v2BadDataLengthException;
 import com.mscg.jID3tags.exception.ID3v2BadFrameIdLengthException;
+import com.mscg.jID3tags.exception.ID3v2Exception;
 import com.mscg.jID3tags.objects.frames.contents.ID3v2FrameContentString;
 import com.mscg.jID3tags.util.Costants.StringEncodingType;
 import com.mscg.jID3tags.util.Util;
@@ -26,7 +27,7 @@ public class ID3v2GenericStringFrame extends ID3v2Frame {
     }
 
     @Override
-    protected void parseBody(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException {
+    protected void parseBody(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException, ID3v2Exception {
         StringEncodingType encoding = null;
         try {
             // read 1 byte to find string encoding

@@ -43,7 +43,7 @@ public class ID3v2FrameContentComment implements ID3v2FrameContent {
             bos.write(Util.encodeString(getShortDescription(), getEncoding()));
 
             // Write the zeroed separator byte
-            bos.write(0);
+            bos.write(encoding.getStringTerminator());
 
             // Write the long description
             bos.write(Util.encodeString(getComment(), getEncoding()));
