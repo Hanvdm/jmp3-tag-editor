@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import com.mscg.jID3tags.exception.ID3v2BadDataLengthException;
 import com.mscg.jID3tags.exception.ID3v2BadFrameIdLengthException;
+import com.mscg.jID3tags.exception.ID3v2Exception;
 import com.mscg.jID3tags.objects.frames.contents.ID3v2FrameContentComment;
 import com.mscg.jID3tags.util.Costants.StringEncodingType;
 import com.mscg.jID3tags.util.Util;
@@ -27,7 +28,7 @@ public class ID3v2COMMFrame extends ID3v2Frame {
     }
 
     @Override
-    protected void parseBody(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException {
+    protected void parseBody(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException, ID3v2Exception {
 
         ID3v2FrameContentComment comment = new ID3v2FrameContentComment();
 
@@ -57,40 +58,46 @@ public class ID3v2COMMFrame extends ID3v2Frame {
         }
         bytesRead += 3;
 
-        String shortDescription = null;
+        // use a buffer with a maximum of 100 bytes
+        int bufferSize = Math.min(100, getDeclaredSize() - bytesRead);
+        ByteArrayOutputStream stringDataBuffer = new ByteArrayOutputStream(getDeclaredSize() - bytesRead);
         try {
-            ByteArrayOutputStream shortDescriptionBytes = new ByteArrayOutputStream();
-            int shortDescriptionByte = 0;
-            // read byte-by-byte until we found a zeroed one
-            do {
-                shortDescriptionByte = input.read();
-                if (shortDescriptionByte < 0)
-                    throw new IOException("End of input reached.");
-                bytesRead++;
-                if (shortDescriptionByte != 0)
-                    shortDescriptionBytes.write(shortDescriptionByte);
-            } while (shortDescriptionByte != 0);
-            shortDescription = shortDescriptionBytes.toString(encoding.toString());
-            comment.setShortDescription(shortDescription);
+            int totalBytes = (int) Util.copyStream(input, stringDataBuffer, bufferSize, getDeclaredSize() - bytesRead);
+            if (totalBytes != getDeclaredSize() - bytesRead) {
+                throw new ID3v2BadDataLengthException("Comment binary size doesn't match with size " +
+                                                      "declared in the header.");
+            }
         } catch (IOException ex) {
-            throw new ID3v2BadDataLengthException("Cannot read short description in frame data.", ex);
+            throw new ID3v2BadDataLengthException("Cannot read comment content in frame data.", ex);
         }
 
-        ByteArrayOutputStream commentData = null;
-        try {
-            // use a buffer with a maximum of 100 bytes
-            int remainingBytes = getDeclaredSize() - bytesRead;
-            int bufferSize = Math.min(100, remainingBytes);
-            commentData = new ByteArrayOutputStream();
-            int totalBytesRead = (int) Util.copyStream(input, commentData, bufferSize, remainingBytes);
-            if (totalBytesRead != remainingBytes) {
-                throw new ID3v2BadDataLengthException("Comment size doesn't match with size " +
-                		                              "declared in the header.");
+        byte stringData[] = stringDataBuffer.toByteArray();
+        int separatorStart = 0;
+        int terminatorWidth = encoding.getStringTerminatorWidth();
+        for(int last = stringData.length - terminatorWidth; separatorStart < last; separatorStart++) {
+            byte tmp[] = new byte[terminatorWidth];
+            System.arraycopy(stringData, separatorStart, tmp, 0, terminatorWidth);
+            boolean allNull = true;
+            for(int i = 0; i < terminatorWidth && allNull; i++) {
+               allNull = (tmp[i] == 0);
             }
-            String commentStr = new String(commentData.toByteArray(), encoding.toString());
-            comment.setComment(commentStr);
-        } catch (IOException ex) {
-            throw new ID3v2BadDataLengthException("Cannot read comment bytes in frame data.", ex);
+            if(allNull)
+                break;
+        }
+        try {
+            byte shortDescriptionBytes[] = new byte[separatorStart];
+            System.arraycopy(stringData, 0, shortDescriptionBytes, 0, separatorStart);
+            comment.setShortDescription(new String(shortDescriptionBytes, encoding.toString()));
+        } catch (Exception e) {
+            throw new ID3v2Exception("Cannot extract short description from tag content", e);
+        }
+        try {
+            byte longDescriptionBytes[] = new byte[stringData.length - separatorStart - terminatorWidth];
+            System.arraycopy(stringData, separatorStart + terminatorWidth, longDescriptionBytes,
+                             0, longDescriptionBytes.length);
+            comment.setComment(new String(longDescriptionBytes, encoding.toString()));
+        } catch(Exception e) {
+            throw new ID3v2Exception("Cannot extract long description from tag content", e);
         }
 
         setContent(comment);

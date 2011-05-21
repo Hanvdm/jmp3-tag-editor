@@ -23,6 +23,30 @@ public class Costants {
             }
         }
 
+        public int getStringTerminatorWidth() {
+            switch (this) {
+            case UTF_16:
+            case UTF_16_BE:
+                return 2;
+            case UTF_8:
+            case ISO_8859_1:
+            default:
+                return 1;
+            }
+        }
+
+        public byte[] getStringTerminator() {
+            switch (this) {
+            case UTF_16:
+            case UTF_16_BE:
+                return new byte[]{0, 0};
+            case UTF_8:
+            case ISO_8859_1:
+            default:
+                return new byte[]{0};
+            }
+        }
+
         @Override
         public String toString() {
             switch (this) {
