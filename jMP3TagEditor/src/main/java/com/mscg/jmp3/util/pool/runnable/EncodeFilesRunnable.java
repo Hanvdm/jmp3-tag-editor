@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 
 import org.apache.commons.io.IOUtils;
 
@@ -21,6 +22,7 @@ import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.ui.panel.EncodeFileCard;
+import com.mscg.jmp3.ui.panel.EncodeFileCard.QualityElement;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.EncodeFilesDialog;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.GenericFilesOperationDialog;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
@@ -103,7 +105,10 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                 IconAndFileListElement element = (IconAndFileListElement)filesModel.get(i);
                 File origFile = element.getFile();
                 destinationFile = new File(encodeFileCard.getDestinationFolder().getValue(),
-                                                origFile.getName());
+                                           origFile.getName());
+                if(!destinationFile.getParentFile().exists()) {
+                    destinationFile.getParentFile().mkdirs();
+                }
 
                 dialog.getActualFileName().setText(origFile.getName());
 
@@ -118,9 +123,11 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                 if(Util.isNotEmpty(sampleFreq)) {
                     command.add("--resample"); command.add(sampleFreq);
                 }
+                QualityElement quality = (QualityElement)((JComboBox)encodeFileCard.getQuality().getValueComponent()).getSelectedItem();
+                command.add("-q"); command.add("" + quality.getValue());
                 command.add("-b"); command.add(encodeFileCard.getBitrate().getValue()); command.add("--cbr");
                 command.add("-"); // the input file will be provided as a stream
-                command.add(destinationFile.getCanonicalPath());
+                command.add("\"" + destinationFile.getCanonicalPath() + "\"");
 
                 encodingProcess = runtime.exec(command.toArray(new String[0]));
 
