@@ -2,22 +2,30 @@ package com.mscg.jmp3.ui.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
+import java.net.URI;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.settings.Settings;
+import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.listener.encode.StartEncodingListener;
 import com.mscg.jmp3.ui.util.input.CheckboxInputPanel;
@@ -33,7 +41,9 @@ public class EncodeFileCard extends GenericStartableCard {
     private InputPanel destinationFolder;
     private InputPanel bitrate;
     private InputPanel sampleFrequency;
+    private InputPanel quality;
     private InputPanel copyTag;
+
 
     public EncodeFileCard(MainWindow mainWindow) throws FileNotFoundException {
         super(mainWindow);
@@ -85,6 +95,25 @@ public class EncodeFileCard extends GenericStartableCard {
                                           "encode.bitrate", null));
         border.add(bitrate);
 
+        QualityElement defaultQuality = new QualityElement("5 - " + Messages.getString("operations.file.encode.quality.default"), 5);
+        DefaultComboBoxModel qualityModel = new DefaultComboBoxModel(
+            new QualityElement[]{new QualityElement("0 - " + Messages.getString("operations.file.encode.quality.highest"), 0),
+                                 new QualityElement("1", 1),
+                                 new QualityElement("2", 2),
+                                 new QualityElement("3", 3),
+                                 new QualityElement("4", 4),
+                                 defaultQuality,
+                                 new QualityElement("6", 6),
+                                 new QualityElement("7", 7),
+                                 new QualityElement("8", 8),
+                                 new QualityElement("9 - " + Messages.getString("operations.file.encode.quality.lowest"), 9),
+                                 });
+        quality = new ComboboxInputPanel(Messages.getString("operations.file.encode.quality"),
+                                         0, 10,
+                                         qualityModel,
+                                         defaultQuality);
+        border.add(quality);
+
         copyTag = new CheckboxInputPanel(Messages.getString("operations.file.encode.copytag"),
                                          0, 10,
                                          Boolean.parseBoolean(Settings.getSetting("encode.copytag")));
@@ -97,6 +126,19 @@ public class EncodeFileCard extends GenericStartableCard {
 
         wrapper.add(border, BorderLayout.CENTER);
 
+        JLabel poweredBy = new JLabel(Messages.getString("operations.file.encode.powered-by-lame"),
+                                      new ImageIcon(ThemeManager.getLameLogo()),
+                                      JLabel.CENTER);
+        poweredBy.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        poweredBy.addMouseListener(new LabelLinkListener(poweredBy));
+        poweredBy.setVerticalTextPosition(JLabel.BOTTOM);
+        poweredBy.setHorizontalTextPosition(JLabel.CENTER);
+
+        JPanel poweredByWrapper = new JPanel(new BorderLayout());
+        poweredByWrapper.add(poweredBy, BorderLayout.LINE_END);
+
+        wrapper.add(poweredByWrapper, BorderLayout.PAGE_END);
+
         return wrapper;
     }
 
@@ -108,12 +150,53 @@ public class EncodeFileCard extends GenericStartableCard {
         return bitrate;
     }
 
+    public InputPanel getQuality() {
+        return quality;
+    }
+
     public InputPanel getSampleFrequency() {
         return sampleFrequency;
     }
 
     public InputPanel getCopyTag() {
         return copyTag;
+    }
+
+    private class LabelLinkListener implements MouseListener {
+
+        private JLabel label;
+        private String text;
+
+        public LabelLinkListener(JLabel label) {
+            this.label = label;
+            text = label.getText();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            label.setText(text);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            label.setText("<html><a href=\"\">" + text + "</a></html>");
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            try {
+                Desktop.getDesktop().browse(new URI("http://lame.sourceforge.net/"));
+            } catch (Exception e1) {
+            }
+        }
     }
 
     private static class CheckboxSelectionListener implements ChangeListener {
@@ -152,6 +235,36 @@ public class EncodeFileCard extends GenericStartableCard {
                 Settings.setSetting(settingsKey,
                                     (String)comboBox.getSelectedItem());
         }
+    }
+
+    public static class QualityElement {
+        private String label;
+        private int value;
+
+        public QualityElement(String label, int value) {
+            this.label = label;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+
+        /**
+         * @return the label
+         */
+        public String getLabel() {
+            return label;
+        }
+
+        /**
+         * @return the value
+         */
+        public int getValue() {
+            return value;
+        }
+
     }
 
 }
