@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mscg</groupId>
   <artifactId>jID3Tag</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.5</version>
   <name>jID3Tag</name>
   <description>jID3Tag</description>
 </project>
