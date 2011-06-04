@@ -10,14 +10,19 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.filechooser.FileFilter;
 
 import com.mscg.jID3tags.util.Costants;
 import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.util.input.CheckboxInputPanel;
 import com.mscg.jmp3.ui.util.input.ComboboxInputPanel;
+import com.mscg.jmp3.ui.util.input.FileSelectionInputPanel;
 import com.mscg.jmp3.ui.util.input.InputPanel;
 import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
 import com.mscg.jmp3.ui.util.transformation.FilenameTransformationsPanel;
+import com.mscg.jmp3.util.filefilter.ImageFileFilter;
 
 
 public class TagFromFilenameTab extends GenericFileoperationTab {
@@ -30,6 +35,7 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
     private InputPanel numberPanel;
     private InputPanel genrePanel;
     private InputPanel yearPanel;
+    private InputPanel coverPanel;
     private InputPanel removeTagsPanel;
     private FilenameTransformationsPanel transformationsPanel;
 
@@ -47,6 +53,7 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
 
         JScrollPane infoScroller = new JScrollPane();
         infoScroller.setBorder(BorderFactory.createTitledBorder(Messages.getString("operations.file.taginfo.title")));
+        infoScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
         infoScroller.setViewportView(infoPanel);
@@ -73,6 +80,12 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
         infoPanel.add(genrePanel);
         yearPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.year"));
         infoPanel.add(yearPanel);
+        List<FileFilter> fileFilters = new LinkedList<FileFilter>();
+        fileFilters.add(new ImageFileFilter());
+        coverPanel = new FileSelectionInputPanel(Messages.getString("operations.file.taginfo.info.cover"),
+                                                 Messages.getString("operations.file.taginfo.info.cover.tooltip"),
+                                                 IconType.FILE_IMAGE_SMALL, fileFilters);
+        infoPanel.add(coverPanel);
         removeTagsPanel = new CheckboxInputPanel(Messages.getString("operations.file.taginfo.info.removeold"));
         infoPanel.add(removeTagsPanel);
     }
@@ -138,6 +151,13 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
      */
     public InputPanel getRemoveTagsPanel() {
         return removeTagsPanel;
+    }
+
+    /**
+     * @return the coverPanel
+     */
+    public synchronized InputPanel getCoverPanel() {
+        return coverPanel;
     }
 
 }

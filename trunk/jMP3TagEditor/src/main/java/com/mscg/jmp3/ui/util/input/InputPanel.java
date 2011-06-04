@@ -33,13 +33,19 @@ public abstract class InputPanel extends JPanel {
     }
 
     protected InputPanel(String label, boolean init) {
-        this(label, defaultTopBorder, defaultBottomBorder);
+        this(label, defaultTopBorder, defaultBottomBorder, init);
     }
 
     protected InputPanel(String label, int topBorder, int bottomBorder, boolean init) {
         this.label = label;
         if(init)
             initComponent(topBorder, bottomBorder);
+    }
+
+    protected void setDimensions(int topBorder, int bottomBorder) {
+        Dimension maximumSize = new Dimension(Short.MAX_VALUE, panelSize + topBorder + bottomBorder);
+        setMaximumSize(maximumSize);
+        setMinimumSize(new Dimension(10, maximumSize.height));
     }
 
     protected void initComponent(int topBorder, int bottomBorder) {
@@ -52,7 +58,7 @@ public abstract class InputPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setBorder(BorderFactory.createEmptyBorder(topBorder, 0, bottomBorder, 0));
-        setMaximumSize(new Dimension(Short.MAX_VALUE, panelSize + topBorder + bottomBorder));
+        setDimensions(topBorder, bottomBorder);
 
         Font font = inputLabel.getFont();
         Rectangle2D bounds = font.getStringBounds(inputLabel.getText(),

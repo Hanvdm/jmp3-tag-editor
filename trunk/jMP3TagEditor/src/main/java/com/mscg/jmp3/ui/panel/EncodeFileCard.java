@@ -20,6 +20,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -59,8 +60,9 @@ public class EncodeFileCard extends GenericStartableCard {
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBorder(BorderFactory.createTitledBorder(Messages.getString("operations.file.encode.title")));
 
+        JScrollPane infoScroller = new JScrollPane();
+        infoScroller.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         JPanel border = new JPanel();
-        border.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         border.setLayout(new BoxLayout(border, BoxLayout.PAGE_AXIS));
 
         border.add(Box.createVerticalGlue());
@@ -124,6 +126,7 @@ public class EncodeFileCard extends GenericStartableCard {
 
         border.add(Box.createVerticalGlue());
 
+        infoScroller.setViewportView(border);
         wrapper.add(border, BorderLayout.CENTER);
 
         JLabel poweredBy = new JLabel(Messages.getString("operations.file.encode.powered-by-lame"),

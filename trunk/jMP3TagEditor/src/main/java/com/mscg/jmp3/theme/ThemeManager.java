@@ -28,7 +28,9 @@ public class ThemeManager {
         RUN_SMALL("run-small"),
         ARROW_UP("arrow-up"),
         ARROW_DOWN("arrow-down"),
-        FOLDER("folder");
+        FOLDER("folder"),
+        FILE_GENERIC_SMALL("file_generic_small"),
+        FILE_IMAGE_SMALL("file_image_small");
 
         private String fileName;
 

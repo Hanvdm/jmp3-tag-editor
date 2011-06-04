@@ -2,6 +2,7 @@ package com.mscg.jmp3.util;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.Collection;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,11 +21,6 @@ public class Util {
             panelHeight = (int)field.getPreferredSize().getHeight();
         }
         return panelHeight;
-//        LineMetrics lineMetrics = font.getLineMetrics("f_^", new FontRenderContext(font.getTransform(), true, false));
-//        System.out.println("Line metrics: " + lineMetrics.getHeight() + ", " + lineMetrics.getAscent());
-//        Rectangle2D bound = font.getStringBounds("_^", new FontRenderContext(font.getTransform(), true, false));
-//        System.out.println("Bounds: " + bound);
-//        return ((int)Math.floor((bound.getHeight() - bound.getY()) / 10) * 10);
     }
 
     public static boolean isEmpty(String string) {
@@ -41,6 +37,10 @@ public class Util {
 
     public static boolean isNotEmptyOrWhiteSpaceOnly(String string) {
         return !isEmptyOrWhiteSpaceOnly(string);
+    }
+
+    public static boolean isEmpty(Collection c) {
+        return c == null || c.isEmpty();
     }
 
 }

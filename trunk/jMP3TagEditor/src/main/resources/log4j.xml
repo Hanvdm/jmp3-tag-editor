@@ -18,7 +18,7 @@
 	</appender>
 
 	<logger name="com.mscg">
-		<level value="debug" />
+		<level value="INFO" />
 	</logger>
 
 	<root>
