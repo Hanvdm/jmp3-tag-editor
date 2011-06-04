@@ -60,6 +60,7 @@ public class ComboboxInputPanel extends InputPanel {
             combobox = new JComboBox();
             combobox.setModel(comboboxModel);
             combobox.setEditable(editable);
+            combobox.setToolTipText(label);
             if(comboboxModel.getSize() >= 1) {
                 if(selectedItem == null)
                     combobox.setSelectedIndex(0);

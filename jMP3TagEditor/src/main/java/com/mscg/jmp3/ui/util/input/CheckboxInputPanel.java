@@ -35,6 +35,7 @@ public class CheckboxInputPanel extends InputPanel {
     public Component getValueComponent() {
         if(checkbox == null) {
             checkbox = new JCheckBox();
+            checkbox.setToolTipText(label);
             wrapper = new JPanel(new BorderLayout());
             wrapper.add(checkbox, BorderLayout.CENTER);
         }

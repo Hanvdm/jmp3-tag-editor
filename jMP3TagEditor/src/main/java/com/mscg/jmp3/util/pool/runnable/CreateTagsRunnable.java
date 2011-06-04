@@ -1,6 +1,8 @@
 package com.mscg.jmp3.util.pool.runnable;
 
 import java.io.File;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,6 +14,10 @@ import javax.swing.DefaultListModel;
 
 import com.mscg.jID3tags.file.MP3File;
 import com.mscg.jID3tags.id3v2.ID3v2Tag;
+import com.mscg.jID3tags.objects.frames.ID3v2APICFrame;
+import com.mscg.jID3tags.objects.frames.contents.ID3v2FrameContentImage;
+import com.mscg.jID3tags.util.Costants.PictureType;
+import com.mscg.jID3tags.util.Costants.StringEncodingType;
 import com.mscg.jmp3.exception.InvalidRegExTagValueException;
 import com.mscg.jmp3.exception.InvalidTagValueException;
 import com.mscg.jmp3.i18n.Messages;
@@ -20,12 +26,14 @@ import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
+import com.mscg.jmp3.util.Util;
 
 public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
     private List<File> files;
     private TagFromFilenameTab tab;
     private Pattern regExGroupPattern;
+    private static final FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
     public CreateTagsRunnable(ExecuteTagCreationDialog dialog) {
         super(dialog);
@@ -89,28 +97,28 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
                     fieldKey = "operations.file.taginfo.info.author";
                     value = tab.getAuthorPanel().getValue();
-                    if(value.trim().length() != 0) {
+                    if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
                         value = parseValue(value, fileNameMatcher);
                         mp3File.setArtist(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.album";
                     value = tab.getAlbumPanel().getValue();
-                    if(value.trim().length() != 0) {
+                    if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
                         value = parseValue(value, fileNameMatcher);
                         mp3File.setAlbum(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.title";
                     value = tab.getTitlePanel().getValue();
-                    if(value.trim().length() != 0) {
+                    if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
                         value = parseValue(value, fileNameMatcher);
                         mp3File.setTitle(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.number";
                     value = tab.getNumberPanel().getValue();
-                    if(value.trim().length() != 0) {
+                    if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
                         value = parseValue(value, fileNameMatcher);
                         try {
                             Integer.parseInt(value, 10);
@@ -122,14 +130,14 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
                     fieldKey = "operations.file.taginfo.info.genre";
                     value = tab.getGenrePanel().getValue();
-                    if(value.trim().length() != 0) {
+                    if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
                         value = parseValue(value, fileNameMatcher);
                         mp3File.setGenre(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.year";
                     value = tab.getYearPanel().getValue();
-                    if(value.trim().length() != 0) {
+                    if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
                         value = parseValue(tab.getYearPanel().getValue(), fileNameMatcher);
                         try {
                             Integer.parseInt(value);
@@ -137,6 +145,24 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                             throw new InvalidTagValueException(e);
                         }
                         mp3File.setYear(value);
+                    }
+
+                    fieldKey = "operations.file.taginfo.info.cover";
+                    value = tab.getCoverPanel().getValue();
+                    if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
+                        File coverFile = new File(value);
+                        if(!coverFile.exists() || !coverFile.isFile())
+                            throw new InvalidTagValueException("Invalid file specified");
+                        ID3v2APICFrame picFrame = (ID3v2APICFrame)mp3File.getID3v2tag().getFrame(ID3v2APICFrame.id);
+                        if(picFrame == null) {
+                            picFrame = new ID3v2APICFrame();
+                            mp3File.getID3v2tag().addFrame(picFrame);
+                        }
+                        ID3v2FrameContentImage imageContent = (ID3v2FrameContentImage)picFrame.getContent();
+                        imageContent.setEncoding(StringEncodingType.ISO_8859_1);
+                        imageContent.setPictureType(PictureType.Cover_front);
+                        imageContent.setMimeType(fileNameMap.getContentTypeFor(coverFile.getName()));
+                        imageContent.setPictureData(coverFile);
                     }
 
                     mp3File.copyID3v2ToID3v11();
