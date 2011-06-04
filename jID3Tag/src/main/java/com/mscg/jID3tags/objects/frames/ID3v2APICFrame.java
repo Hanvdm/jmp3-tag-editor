@@ -26,11 +26,12 @@ public class ID3v2APICFrame extends ID3v2Frame {
 
     public ID3v2APICFrame() throws ID3v2BadFrameIdLengthException {
         super(id);
+        setContent(new ID3v2FrameContentImage());
     }
 
     @Override
     protected void parseBody(InputStream input, int majorVersion, int minorVersion) throws ID3v2BadDataLengthException, ID3v2Exception {
-        ID3v2FrameContentImage imageContent = new ID3v2FrameContentImage();
+        ID3v2FrameContentImage imageContent = (ID3v2FrameContentImage)getContent();
 
         int bytesRead = 0;
 

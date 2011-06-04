@@ -237,6 +237,8 @@ public class Util {
      *             If the system doesn't support the selected encoding.
      */
     public static byte[] encodeString(String data, StringEncodingType encoding) throws UnsupportedEncodingException {
+        if(data == null)
+            data = "";
         ByteArrayOutputStream tmp = null;
         byte bom[] = {(byte) 0xFF, (byte) 0xFE};
         switch (encoding) {
