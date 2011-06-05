@@ -20,7 +20,6 @@ public class Settings {
 
     private static Properties settings;
 
-
     public static void initSettings() throws IOException {
         settings = new Properties();
         InputStream is = null;
