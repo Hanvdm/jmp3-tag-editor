@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
@@ -39,6 +41,8 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
     private BoundedRangeModel rangeModel;
     private BoundedRangeModel actualFileModel;
     private long lastPosition;
+
+    private static Pattern bitratePattern = Pattern.compile("(\\d+)");
 
     public EncodeFilesRunnable(GenericFilesOperationDialog dialog, EncodeFileCard encodeFileCard) {
         super(dialog);
@@ -115,6 +119,10 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                 actualFileModel.setMaximum((int)origFile.length());
                 actualFileModel.setValue(0);
 
+                Matcher bitrateMatcher = bitratePattern.matcher(encodeFileCard.getBitrate().getValue());
+                bitrateMatcher.find();
+                int bitrate = Integer.parseInt(bitrateMatcher.group(1));
+
                 List<String> command = new LinkedList<String>();
                 command.add(encoderFile.getCanonicalPath());
                 command.add("--mp3input");
@@ -125,7 +133,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                 }
                 QualityElement quality = (QualityElement)((JComboBox)encodeFileCard.getQuality().getValueComponent()).getSelectedItem();
                 command.add("-q"); command.add("" + quality.getValue());
-                command.add("-b"); command.add(encodeFileCard.getBitrate().getValue()); command.add("--cbr");
+                command.add("-b"); command.add("" + bitrate); command.add("--cbr");
                 command.add("-"); // the input file will be provided as a stream
                 command.add("\"" + destinationFile.getCanonicalPath() + "\"");
 
