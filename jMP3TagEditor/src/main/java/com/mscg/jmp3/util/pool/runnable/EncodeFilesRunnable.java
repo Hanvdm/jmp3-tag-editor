@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -135,8 +136,20 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                 command.add("-q"); command.add("" + quality.getValue());
                 command.add("-b"); command.add("" + bitrate); command.add("--cbr");
                 command.add("-"); // the input file will be provided as a stream
-                command.add("\"" + destinationFile.getCanonicalPath() + "\"");
+                command.add(destinationFile.getCanonicalPath());
 
+                if(LOG.isDebugEnabled()) {
+                    StringBuffer commandLine = new StringBuffer();
+                    boolean first = true;
+                    for(String part : command) {
+                        if(!first)
+                            commandLine.append(" ");
+                        commandLine.append(part);
+                        first = false;
+                    }
+                    LOG.debug("Command line: " + commandLine.toString());
+                }
+                
                 encodingProcess = runtime.exec(command.toArray(new String[0]));
 
                 lastPosition = 0l;
@@ -150,6 +163,24 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                     encodingProcess.getOutputStream().close();
                 } finally {
                     IOUtils.closeQuietly(fileStream);
+                    
+                    if(LOG.isDebugEnabled()) {
+                        InputStream processOut = null;
+                        try {
+                            processOut = encodingProcess.getInputStream();
+                            StringWriter sw = new StringWriter();
+                            IOUtils.copy(processOut, sw);
+                            LOG.debug("Process output stream:\n" + sw);
+                            IOUtils.closeQuietly(processOut);
+                            
+                            processOut = encodingProcess.getErrorStream();
+                            sw = new StringWriter();
+                            IOUtils.copy(processOut, sw);
+                            LOG.debug("Process error stream:\n" + sw);
+                        } finally {
+                            IOUtils.closeQuietly(processOut);
+                        }
+                    }
                 }
 
                 int result = encodingProcess.waitFor();
