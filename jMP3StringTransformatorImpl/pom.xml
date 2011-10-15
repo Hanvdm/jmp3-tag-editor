@@ -5,4 +5,20 @@
   <version>1.0.0</version>
   <name>jMP3StringTransformatorImpl</name>
   <description>Provides the basic StringTransformator implementations</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.mscg</groupId>
+  		<artifactId>jMP3i18n</artifactId>
+  		<version>1.0.0</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.mscg</groupId>
+  		<artifactId>jMP3StringTransformator</artifactId>
+  		<version>1.0.0</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  </dependencies>
 </project>
