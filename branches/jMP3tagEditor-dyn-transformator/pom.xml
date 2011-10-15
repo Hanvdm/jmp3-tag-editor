@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mscg</groupId>
 	<artifactId>jMP3TagEditor</artifactId>
-	<version>1.1.2</version>
+	<version>1.1.3</version>
 	<name>jMP3TagEditor</name>
 	<description>jMP3TagEditor</description>
 	<dependencies>
@@ -35,6 +35,27 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.mscg</groupId>
+			<artifactId>jMP3i18n</artifactId>
+			<version>1.0.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mscg</groupId>
+			<artifactId>jMP3StringTransformator</artifactId>
+			<version>1.0.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+            <groupId>com.mscg</groupId>
+            <artifactId>jMP3StringTransformatorImpl</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
