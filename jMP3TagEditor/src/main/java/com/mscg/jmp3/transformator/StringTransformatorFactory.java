@@ -3,11 +3,7 @@ package com.mscg.jmp3.transformator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.mscg.jmp3.transformator.impl.CapitalizeWordsTransformator;
-import com.mscg.jmp3.transformator.impl.LowerCaseTransformator;
-import com.mscg.jmp3.transformator.impl.RegExpReplaceTransformator;
-import com.mscg.jmp3.transformator.impl.ReplaceStringTransformator;
-import com.mscg.jmp3.transformator.impl.UpperCaseTransformator;
+import com.mscg.jmp3.util.service.ServiceLoader;
 
 public class StringTransformatorFactory {
 
@@ -16,11 +12,10 @@ public class StringTransformatorFactory {
     static {
         list = new LinkedList<Class<? extends StringTransformator>>();
 
-        list.add(ReplaceStringTransformator.class);
-        list.add(RegExpReplaceTransformator.class);
-        list.add(CapitalizeWordsTransformator.class);
-        list.add(UpperCaseTransformator.class);
-        list.add(LowerCaseTransformator.class);
+        ServiceLoader<StringTransformatorProvider> serviceLoader = ServiceLoader.load(StringTransformatorProvider.class);
+        for(StringTransformatorProvider provider : serviceLoader) {
+            list.addAll(provider.getStringTransformators());
+        }
     }
 
     public static List<Class<? extends StringTransformator>> getStringTransformators() {
