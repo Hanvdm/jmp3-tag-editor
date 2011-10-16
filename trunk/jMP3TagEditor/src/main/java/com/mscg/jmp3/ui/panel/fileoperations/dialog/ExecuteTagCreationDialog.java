@@ -2,7 +2,6 @@ package com.mscg.jmp3.ui.panel.fileoperations.dialog;
 
 import java.awt.Dialog;
 import java.awt.Frame;
-import java.awt.Window;
 import java.io.FileNotFoundException;
 
 import com.mscg.jmp3.i18n.Messages;
@@ -37,16 +36,6 @@ public class ExecuteTagCreationDialog extends GenericFilesOperationDialog {
     }
 
     public ExecuteTagCreationDialog(TagFromFilenameTab tab, Frame owner) throws FileNotFoundException {
-        super(owner);
-        initComponents(tab);
-    }
-
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Window owner, ModalityType modalityType) throws FileNotFoundException {
-        super(owner, modalityType);
-        initComponents(tab);
-    }
-
-    public ExecuteTagCreationDialog(TagFromFilenameTab tab, Window owner) throws FileNotFoundException {
         super(owner);
         initComponents(tab);
     }

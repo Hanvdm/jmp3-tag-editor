@@ -9,9 +9,9 @@ import javax.swing.DefaultListModel;
 
 import org.apache.commons.io.FileExistsException;
 
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jID3tags.file.MP3File;
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteRenameFilesDialog;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
@@ -30,7 +30,7 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
     public RenameFilesRunnable(ExecuteRenameFilesDialog dialog) {
         super(dialog);
         tab = dialog.getTab();
-        filesListModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
+        filesListModel = (DefaultListModel)MainWindowInterface.getInstance().getFilesList();
     }
 
     @Override
@@ -99,16 +99,16 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
                 rangeModel.setValue(++progess);
             }
 
-            AppLaunch.showMessage(Messages.getString("operations.file.rename.execute.done.title"),
-                                  Messages.getString("operations.file.rename.execute.done.message").
-                                      replace("${number}", "" + filesListModel.size()));
+            MainWindowInterface.showMessage(Messages.getString("operations.file.rename.execute.done.title"),
+                                            Messages.getString("operations.file.rename.execute.done.message").
+                                                replace("${number}", "" + filesListModel.size()));
         } catch(FileExistsException e) {
             LOG.error("Cannot rename file", e);
-            AppLaunch.showError(new Exception(Messages.getString("operations.file.error.file.exists").
+            MainWindowInterface.showError(new Exception(Messages.getString("operations.file.error.file.exists").
                                                   replace("${filepath}", newFile.getAbsolutePath())));
         } catch(Exception e) {
             LOG.error("Cannot rename file", e);
-            AppLaunch.showError(e);
+            MainWindowInterface.showError(e);
         } finally {
             dialog.setVisible(false);
         }

@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -142,8 +143,9 @@ public class EncodeFileCard extends GenericStartableCard {
         infoScroller.setViewportView(border);
         wrapper.add(border, BorderLayout.CENTER);
 
+        URL lameLogo = Thread.currentThread().getContextClassLoader().getResource("lame/lame-logo.png");
         JLabel poweredBy = new JLabel(Messages.getString("operations.file.encode.powered-by-lame"),
-                                      new ImageIcon(ThemeManager.getLameLogo()),
+                                      new ImageIcon(lameLogo),
                                       JLabel.CENTER);
         poweredBy.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         poweredBy.addMouseListener(new LabelLinkListener(poweredBy));

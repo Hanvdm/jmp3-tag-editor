@@ -5,11 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 
+import com.mp3.ui.MainWindowInterface;
+import com.mp3.ui.panel.GenericStartableCard;
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.main.AppLaunch;
-import com.mscg.jmp3.ui.frame.MainWindow;
+import com.mscg.jmp3.theme.ThemeManager;
+import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.panel.fileoperations.RenameFileTab;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteRenameFilesDialog;
@@ -24,13 +28,23 @@ public class FilenameOperationsCard extends GenericStartableCard {
     private TagFromFilenameTab tagFromFilenameTab;
     private RenameFileTab renameFileTab;
 
-    public FilenameOperationsCard(MainWindow mainWindow) throws FileNotFoundException {
+    public FilenameOperationsCard(MainWindowInterface mainWindow) throws FileNotFoundException {
         super(mainWindow);
     }
 
     @Override
     protected ActionListener getStartButtonListener() {
         return new StartButtonListener();
+    }
+
+    @Override
+    protected Icon getStartButtonIcon() throws FileNotFoundException {
+        return new ImageIcon(ThemeManager.getIcon(IconType.START));
+    }
+
+    @Override
+    protected String getStartButtonText() {
+        return Messages.getString("operations.start");
     }
 
     @Override
@@ -55,12 +69,12 @@ public class FilenameOperationsCard extends GenericStartableCard {
                 LOG.debug("Starting tag creation");
                 try {
                     dialog = new ExecuteTagCreationDialog(tagFromFilenameTab,
-                                                          AppLaunch.mainWindow,
+                                                          MainWindowInterface.getInstance(),
                                                           true);
                     dialog.setVisible(true);
                 } catch(Exception e) {
                     LOG.error("Cannot show tag creation dialog", e);
-                    AppLaunch.showError(e);
+                    MainWindowInterface.showError(e);
                 }
             }
             else if(shownCard == renameFileTab) {
@@ -68,17 +82,17 @@ public class FilenameOperationsCard extends GenericStartableCard {
                 LOG.debug("Starting tag creation");
                 try {
                     dialog = new ExecuteRenameFilesDialog(renameFileTab,
-                                                          AppLaunch.mainWindow,
+                                                          MainWindowInterface.getInstance(),
                                                           true);
                     dialog.setVisible(true);
                 } catch(Exception e) {
                     LOG.error("Cannot show file rename dialog", e);
-                    AppLaunch.showError(e);
+                    MainWindowInterface.showError(e);
                 }
             }
             else {
                 LOG.warn("Cannot determine which panel is active");
-                AppLaunch.showError(new Exception("Uknown panel selected"));
+                MainWindowInterface.showError(new Exception("Uknown panel selected"));
             }
         }
 

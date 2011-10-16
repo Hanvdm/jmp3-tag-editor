@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.renderer.elements.StringTransformatorElement;
@@ -20,7 +21,7 @@ public class AddTransformationListener extends GenericFilenameToTagListener {
     @Override
     public void actionPerformed(ActionEvent ev) {
         try {
-            AddTransformationDialog dialog = new AddTransformationDialog(AppLaunch.mainWindow, true);
+            AddTransformationDialog dialog = new AddTransformationDialog(MainWindowInterface.getInstance(), true);
             dialog.setVisible(true);
             if(dialog.isSaved()) {
                 StringTransformator transformator = dialog.getTransformator();

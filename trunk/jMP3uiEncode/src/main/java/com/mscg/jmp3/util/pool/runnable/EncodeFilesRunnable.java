@@ -18,11 +18,11 @@ import javax.swing.JComboBox;
 
 import org.apache.commons.io.IOUtils;
 
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jID3tags.file.MP3File;
 import com.mscg.jID3tags.id3v2.ID3v2Tag;
 import com.mscg.jID3tags.objects.frames.ID3v2Frame;
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.ui.panel.EncodeFileCard;
 import com.mscg.jmp3.ui.panel.EncodeFileCard.QualityElement;
@@ -65,14 +65,14 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                 encoderFile = new File(".", "lame");
                 is = Thread.currentThread().getContextClassLoader().getResourceAsStream("lame/lame");
             } else {
-                AppLaunch.showError(new Exception(Messages.getString("operations.file.encode.dialog.notsupported")));
+                MainWindowInterface.showError(new Exception(Messages.getString("operations.file.encode.dialog.notsupported")));
                 return;
             }
             os = new FileOutputStream(encoderFile);
             IOUtils.copy(is, os);
         } catch(Exception e) {
             LOG.error("Cannot extract encoder executable", e);
-            AppLaunch.showError(e);
+            MainWindowInterface.showError(e);
             return;
         } finally {
             IOUtils.closeQuietly(is);
@@ -82,7 +82,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
 
         File destinationFile = null;
         try {
-            DefaultListModel filesModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
+            DefaultListModel filesModel = (DefaultListModel)MainWindowInterface.getInstance().getFilesList();
 
             long totalSize = 0l;
             for(int i = 0, l = filesModel.getSize(); i < l; i++) {
@@ -149,7 +149,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                     }
                     LOG.debug("Command line: " + commandLine.toString());
                 }
-                
+
                 encodingProcess = runtime.exec(command.toArray(new String[0]));
 
                 lastPosition = 0l;
@@ -163,7 +163,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                     encodingProcess.getOutputStream().close();
                 } finally {
                     IOUtils.closeQuietly(fileStream);
-                    
+
                     if(LOG.isDebugEnabled()) {
                         InputStream processOut = null;
                         try {
@@ -172,7 +172,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
                             IOUtils.copy(processOut, sw);
                             LOG.debug("Process output stream:\n" + sw);
                             IOUtils.closeQuietly(processOut);
-                            
+
                             processOut = encodingProcess.getErrorStream();
                             sw = new StringWriter();
                             IOUtils.copy(processOut, sw);
@@ -213,13 +213,13 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable implements
 
             }
 
-            AppLaunch.showMessage(Messages.getString("operations.file.encode.execute.done.title"),
-                                  Messages.getString("operations.file.encode.execute.done.message").
-                                      replace("${number}", "" + filesModel.getSize()));
+            MainWindowInterface.showMessage(Messages.getString("operations.file.encode.execute.done.title"),
+                                            Messages.getString("operations.file.encode.execute.done.message").
+                                                replace("${number}", "" + filesModel.getSize()));
         } catch(Exception e) {
             LOG.error("Cannot encode files", e);
             if(!(e instanceof IOException && encodingTerminated))
-                AppLaunch.showError(e);
+                MainWindowInterface.showError(e);
             if(destinationFile != null)
                 destinationFile.delete();
         } finally {

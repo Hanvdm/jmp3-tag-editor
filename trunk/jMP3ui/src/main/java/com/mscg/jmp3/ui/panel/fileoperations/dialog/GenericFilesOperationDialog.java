@@ -5,7 +5,6 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.io.FileNotFoundException;
 
 import javax.swing.BorderFactory;
@@ -22,59 +21,42 @@ import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.listener.StopJobListener;
-import com.mscg.jmp3.ui.panel.EncodeFileCard;
 import com.mscg.jmp3.util.pool.InterruptibleRunnable;
-import com.mscg.jmp3.util.pool.runnable.EncodeFilesRunnable;
+import com.mscg.jmp3.util.pool.ThreadPoolManager;
 
-public class EncodeFilesDialog extends GenericFilesOperationDialog {
+public abstract class GenericFilesOperationDialog extends JDialog {
 
-    private static final long serialVersionUID = -7862490993740909177L;
+    private static final long serialVersionUID = -3655004463544639864L;
 
-    private EncodeFileCard encodeFileCard;
+    protected InterruptibleRunnable filesOperationRunnable;
 
-    private JProgressBar actualFileProgress;
+    protected JLabel actualFileName;
+    protected JProgressBar progressBar;
 
-    public EncodeFilesDialog(EncodeFileCard encodeFileCard) throws FileNotFoundException {
+    public GenericFilesOperationDialog() throws FileNotFoundException {
         super();
-        initComponents(encodeFileCard);
     }
 
-    public EncodeFilesDialog(EncodeFileCard encodeFileCard, Dialog owner, boolean modal) throws FileNotFoundException {
+    public GenericFilesOperationDialog( Dialog owner, boolean modal) throws FileNotFoundException {
         super(owner, modal);
-        initComponents(encodeFileCard);
     }
 
-    public EncodeFilesDialog(EncodeFileCard encodeFileCard, Dialog owner) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Dialog owner) throws FileNotFoundException {
         super(owner);
-        initComponents(encodeFileCard);
     }
 
-    public EncodeFilesDialog(EncodeFileCard encodeFileCard, Frame owner, boolean modal) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Frame owner, boolean modal) throws FileNotFoundException {
         super(owner, modal);
-        initComponents(encodeFileCard);
     }
 
-    public EncodeFilesDialog(EncodeFileCard encodeFileCard, Frame owner) throws FileNotFoundException {
+    public GenericFilesOperationDialog(Frame owner) throws FileNotFoundException {
         super(owner);
-        initComponents(encodeFileCard);
     }
 
-    public EncodeFilesDialog(EncodeFileCard encodeFileCard, Window owner, ModalityType modalityType) throws FileNotFoundException {
-        super(owner, modalityType);
-        initComponents(encodeFileCard);
-    }
+    protected abstract String getDialogTitle();
 
-    public EncodeFilesDialog(EncodeFileCard encodeFileCard, Window owner) throws FileNotFoundException {
-        super(owner);
-        initComponents(encodeFileCard);
-    }
+    protected abstract InterruptibleRunnable getRunnable();
 
-    protected void initComponents(EncodeFileCard encodeFileCard) throws FileNotFoundException {
-        this.encodeFileCard = encodeFileCard;
-        initComponents();
-    }
-
-    @Override
     protected void initComponents() throws FileNotFoundException {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         setTitle(getDialogTitle());
@@ -101,20 +83,6 @@ public class EncodeFilesDialog extends GenericFilesOperationDialog {
         labelsPanel.add(Box.createHorizontalGlue());
         centerPanel.add(labelsPanel);
 
-        JPanel labelWrapper = new JPanel();
-        labelWrapper.setLayout(new BoxLayout(labelWrapper, BoxLayout.LINE_AXIS));
-        labelWrapper.add(new JLabel(Messages.getString("operations.file.encode.execute.progress.actual")));
-        labelWrapper.add(Box.createHorizontalGlue());
-        centerPanel.add(labelWrapper);
-        actualFileProgress = new JProgressBar();
-        centerPanel.add(actualFileProgress);
-        centerPanel.add(Box.createVerticalStrut(20));
-
-        labelWrapper = new JPanel();
-        labelWrapper.setLayout(new BoxLayout(labelWrapper, BoxLayout.LINE_AXIS));
-        labelWrapper.add(new JLabel(Messages.getString("operations.file.encode.execute.progress.overall")));
-        labelWrapper.add(Box.createHorizontalGlue());
-        centerPanel.add(labelWrapper);
         progressBar = new JProgressBar();
         centerPanel.add(progressBar);
 
@@ -134,7 +102,7 @@ public class EncodeFilesDialog extends GenericFilesOperationDialog {
 
         setContentPane(contentPanel);
 
-        setMinimumSize(new Dimension(380, 250));
+        setMinimumSize(new Dimension(380, 180));
         setPreferredSize(getMinimumSize());
         setResizable(false);
 
@@ -142,20 +110,24 @@ public class EncodeFilesDialog extends GenericFilesOperationDialog {
     }
 
     @Override
-    protected String getDialogTitle() {
-        return Messages.getString("operations.file.encode.dialog.title");
-    }
-
-    @Override
-    protected InterruptibleRunnable getRunnable() {
-        return new EncodeFilesRunnable(this, encodeFileCard);
+    public void setVisible(boolean visible) {
+        if(visible)
+            ThreadPoolManager.getInstance().execute(filesOperationRunnable);
+        super.setVisible(visible);
     }
 
     /**
-     * @return the actualFileProgress
+     * @return the actualFileName
      */
-    public JProgressBar getActualFileProgress() {
-        return actualFileProgress;
+    public JLabel getActualFileName() {
+        return actualFileName;
+    }
+
+    /**
+     * @return the progressBar
+     */
+    public JProgressBar getProgressBar() {
+        return progressBar;
     }
 
 }

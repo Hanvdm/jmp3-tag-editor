@@ -6,7 +6,7 @@ import java.io.File;
 
 import javax.swing.JList;
 
-import com.mscg.jmp3.main.AppLaunch;
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
 
 public class FilesListHandler extends ContextMenuListHandler {
@@ -27,7 +27,7 @@ public class FilesListHandler extends ContextMenuListHandler {
                 Desktop.getDesktop().open(fileElem.getFile().getCanonicalFile());
             } catch (Exception e) {
                 LOG.warn("Cannot play file \"" + file.getAbsolutePath() + "\"", e);
-                AppLaunch.showError(e);
+                MainWindowInterface.showError(e);
             }
         }
     }
