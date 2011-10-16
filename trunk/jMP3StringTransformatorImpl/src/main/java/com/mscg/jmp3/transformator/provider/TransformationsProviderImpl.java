@@ -1,26 +1,25 @@
 package com.mscg.jmp3.transformator.provider;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.transformator.StringTransformatorProvider;
 import com.mscg.jmp3.transformator.impl.CapitalizeWordsTransformator;
 import com.mscg.jmp3.transformator.impl.LowerCaseTransformator;
 import com.mscg.jmp3.transformator.impl.RegExpReplaceTransformator;
-import com.mscg.jmp3.transformator.impl.ReplaceStringTransformator;
 import com.mscg.jmp3.transformator.impl.UpperCaseTransformator;
 
 public class TransformationsProviderImpl implements StringTransformatorProvider {
 
-    public List<Class<? extends StringTransformator>> getStringTransformators() {
-        List<Class<? extends StringTransformator>> list = new LinkedList<Class<? extends StringTransformator>>();
-        list.add(ReplaceStringTransformator.class);
-        list.add(RegExpReplaceTransformator.class);
-        list.add(CapitalizeWordsTransformator.class);
-        list.add(UpperCaseTransformator.class);
-        list.add(LowerCaseTransformator.class);
-        return list;
+    public Map<Integer, Class<? extends StringTransformator>> getStringTransformators() {
+        Map<Integer, Class<? extends StringTransformator>> ret =
+            new LinkedHashMap<Integer, Class<? extends StringTransformator>>();
+        ret.put(10, RegExpReplaceTransformator.class);
+        ret.put(20, CapitalizeWordsTransformator.class);
+        ret.put(30, UpperCaseTransformator.class);
+        ret.put(40, LowerCaseTransformator.class);
+        return ret;
     }
 
 }
