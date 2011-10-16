@@ -73,10 +73,6 @@ public class ThemeManager {
         return openImageFile("./icon/icon-" + (small ? "small" : "large") + ".png");
     }
 
-    public static URL getLameLogo() throws FileNotFoundException {
-        return openImageFile("./icon/lame-logo.png");
-    }
-
     private static URL openImageFile(String fileName) throws FileNotFoundException {
         try {
             File file = new File(fileName);

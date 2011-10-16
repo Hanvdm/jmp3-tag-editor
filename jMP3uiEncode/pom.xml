@@ -1,29 +1,43 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.mscg</groupId>
-  <artifactId>jMP3uiEncode</artifactId>
-  <version>1.0.0</version>
-  <name>jMP3uiEncode</name>
-  <description>Provides the card with the lame encoder UI</description>
-  <dependencies>
-    <dependency>
-      <groupId>com.mscg</groupId>
-      <artifactId>jMP3i18n</artifactId>
-      <version>1.0.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.mscg</groupId>
-      <artifactId>jMP3ui</artifactId>
-      <version>1.0.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-    	<groupId>com.mscg</groupId>
-    	<artifactId>jMP3Common</artifactId>
-    	<version>1.0.0</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
-    </dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mscg</groupId>
+	<artifactId>jMP3uiEncode</artifactId>
+	<version>1.0.0</version>
+	<name>jMP3uiEncode</name>
+	<description>Provides the card with the lame encoder UI</description>
+	<dependencies>
+		<dependency>
+			<groupId>com.mscg</groupId>
+			<artifactId>jMP3i18n</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mscg</groupId>
+			<artifactId>jMP3ui</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mscg</groupId>
+			<artifactId>jMP3Common</artifactId>
+			<version>1.0.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>3.0.9</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mscg</groupId>
+			<artifactId>jID3Tag</artifactId>
+			<version>1.0.5</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 </project>

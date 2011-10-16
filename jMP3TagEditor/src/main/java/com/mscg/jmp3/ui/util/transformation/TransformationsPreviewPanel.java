@@ -20,11 +20,12 @@ import javax.swing.ListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.transformator.StringTransformator;
+import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
 import com.mscg.jmp3.ui.renderer.elements.StringTransformatorElement;
 import com.mscg.jmp3.ui.util.input.ConstantInputPanel;
@@ -101,7 +102,7 @@ public class TransformationsPreviewPanel extends JPanel implements ComponentList
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    AppLaunch.mainWindow.getFilenameOperationsCard().addComponentListener(TransformationsPreviewPanel.this);
+                    ((MainWindow)MainWindowInterface.getInstance()).getFilenameOperationsCard().addComponentListener(TransformationsPreviewPanel.this);
                 } catch(NullPointerException e){
                     LOG.warn("Cannot add component listener to filename operation card", e);
                 }
@@ -116,7 +117,7 @@ public class TransformationsPreviewPanel extends JPanel implements ComponentList
 
         try {
             if(filesListModel == null)
-                filesListModel = AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
+                filesListModel = MainWindowInterface.getInstance().getFilesList();
         } catch(NullPointerException e) {
             return;
         }

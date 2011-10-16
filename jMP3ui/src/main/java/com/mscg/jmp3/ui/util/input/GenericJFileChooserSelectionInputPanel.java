@@ -16,7 +16,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.mscg.jmp3.main.AppLaunch;
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.util.Util;
 
@@ -105,7 +105,6 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
 
     protected abstract void initFileChooser(JFileChooser fileChooser);
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         String startDirectoryName = Settings.getSetting(getLastFolderSettingName()).
             replace("${user.home}", System.getProperty("user.home"));
@@ -117,7 +116,7 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
 
         JFileChooser fileChooser = new JFileChooser(startDirectory);
         initFileChooser(fileChooser);
-        int returnVal = fileChooser.showOpenDialog(AppLaunch.mainWindow);
+        int returnVal = fileChooser.showOpenDialog(MainWindowInterface.getInstance());
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();

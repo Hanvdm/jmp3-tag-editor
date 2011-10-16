@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
-import com.mscg.jmp3.main.AppLaunch;
+import com.mp3.ui.MainWindowInterface;
 
 public class MoveTransformationListener extends RemoveTransformationsListener {
 
@@ -33,7 +33,7 @@ public class MoveTransformationListener extends RemoveTransformationsListener {
 
         } catch(Exception e) {
             LOG.error("Cannot move transformation", e);
-            AppLaunch.showError(e);
+            MainWindowInterface.showError(e);
         }
     }
 

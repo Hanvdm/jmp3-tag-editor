@@ -28,8 +28,8 @@ import javax.swing.JScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.transformator.StringTransformator;
@@ -260,10 +260,10 @@ public class AddTransformationDialog extends JDialog {
                                   transformator.getClass().getCanonicalName(), e);
                         String message = Messages.getString("operations.file.maintransform.adddialod.save.error").
                                          replace("${paramName}", paramPanel.getInputLabel());
-                        AppLaunch.showError(new Exception(message));
+                        MainWindowInterface.showError(new Exception(message));
                         return;
                     } catch(Exception e) {
-                        AppLaunch.showError(e);
+                        MainWindowInterface.showError(e);
                         return;
                     }
                 }

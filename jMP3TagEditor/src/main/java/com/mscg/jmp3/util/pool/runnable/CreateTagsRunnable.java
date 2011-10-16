@@ -12,6 +12,7 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
 
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jID3tags.file.MP3File;
 import com.mscg.jID3tags.id3v2.ID3v2Tag;
 import com.mscg.jID3tags.objects.frames.ID3v2APICFrame;
@@ -21,7 +22,6 @@ import com.mscg.jID3tags.util.Costants.StringEncodingType;
 import com.mscg.jmp3.exception.InvalidRegExTagValueException;
 import com.mscg.jmp3.exception.InvalidTagValueException;
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
@@ -38,7 +38,7 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
     public CreateTagsRunnable(ExecuteTagCreationDialog dialog) {
         super(dialog);
         this.files = new LinkedList<File>();
-        DefaultListModel listModel = (DefaultListModel)AppLaunch.mainWindow.getFileChooseCard().getFilesList().getModel();
+        DefaultListModel listModel = (DefaultListModel)MainWindowInterface.getInstance().getFilesList();
         for(Object listElement : listModel.toArray()) {
             IconAndFileListElement fileListEl = (IconAndFileListElement) listElement;
             files.add(fileListEl.getFile());
@@ -171,41 +171,41 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
                 } catch(IndexOutOfBoundsException e) {
                     LOG.error("Cannot generate tag for file \"" + file.getAbsolutePath() + "\"", e);
-                    AppLaunch.showError(new Exception(
+                    MainWindowInterface.showError(new Exception(
                         Messages.getString("operations.file.error.regex.groupindex").
                             replace("${field}", Messages.getString(fieldKey))));
                     return;
                 } catch(InvalidTagValueException e) {
                     LOG.error("Cannot generate tag for file \"" + file.getAbsolutePath() + "\"", e);
-                    AppLaunch.showError(new Exception(
+                    MainWindowInterface.showError(new Exception(
                         Messages.getString("operations.file.error.invalidfield").
                             replace("${field}", Messages.getString(fieldKey))));
                     return;
                 } catch(InvalidRegExTagValueException e) {
                     LOG.error("Cannot generate tag for file \"" + file.getAbsolutePath() + "\"", e);
-                    AppLaunch.showError(new Exception(
+                    MainWindowInterface.showError(new Exception(
                         Messages.getString("operations.file.error.regex.undefined").
                             replace("${field}", Messages.getString(fieldKey))));
                     return;
                 } catch(Exception e) {
                     LOG.error("Cannot generate tag for file \"" + file.getAbsolutePath() + "\"", e);
-                    AppLaunch.showError(e);
+                    MainWindowInterface.showError(e);
                     return;
                 }
 
                 rangeModel.setValue(++progess);
             }
 
-            AppLaunch.showMessage(Messages.getString("operations.file.taginfo.execute.done.title"),
+            MainWindowInterface.showMessage(Messages.getString("operations.file.taginfo.execute.done.title"),
                                   Messages.getString("operations.file.taginfo.execute.done.message").
                                       replace("${number}", "" + files.size()));
         } catch(PatternSyntaxException e) {
             LOG.error("Invalid regular expression", e);
-            AppLaunch.showError(new Exception(Messages.getString("operations.file.error.regex").
+            MainWindowInterface.showError(new Exception(Messages.getString("operations.file.error.regex").
                                                   replace("${regEx}", value)));
         } catch(Exception e) {
             LOG.error("Cannot generate tags", e);
-            AppLaunch.showError(e);
+            MainWindowInterface.showError(e);
         } finally {
             dialog.setVisible(false);
         }

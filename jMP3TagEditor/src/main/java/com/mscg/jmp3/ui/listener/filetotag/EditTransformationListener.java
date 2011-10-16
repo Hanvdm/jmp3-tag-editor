@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JList;
 
-import com.mscg.jmp3.main.AppLaunch;
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.renderer.elements.StringTransformatorElement;
 import com.mscg.jmp3.ui.util.transformation.AddTransformationDialog;
@@ -24,7 +24,7 @@ public class EditTransformationListener extends RemoveTransformationsListener {
         try {
             StringTransformatorElement element = (StringTransformatorElement)actionsList.getModel().getElementAt(index);
 
-            AddTransformationDialog addDialog = new AddTransformationDialog(AppLaunch.mainWindow, true);
+            AddTransformationDialog addDialog = new AddTransformationDialog(MainWindowInterface.getInstance(), true);
             addDialog.setTransformator(element.getTransformator());
             addDialog.setVisible(true);
 
@@ -39,7 +39,7 @@ public class EditTransformationListener extends RemoveTransformationsListener {
 
         } catch (Exception e) {
             LOG.error("Cannot launch transformation editor", e);
-            AppLaunch.showError(e);
+            MainWindowInterface.showError(e);
         }
     }
 

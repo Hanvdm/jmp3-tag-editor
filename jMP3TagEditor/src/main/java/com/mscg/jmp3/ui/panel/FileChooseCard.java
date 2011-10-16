@@ -23,11 +23,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
+import com.mp3.ui.MainWindowInterface;
+import com.mp3.ui.panel.GenericCard;
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
-import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.listener.filelist.AddFilesListener;
 import com.mscg.jmp3.ui.listener.filelist.RemoveFilesListener;
 import com.mscg.jmp3.ui.renderer.IconedListCellRenderer;
@@ -47,7 +48,7 @@ public class FileChooseCard extends GenericCard {
     private JButton removeButton;
     private RemoveFilesListener removeFilesListener;
 
-    public FileChooseCard(MainWindow mainWindow) throws FileNotFoundException {
+    public FileChooseCard(MainWindowInterface mainWindow) throws FileNotFoundException {
         super(mainWindow);
     }
 

@@ -12,34 +12,40 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.FileNotFoundException;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
+import com.mp3.ui.MainWindowInterface;
+import com.mp3.ui.cards.UICardInfo;
+import com.mp3.ui.cards.UICardProvider;
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.main.AppLaunch;
 import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.listener.CloseWindowClickListener;
-import com.mscg.jmp3.ui.panel.EncodeFileCard;
+import com.mscg.jmp3.ui.panel.EmbeddedCardProvider;
 import com.mscg.jmp3.ui.panel.FileChooseCard;
 import com.mscg.jmp3.ui.panel.FilenameOperationsCard;
+import com.mscg.jmp3.util.service.ServiceLoader;
 
-public class MainWindow extends JFrame implements ActionListener, ComponentListener, WindowStateListener {
+public class MainWindow extends MainWindowInterface implements ActionListener, ComponentListener, WindowStateListener {
 
     private static final long serialVersionUID = -2803783276903439771L;
 
@@ -55,7 +61,6 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
 
     private FileChooseCard fileChooseCard;
     private FilenameOperationsCard filenameOperationsCard;
-    private EncodeFileCard encodeFileCard;
 
     public MainWindow() throws FileNotFoundException {
         this.maximized = Boolean.parseBoolean(Settings.getSetting("window.maximixed"));
@@ -137,12 +142,21 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
 
         // add the cards to the main panel
         cardIndex = 0;
-        fileChooseCard = new FileChooseCard(this);
-        mainPanel.add(fileChooseCard, "0");
-        filenameOperationsCard = new FilenameOperationsCard(this);
-        mainPanel.add(filenameOperationsCard, "1");
-        encodeFileCard = new EncodeFileCard(this);
-        mainPanel.add(encodeFileCard, "2");
+
+        ServiceLoader<UICardProvider> serviceLoader = ServiceLoader.load(UICardProvider.class);
+        Set<UICardInfo> cardInfos = new TreeSet<UICardInfo>();
+        for(UICardProvider provider : serviceLoader) {
+            cardInfos.addAll(provider.getCardInfos(this));
+        }
+        int sequenceIndex = 0;
+        for(UICardInfo cardInfo : cardInfos) {
+            mainPanel.add(cardInfo.getCard(), Integer.toString(sequenceIndex++));
+            if(EmbeddedCardProvider.FILE_CHOOSE_CARD_NAME.equals(cardInfo.getName()))
+                fileChooseCard = (FileChooseCard)cardInfo.getCard();
+            else if(EmbeddedCardProvider.FILENAME_OPERATIONS_CARD_NAME.equals(cardInfo.getName()))
+                filenameOperationsCard = (FilenameOperationsCard)cardInfo.getCard();
+        }
+
         cardsCount = mainPanel.getComponentCount();
 
         addComponentListener(this);
@@ -167,12 +181,19 @@ public class MainWindow extends JFrame implements ActionListener, ComponentListe
         return menu;
     }
 
+    @Override
     public JButton getNextButton() {
         return nextButton;
     }
 
+    @Override
     public JButton getPrevButton() {
         return prevButton;
+    }
+
+    @Override
+    public ListModel getFilesList() {
+        return fileChooseCard.getFilesList().getModel();
     }
 
     public FileChooseCard getFileChooseCard() {

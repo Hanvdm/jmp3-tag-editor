@@ -9,18 +9,18 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 
+import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.theme.ThemeManager;
-import com.mscg.jmp3.ui.frame.MainWindow;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
 import com.mscg.jmp3.util.filefilter.MP3FileFilter;
 
 public class AddFilesListener extends GenericFileListListener implements ActionListener {
 
-    private MainWindow mainWindow;
+    private MainWindowInterface mainWindow;
 
-    public AddFilesListener(JList filesList, MainWindow mainWindow) throws FileNotFoundException {
+    public AddFilesListener(JList filesList, MainWindowInterface mainWindow) throws FileNotFoundException {
         super(filesList);
 
         this.mainWindow = mainWindow;

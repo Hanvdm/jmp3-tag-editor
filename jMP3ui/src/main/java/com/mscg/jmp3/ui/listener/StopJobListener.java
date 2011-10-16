@@ -19,7 +19,6 @@ public class StopJobListener implements ActionListener {
         this.button = button;
     }
 
-    @Override
     public void actionPerformed(ActionEvent ev) {
         button.setEnabled(false);
         runnable.interrupt();

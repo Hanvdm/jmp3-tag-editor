@@ -18,7 +18,7 @@ public class ThreadPoolManager {
     }
 
     private ThreadPoolManager() {
-        threadPool = new ThreadPoolExecutor(1, 1, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+        threadPool = new ThreadPoolExecutor(1, 1, 300, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     public void execute(Runnable command) {
