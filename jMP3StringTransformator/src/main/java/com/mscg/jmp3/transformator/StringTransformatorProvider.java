@@ -1,9 +1,9 @@
 package com.mscg.jmp3.transformator;
 
-import java.util.List;
+import java.util.Map;
 
 public interface StringTransformatorProvider {
 
-    public List<Class<? extends StringTransformator>> getStringTransformators();
+    public Map<Integer, Class<? extends StringTransformator>> getStringTransformators();
 
 }
