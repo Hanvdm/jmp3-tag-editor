@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mscg</groupId>
+  <artifactId>radiodeejay.reloaded</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+  <name>RadioDeejayReloaded</name>
+  <description>Radio Deejay Reloaded downloader</description>
+  <modules>
+  	<module>radiodeejay.reloaded.main</module>
+  	<module>radiodeejay.reloaded.log4jconfig</module>
+  	<module>radiodeejay.reloaded.settings</module>
+  	<module>radiodeejay.reloaded.i18n</module>
+  	<module>radiodeejay.reloaded.theme</module>
+  	<module>radiodeejay.reloaded.main.i18n</module>
+  	<module>radiodeejay.reloaded.main.theme-default</module>
+  	<module>radiodeejay.reloaded.bootstrap</module>
+  </modules>
+</project>
