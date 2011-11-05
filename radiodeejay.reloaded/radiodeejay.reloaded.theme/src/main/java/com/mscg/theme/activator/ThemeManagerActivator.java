@@ -4,12 +4,16 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mscg.settings.SettingsService;
 import com.mscg.theme.ThemeManager;
 import com.mscg.theme.impl.ThemeManagerImpl;
 
 public class ThemeManagerActivator implements BundleActivator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ThemeManagerActivator.class);
 
     private ServiceReference settingsReference;
     private ServiceRegistration themeManagerRegistration;
@@ -24,6 +28,7 @@ public class ThemeManagerActivator implements BundleActivator {
         themeManagerRegistration = bundleContext.registerService(ThemeManager.class.getCanonicalName(),
                                                                  themeManager,
                                                                  null);
+        LOG.debug("Theme service initialized and registered");
 
     }
 
