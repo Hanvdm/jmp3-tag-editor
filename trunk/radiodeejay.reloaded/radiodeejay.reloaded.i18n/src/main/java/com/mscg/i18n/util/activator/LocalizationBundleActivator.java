@@ -4,12 +4,16 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mscg.i18n.LocalizationService;
 import com.mscg.i18n.impl.LocalizationServiceImpl;
 import com.mscg.settings.SettingsService;
 
 public class LocalizationBundleActivator implements BundleActivator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LocalizationBundleActivator.class);
 
     private ServiceReference settingsReference;
     private ServiceRegistration localizationRegistration;
@@ -30,6 +34,8 @@ public class LocalizationBundleActivator implements BundleActivator {
         localizationRegistration = bundleContext.registerService(LocalizationService.class.getCanonicalName(),
                                                                  localization,
                                                                  null);
+
+        LOG.debug("Localization service initialized and registered");
     }
 
     public void stop(BundleContext bundleContext) throws Exception {
