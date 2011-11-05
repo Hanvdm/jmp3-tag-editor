@@ -34,25 +34,32 @@ public class ThemeManagerImpl implements ThemeManager {
             PackageAdmin packageAdmin = (PackageAdmin)bundleContext.getService(packageAdminRef);
             Bundle bundle = bundleContext.getBundle();
             Bundle fragments[] = packageAdmin.getFragments(bundle);
-            for(Bundle fragment : fragments) {
-                String themeElLoaderClassName = (String)fragment.getHeaders().get("Theme-Elements-Loader-Class");
-                try {
-                    Class themeElLoaderClass = bundle.loadClass(themeElLoaderClassName);
-                    ThemeElementsLoader loader = (ThemeElementsLoader)themeElLoaderClass.newInstance();
+            if(fragments != null) {
+                for(Bundle fragment : fragments) {
+                    String themeElLoaderClassName = (String)fragment.getHeaders().get("Theme-Elements-Loader-Class");
+                    try {
+                        Class themeElLoaderClass = bundle.loadClass(themeElLoaderClassName);
+                        ThemeElementsLoader loader = (ThemeElementsLoader)themeElLoaderClass.newInstance();
 
-                    Set<ThemeElementsLoader> loaders = themeLoaders.get(loader.getThemeName());
-                    if(loaders == null) {
-                        loaders = new LinkedHashSet<ThemeElementsLoader>();
-                        themeLoaders.put(loader.getThemeName(), loaders);
+                        Set<ThemeElementsLoader> loaders = themeLoaders.get(loader.getThemeName());
+                        if(loaders == null) {
+                            loaders = new LinkedHashSet<ThemeElementsLoader>();
+                            themeLoaders.put(loader.getThemeName(), loaders);
+                        }
+                        loaders.add(loader);
+
+                    } catch(Exception e) {
+                        LOG.warn("Cannot load theme elements loader of class \"" + themeElLoaderClassName + "\" " +
+                        		"from fragment " + fragment.toString(),
+                                 e);
                     }
-                    loaders.add(loader);
 
-                } catch(Exception e) {
-                    LOG.warn("Cannot load theme elements loader of class \"" + themeElLoaderClassName + "\" " +
-                    		"from fragment " + fragment.toString(),
-                             e);
                 }
-
+                if(LOG.isInfoEnabled())
+                    LOG.info("Configured themes are: " + themeLoaders.keySet());
+            }
+            else {
+                LOG.warn("No fragments found for theme manager");
             }
         } finally {
             if(packageAdminRef != null)
