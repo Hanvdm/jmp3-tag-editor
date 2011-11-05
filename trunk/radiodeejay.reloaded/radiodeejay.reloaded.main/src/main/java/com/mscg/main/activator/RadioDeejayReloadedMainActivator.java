@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mscg.i18n.LocalizationService;
+import com.mscg.main.ui.MainUIManager;
 import com.mscg.settings.SettingsService;
 import com.mscg.theme.ThemeManager;
 
@@ -14,9 +15,31 @@ public class RadioDeejayReloadedMainActivator implements BundleActivator {
 
     private static final Logger LOG = LoggerFactory.getLogger(RadioDeejayReloadedMainActivator.class);
 
+    private static RadioDeejayReloadedMainActivator instance;
+
     private ServiceReference settingsReference;
     private ServiceReference localizationReference;
     private ServiceReference themeManagerReference;
+    private BundleContext bundleContext;
+
+    public static RadioDeejayReloadedMainActivator getInstance() {
+        return instance;
+    }
+
+    public LocalizationService getLocalizationService() {
+        LocalizationService service = (LocalizationService)bundleContext.getService(localizationReference);
+        return service;
+    }
+
+    public SettingsService getSettingsService() {
+        SettingsService settings = (SettingsService)bundleContext.getService(settingsReference);
+        return settings;
+    }
+
+    public ThemeManager getThemeManager() {
+        ThemeManager themeManager = (ThemeManager)bundleContext.getService(themeManagerReference);
+        return themeManager;
+    }
 
     @Override
     public void start(BundleContext bundleContext) throws Exception {
@@ -32,8 +55,11 @@ public class RadioDeejayReloadedMainActivator implements BundleActivator {
         if(themeManagerReference == null)
             throw new NullPointerException("Cannot find service " + ThemeManager.class.getCanonicalName());
 
-        LOG.info("Main application service loaded with success, starting the application");
+        this.bundleContext = bundleContext;
+        instance = this;
 
+        LOG.info("Main application service loaded with success, starting the application");
+        MainUIManager.startInterface();
     }
 
     @Override
@@ -44,6 +70,9 @@ public class RadioDeejayReloadedMainActivator implements BundleActivator {
             bundleContext.ungetService(localizationReference);
         if(themeManagerReference != null)
             bundleContext.ungetService(themeManagerReference);
+
+        bundleContext = null;
+        instance = null;
     }
 
 }
