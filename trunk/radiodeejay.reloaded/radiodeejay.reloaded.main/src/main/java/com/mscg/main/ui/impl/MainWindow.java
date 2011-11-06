@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -16,18 +17,36 @@ import javax.swing.WindowConstants;
 
 import com.mscg.i18n.LocalizationService;
 import com.mscg.main.activator.RadioDeejayReloadedMainActivator;
-import com.mscg.main.ui.MainWindowInterface;
+import com.mscg.main.ui.MainUIManager;
 import com.mscg.settings.SettingsService;
 
-public class MainWindow extends MainWindowInterface implements ComponentListener, WindowStateListener {
+public class MainWindow extends JFrame implements ComponentListener, WindowStateListener {
 
     private static final long serialVersionUID = -7240979686578111055L;
 
-    private boolean maximized;
+    private static MainWindow instance;
 
+    /**
+     * @return the instance
+     */
+    public synchronized static MainWindow getInstance() {
+        return instance;
+    }
+
+    /**
+     * @param instance the instance to set
+     */
+    public synchronized static void setInstance(MainWindow instance) {
+        MainWindow.instance = instance;
+    }
+
+    private boolean maximized;
+    private MainUIManager uiManager;
     private JPanel mainPanel;
 
-    public MainWindow() {
+    public MainWindow(MainUIManager uiManager) {
+        this.uiManager = uiManager;
+
         SettingsService settings = RadioDeejayReloadedMainActivator.getInstance().getSettingsService();
 
         this.maximized = Boolean.parseBoolean(settings.getValue("window.maximixed"));
@@ -47,7 +66,7 @@ public class MainWindow extends MainWindowInterface implements ComponentListener
             if(maximized)
                 setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
         } catch(Exception e){
-            showError(e);
+            this.uiManager.showError(e);
         }
     }
 
@@ -60,13 +79,13 @@ public class MainWindow extends MainWindowInterface implements ComponentListener
 
         getContentPane().setLayout(new BorderLayout());
 
-        setMinimumSize(new Dimension(420, 280));
+        setMinimumSize(new Dimension(200, 100));
 
-        int width = 620;
+        int width = 550;
         try {
             width = Integer.parseInt(settings.getValue("mainarea.width"));
         } catch(Exception e){}
-        int height = 462;
+        int height = 260;
         try {
             height = Integer.parseInt(settings.getValue("mainarea.height"));
         } catch(Exception e){}
