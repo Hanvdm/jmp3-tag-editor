@@ -197,8 +197,23 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        ComboboxBasicBean bean = (ComboboxBasicBean) e.getItem();
-        Settings.setSetting("tag.filename.parser", bean.getKey());
+        if(e.getStateChange() == ItemEvent.SELECTED) {
+            ComboboxBasicBean bean = (ComboboxBasicBean) e.getItem();
+            Settings.setSetting("tag.filename.parser", bean.getKey());
+
+            try {
+                FilenamePatternParser filenamePatternParser = FilenameParserProvider.getParsers().get(bean.getKey());
+                infoPanel.remove(parserInputPanel);
+                parserInputPanel = filenamePatternParser.getParserInputPanel();
+                infoPanel.add(parserInputPanel, 1);
+
+                infoPanel.revalidate();
+                infoPanel.repaint();
+            } catch(Exception exc) {
+                LOG.warn("Cannot update user interface", exc);
+                MainWindowInterface.showError(exc);
+            }
+        }
     }
 
 }
