@@ -5,14 +5,15 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 
 import com.mp3.ui.MainWindowInterface;
+import com.mp3.ui.parsers.FilenameParserProvider;
+import com.mp3.ui.parsers.FilenamePatternParser;
 import com.mscg.jID3tags.file.MP3File;
 import com.mscg.jID3tags.id3v2.ID3v2Tag;
 import com.mscg.jID3tags.objects.frames.ID3v2APICFrame;
@@ -26,13 +27,13 @@ import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.panel.fileoperations.TagFromFilenameTab;
 import com.mscg.jmp3.ui.panel.fileoperations.dialog.ExecuteTagCreationDialog;
 import com.mscg.jmp3.ui.renderer.elements.IconAndFileListElement;
+import com.mscg.jmp3.ui.util.input.bean.ComboboxBasicBean;
 import com.mscg.jmp3.util.Util;
 
 public class CreateTagsRunnable extends GenericFileOperationRunnable {
 
     private List<File> files;
     private TagFromFilenameTab tab;
-    private Pattern regExGroupPattern;
     private static final FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
     public CreateTagsRunnable(ExecuteTagCreationDialog dialog) {
@@ -44,21 +45,21 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
             files.add(fileListEl.getFile());
         }
         this.tab = dialog.getTab();
-        regExGroupPattern = Pattern.compile("^\\s*%(\\d+)\\s*$");
     }
 
     @Override
     public void executeInterruptible() {
-        Pattern fileNamePattern = null;
         String value = null;
         BoundedRangeModel rangeModel = dialog.getProgressBar().getModel();
         rangeModel.setMinimum(0);
         rangeModel.setMaximum(2 * files.size());
         try {
-            value = tab.getRegExpPanel().getValue();
-            if(value != null && value.length() != 0) {
-                fileNamePattern = Pattern.compile(value);
-            }
+            ComboboxBasicBean bean = (ComboboxBasicBean)
+                                         ((JComboBox)tab.getParserSelectorPanel().getValueComponent()).getSelectedItem();
+            FilenamePatternParser filenamePatternParser = FilenameParserProvider.getParsers().get(bean.getKey());
+
+            filenamePatternParser.initParser();
+
             int progess = 0;
             for(File file : files) {
                 if(isInterrupted())
@@ -68,7 +69,6 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                 rangeModel.setValue(++progess);
 
                 value = null;
-                Matcher fileNameMatcher = null;
                 String fieldKey = null;
                 try {
                     String startName = file.getName();
@@ -79,10 +79,7 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                         startName = transformator.transformString(startName);
                     }
 
-                    if(fileNamePattern != null) {
-                        fileNameMatcher = fileNamePattern.matcher(startName);
-                        fileNameMatcher.find();
-                    }
+                    filenamePatternParser.setFilename(startName);
 
                     MP3File mp3File = new MP3File(file);
 
@@ -98,28 +95,28 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                     fieldKey = "operations.file.taginfo.info.author";
                     value = tab.getAuthorPanel().getValue();
                     if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
-                        value = parseValue(value, fileNameMatcher);
+                        value = filenamePatternParser.parseValue(value);
                         mp3File.setArtist(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.album";
                     value = tab.getAlbumPanel().getValue();
                     if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
-                        value = parseValue(value, fileNameMatcher);
+                        value = filenamePatternParser.parseValue(value);
                         mp3File.setAlbum(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.title";
                     value = tab.getTitlePanel().getValue();
                     if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
-                        value = parseValue(value, fileNameMatcher);
+                        value = filenamePatternParser.parseValue(value);
                         mp3File.setTitle(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.number";
                     value = tab.getNumberPanel().getValue();
                     if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
-                        value = parseValue(value, fileNameMatcher);
+                        value = filenamePatternParser.parseValue(value);
                         try {
                             Integer.parseInt(value, 10);
                         } catch(NumberFormatException e){
@@ -131,14 +128,14 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                     fieldKey = "operations.file.taginfo.info.genre";
                     value = tab.getGenrePanel().getValue();
                     if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
-                        value = parseValue(value, fileNameMatcher);
+                        value = filenamePatternParser.parseValue(value);
                         mp3File.setGenre(value);
                     }
 
                     fieldKey = "operations.file.taginfo.info.year";
                     value = tab.getYearPanel().getValue();
                     if(Util.isNotEmptyOrWhiteSpaceOnly(value)) {
-                        value = parseValue(tab.getYearPanel().getValue(), fileNameMatcher);
+                        value = filenamePatternParser.parseValue(tab.getYearPanel().getValue());
                         try {
                             Integer.parseInt(value);
                         } catch(NumberFormatException e){
@@ -210,26 +207,6 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
             dialog.setVisible(false);
         }
 
-    }
-
-    private String parseValue(String value, Matcher fileNameMatcher) throws InvalidRegExTagValueException,
-                                                                            InvalidTagValueException,
-                                                                            IndexOutOfBoundsException {
-        String ret = value;
-
-        Matcher regExGroupMatcher = regExGroupPattern.matcher(value);
-        if(regExGroupMatcher.find()) {
-            if(fileNameMatcher  == null)
-                throw new InvalidRegExTagValueException("Regular expression is not defined");
-            int groupIndex = Integer.parseInt(regExGroupMatcher.group(1));
-            try {
-                ret = fileNameMatcher.group(groupIndex);
-            } catch(IllegalStateException e) {
-                throw new IndexOutOfBoundsException();
-            }
-        }
-
-        return ret;
     }
 
 }

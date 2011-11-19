@@ -1,34 +1,46 @@
 package com.mscg.jmp3.ui.panel.fileoperations;
 
 import java.awt.BorderLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileFilter;
 
+import com.mp3.ui.MainWindowInterface;
+import com.mp3.ui.parsers.FilenameParserProvider;
+import com.mp3.ui.parsers.FilenamePatternParser;
 import com.mscg.jID3tags.util.Costants;
 import com.mscg.jmp3.i18n.Messages;
+import com.mscg.jmp3.settings.Settings;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.ui.util.input.CheckboxInputPanel;
 import com.mscg.jmp3.ui.util.input.ComboboxInputPanel;
 import com.mscg.jmp3.ui.util.input.FileSelectionInputPanel;
 import com.mscg.jmp3.ui.util.input.InputPanel;
 import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
+import com.mscg.jmp3.ui.util.input.bean.ComboboxBasicBean;
 import com.mscg.jmp3.ui.util.transformation.FilenameTransformationsPanel;
 import com.mscg.jmp3.util.filefilter.ImageFileFilter;
 
 
-public class TagFromFilenameTab extends GenericFileoperationTab {
+public class TagFromFilenameTab extends GenericFileoperationTab implements ItemListener {
 
     private static final long serialVersionUID = 1071623235908117442L;
-    private InputPanel regExpPanel;
+
+    private JPanel infoPanel;
+    private InputPanel parserSelectorPanel;
+    private InputPanel parserInputPanel;
     private InputPanel authorPanel;
     private InputPanel albumPanel;
     private InputPanel titlePanel;
@@ -54,13 +66,36 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
         JScrollPane infoScroller = new JScrollPane();
         infoScroller.setBorder(BorderFactory.createTitledBorder(Messages.getString("operations.file.taginfo.title")));
         infoScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        JPanel infoPanel = new JPanel();
+        infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
         infoScroller.setViewportView(infoPanel);
         add(infoScroller, BorderLayout.CENTER);
 
-        regExpPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.regex"), 0, 10);
-        infoPanel.add(regExpPanel);
+        try {
+            Map<String, FilenamePatternParser> parsers = FilenameParserProvider.getParsers();
+            DefaultComboBoxModel parserSelectorModel = new DefaultComboBoxModel();
+            ComboboxBasicBean selectedItem = null;
+            String selectedItemID = Settings.getSetting("tag.filename.parser");
+            for(Map.Entry<String, FilenamePatternParser> entry : parsers.entrySet()) {
+                ComboboxBasicBean bean = new ComboboxBasicBean(entry.getKey(), entry.getValue().getParserName());
+                parserSelectorModel.addElement(bean);
+                if(entry.getKey().equals(selectedItemID))
+                    selectedItem = bean;
+            }
+            parserSelectorPanel = new ComboboxInputPanel(Messages.getString("operations.file.taginfo.info.parser.selector"),
+                                                         parserSelectorModel,
+                                                         selectedItem);
+            ((JComboBox)parserSelectorPanel.getValueComponent()).addItemListener(this);
+            infoPanel.add(parserSelectorPanel);
+
+            ComboboxBasicBean selItem = (ComboboxBasicBean)
+                                            ((JComboBox)parserSelectorPanel.getValueComponent()).getSelectedItem();
+            parserInputPanel = parsers.get(selItem.getKey()).getParserInputPanel();
+            infoPanel.add(parserInputPanel);
+        } catch(Exception e) {
+            LOG.error("Can't build parser selector menu", e);
+            MainWindowInterface.showError(e);
+        }
         authorPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.author"));
         infoPanel.add(authorPanel);
         albumPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.album"));
@@ -98,10 +133,10 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
     }
 
     /**
-     * @return the regExpPanel
+     * @return the parserSelectorPanel
      */
-    public InputPanel getRegExpPanel() {
-        return regExpPanel;
+    public InputPanel getParserSelectorPanel() {
+        return parserSelectorPanel;
     }
 
     /**
@@ -158,6 +193,12 @@ public class TagFromFilenameTab extends GenericFileoperationTab {
      */
     public synchronized InputPanel getCoverPanel() {
         return coverPanel;
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        ComboboxBasicBean bean = (ComboboxBasicBean) e.getItem();
+        Settings.setSetting("tag.filename.parser", bean.getKey());
     }
 
 }
