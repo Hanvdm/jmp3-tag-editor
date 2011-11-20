@@ -84,9 +84,16 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
                 if(entry.getKey().equals(selectedItemID))
                     selectedItem = bean;
             }
+            if(selectedItem == null)
+                selectedItem = (ComboboxBasicBean)parserSelectorModel.getElementAt(0);
+
             parserSelectorPanel = new ComboboxInputPanel(Messages.getString("operations.file.taginfo.info.parser.selector"),
                                                          parserSelectorModel);
+
             infoPanel.add(parserSelectorPanel);
+            if(parserSelectorModel.getSize() == 1)
+                parserSelectorPanel.setVisible(false);
+
         } catch(Exception e) {
             LOG.error("Can't build parser selector menu", e);
             MainWindowInterface.showError(e);
@@ -121,9 +128,17 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
 
         // add the listener to the parser selector after all other components have been built,
         // so that references can be correctly injected to the parsers (if needed)
-        ((JComboBox)parserSelectorPanel.getValueComponent()).addItemListener(this);
+        JComboBox comboBox = (JComboBox)parserSelectorPanel.getValueComponent();
+        comboBox.addItemListener(this);
         // setting the selected item triggers the event listener method
-        ((JComboBox)parserSelectorPanel.getValueComponent()).setSelectedItem(selectedItem);
+        comboBox.setSelectedItem(selectedItem);
+        if(comboBox.getModel().getSize() == 1) {
+            // if the combobox has only one item, the event listener is not triggered,
+            // so force the call
+            ItemEvent e = new ItemEvent(comboBox, ItemEvent.ITEM_STATE_CHANGED, selectedItem,
+                                        ItemEvent.SELECTED);
+            itemStateChanged(e);
+        }
     }
 
     /**
