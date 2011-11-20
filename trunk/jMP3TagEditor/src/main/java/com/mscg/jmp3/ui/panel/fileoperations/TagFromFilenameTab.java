@@ -20,6 +20,8 @@ import javax.swing.filechooser.FileFilter;
 import com.mp3.ui.MainWindowInterface;
 import com.mp3.ui.parsers.FilenameParserProvider;
 import com.mp3.ui.parsers.FilenamePatternParser;
+import com.mp3.ui.parsers.InputPanelAwareParser;
+import com.mp3.ui.parsers.SelectionAwareParser;
 import com.mscg.jID3tags.util.Costants;
 import com.mscg.jmp3.i18n.Messages;
 import com.mscg.jmp3.settings.Settings;
@@ -71,10 +73,10 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
         infoScroller.setViewportView(infoPanel);
         add(infoScroller, BorderLayout.CENTER);
 
+        ComboboxBasicBean selectedItem = null;
         try {
             Map<String, FilenamePatternParser> parsers = FilenameParserProvider.getParsers();
             DefaultComboBoxModel parserSelectorModel = new DefaultComboBoxModel();
-            ComboboxBasicBean selectedItem = null;
             String selectedItemID = Settings.getSetting("tag.filename.parser");
             for(Map.Entry<String, FilenamePatternParser> entry : parsers.entrySet()) {
                 ComboboxBasicBean bean = new ComboboxBasicBean(entry.getKey(), entry.getValue().getParserName());
@@ -83,15 +85,8 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
                     selectedItem = bean;
             }
             parserSelectorPanel = new ComboboxInputPanel(Messages.getString("operations.file.taginfo.info.parser.selector"),
-                                                         parserSelectorModel,
-                                                         selectedItem);
-            ((JComboBox)parserSelectorPanel.getValueComponent()).addItemListener(this);
+                                                         parserSelectorModel);
             infoPanel.add(parserSelectorPanel);
-
-            ComboboxBasicBean selItem = (ComboboxBasicBean)
-                                            ((JComboBox)parserSelectorPanel.getValueComponent()).getSelectedItem();
-            parserInputPanel = parsers.get(selItem.getKey()).getParserInputPanel();
-            infoPanel.add(parserInputPanel);
         } catch(Exception e) {
             LOG.error("Can't build parser selector menu", e);
             MainWindowInterface.showError(e);
@@ -123,6 +118,12 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
         infoPanel.add(coverPanel);
         removeTagsPanel = new CheckboxInputPanel(Messages.getString("operations.file.taginfo.info.removeold"));
         infoPanel.add(removeTagsPanel);
+
+        // add the listener to the parser selector after all other components have been built,
+        // so that references can be correctly injected to the parsers (if needed)
+        ((JComboBox)parserSelectorPanel.getValueComponent()).addItemListener(this);
+        // setting the selected item triggers the event listener method
+        ((JComboBox)parserSelectorPanel.getValueComponent()).setSelectedItem(selectedItem);
     }
 
     /**
@@ -197,21 +198,50 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
 
     @Override
     public void itemStateChanged(ItemEvent e) {
+        ComboboxBasicBean bean = (ComboboxBasicBean) e.getItem();
+        FilenamePatternParser filenamePatternParser = null;
+        try {
+            filenamePatternParser = FilenameParserProvider.getParsers().get(bean.getKey());
+        } catch(Exception exc) {
+            LOG.warn("Cannot get filename pattern parser instance", exc);
+        }
+
         if(e.getStateChange() == ItemEvent.SELECTED) {
-            ComboboxBasicBean bean = (ComboboxBasicBean) e.getItem();
             Settings.setSetting("tag.filename.parser", bean.getKey());
 
             try {
-                FilenamePatternParser filenamePatternParser = FilenameParserProvider.getParsers().get(bean.getKey());
-                infoPanel.remove(parserInputPanel);
+                if(filenamePatternParser != null && filenamePatternParser instanceof InputPanelAwareParser) {
+                    ((InputPanelAwareParser)filenamePatternParser).setReferences(authorPanel, albumPanel, titlePanel,
+                                                                                 numberPanel, yearPanel);
+                }
+
+                if(parserInputPanel != null)
+                    infoPanel.remove(parserInputPanel);
                 parserInputPanel = filenamePatternParser.getParserInputPanel();
                 infoPanel.add(parserInputPanel, 1);
+
+                if(filenamePatternParser != null && filenamePatternParser instanceof SelectionAwareParser) {
+                    try {
+                        ((SelectionAwareParser)filenamePatternParser).onParserSelected();
+                    } catch(Exception exc) {
+                        LOG.warn("Cannot notify selection event", exc);
+                    }
+                }
 
                 infoPanel.revalidate();
                 infoPanel.repaint();
             } catch(Exception exc) {
                 LOG.warn("Cannot update user interface", exc);
                 MainWindowInterface.showError(exc);
+            }
+        }
+        else {
+            if(filenamePatternParser != null && filenamePatternParser instanceof SelectionAwareParser) {
+                try {
+                    ((SelectionAwareParser)filenamePatternParser).onParserUnselected();
+                } catch(Exception exc) {
+                    LOG.warn("Cannot notify selection event", exc);
+                }
             }
         }
     }
