@@ -12,7 +12,7 @@ import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
 
 public class RegularExpressionFilenameParser implements FilenamePatternParser {
 
-    private static Pattern regExGroupPattern = Pattern.compile("^\\s*%(\\d+)\\s*$");
+    private static Pattern regExGroupPattern = Pattern.compile("^\\s*[%\\$](\\d+)\\s*$");
 
     private InputPanel regExpPanel;
     private Pattern fileNamePattern;
