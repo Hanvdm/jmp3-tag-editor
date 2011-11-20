@@ -1,5 +1,7 @@
 package com.mscg.jmp3.util.service.parsers.impl;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +22,7 @@ import com.mscg.jmp3.ui.util.input.InputPanel;
 import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
 
 public class SimpleFilenameParser implements FilenamePatternParser, InputPanelAwareParser,
-                                             SelectionAwareParser, DocumentListener {
+                                             SelectionAwareParser, DocumentListener, ActionListener {
 
     public static final String AUTHOR_TAG = "${author}";
     public static final String ALBUM_TAG = "${album}";
@@ -51,6 +53,11 @@ public class SimpleFilenameParser implements FilenamePatternParser, InputPanelAw
         if(patternPanel == null) {
             patternPanel = new TextBoxInputPanel(Messages.getString("operations.file.taginfo.info.simple"), 0, 10);
             ((JTextField)patternPanel.getValueComponent()).getDocument().addDocumentListener(this);
+//            DefaultComboBoxModel model = new DefaultComboBoxModel();
+//            patternPanel = new ComboboxInputPanel(Messages.getString("operations.file.taginfo.info.simple"),
+//                                                  model,
+//                                                  true);
+//            ((JComboBox)patternPanel.getValueComponent()).addActionListener(this);
         }
         return patternPanel;
     }
@@ -131,6 +138,10 @@ public class SimpleFilenameParser implements FilenamePatternParser, InputPanelAw
         onTextUpdated(false);
     }
 
+    public void actionPerformed(ActionEvent e) {
+        onTextUpdated(false);
+    }
+
     protected synchronized void onTextUpdated(boolean clean) {
         if(clean) {
             authorPanel.setValue("");
@@ -147,45 +158,55 @@ public class SimpleFilenameParser implements FilenamePatternParser, InputPanelAw
         else {
             String value = patternPanel.getValue();
 
-            if(value.contains(AUTHOR_TAG))
+            if(value.contains(AUTHOR_TAG)) {
                 authorPanel.setValue(AUTHOR_TAG);
+                authorPanel.getValueComponent().setEnabled(false);
+            }
             else {
                 if(!authorPanel.getValueComponent().isEnabled())
                     authorPanel.setValue("");
+                authorPanel.getValueComponent().setEnabled(true);
             }
-            authorPanel.getValueComponent().setEnabled(!value.contains(AUTHOR_TAG));
 
-            if(value.contains(ALBUM_TAG))
+            if(value.contains(ALBUM_TAG)) {
                 albumPanel.setValue(ALBUM_TAG);
+                albumPanel.getValueComponent().setEnabled(false);
+            }
             else {
                 if(!albumPanel.getValueComponent().isEnabled())
                     albumPanel.setValue("");
+                albumPanel.getValueComponent().setEnabled(true);
             }
-            albumPanel.getValueComponent().setEnabled(!value.contains(ALBUM_TAG));
 
-            if(value.contains(TITLE_TAG))
+            if(value.contains(TITLE_TAG)) {
                 titlePanel.setValue(TITLE_TAG);
+                titlePanel.getValueComponent().setEnabled(false);
+            }
             else {
                 if(!titlePanel.getValueComponent().isEnabled())
                     titlePanel.setValue("");
+                titlePanel.getValueComponent().setEnabled(true);
             }
-            titlePanel.getValueComponent().setEnabled(!value.contains(TITLE_TAG));
 
-            if(value.contains(NUMBER_TAG))
+            if(value.contains(NUMBER_TAG)) {
                 numberPanel.setValue(NUMBER_TAG);
+                numberPanel.getValueComponent().setEnabled(false);
+            }
             else {
                 if(!numberPanel.getValueComponent().isEnabled())
                     numberPanel.setValue("");
+                numberPanel.getValueComponent().setEnabled(true);
             }
-            numberPanel.getValueComponent().setEnabled(!value.contains(NUMBER_TAG));
 
-            if(value.contains(YEAR_TAG))
+            if(value.contains(YEAR_TAG)) {
                 yearPanel.setValue(YEAR_TAG);
+                yearPanel.getValueComponent().setEnabled(false);
+            }
             else {
                 if(!yearPanel.getValueComponent().isEnabled())
                     yearPanel.setValue("");
+                yearPanel.getValueComponent().setEnabled(true);
             }
-            yearPanel.getValueComponent().setEnabled(!value.contains(YEAR_TAG));
         }
     }
 
