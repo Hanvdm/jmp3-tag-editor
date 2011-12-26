@@ -126,19 +126,18 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
         removeTagsPanel = new CheckboxInputPanel(Messages.getString("operations.file.taginfo.info.removeold"));
         infoPanel.add(removeTagsPanel);
 
+
+        // set the selected item on the combobox
+        JComboBox comboBox = (JComboBox)parserSelectorPanel.getValueComponent();
+        comboBox.setSelectedItem(selectedItem);
         // add the listener to the parser selector after all other components have been built,
         // so that references can be correctly injected to the parsers (if needed)
-        JComboBox comboBox = (JComboBox)parserSelectorPanel.getValueComponent();
         comboBox.addItemListener(this);
-        // setting the selected item triggers the event listener method
-        comboBox.setSelectedItem(selectedItem);
-        if(comboBox.getModel().getSize() == 1) {
-            // if the combobox has only one item, the event listener is not triggered,
-            // so force the call
-            ItemEvent e = new ItemEvent(comboBox, ItemEvent.ITEM_STATE_CHANGED, selectedItem,
-                                        ItemEvent.SELECTED);
-            itemStateChanged(e);
-        }
+
+        // Force the listener call on the first UI creation
+        ItemEvent e = new ItemEvent(comboBox, ItemEvent.ITEM_STATE_CHANGED, selectedItem,
+                                    ItemEvent.SELECTED);
+        itemStateChanged(e);
     }
 
     /**
