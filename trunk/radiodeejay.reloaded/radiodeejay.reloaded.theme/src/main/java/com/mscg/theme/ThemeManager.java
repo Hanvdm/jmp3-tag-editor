@@ -1,9 +1,9 @@
 package com.mscg.theme;
 
-import java.io.InputStream;
+import java.net.URL;
 
 public interface ThemeManager {
 
-    public InputStream getImageStream(String imageName);
+    public URL getIcon(IconType iconType);
 
 }
