@@ -26,5 +26,12 @@
   		<version>1.0.0</version>
   		<scope>compile</scope>
   	</dependency>
+  	<dependency>
+  		<groupId>com.mscg</groupId>
+  		<artifactId>jMP3Service</artifactId>
+  		<version>1.0.0</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
   </dependencies>
 </project>
