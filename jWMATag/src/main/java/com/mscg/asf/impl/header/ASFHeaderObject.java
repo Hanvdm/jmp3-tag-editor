@@ -8,6 +8,7 @@ import java.util.List;
 import com.mscg.asf.ASFObject;
 import com.mscg.asf.exception.InvalidObjectDataException;
 import com.mscg.asf.guid.ASFObjectGUID;
+import com.mscg.asf.util.Util;
 
 /**
  * This class maps an ASF header object.
@@ -41,7 +42,7 @@ public class ASFHeaderObject extends ASFObject {
         try {
             // the first 4 bytes are the number of header objects.
             // Bytes are in little-endian order.
-            int objectsNumber = readLittleEndianInt(data);
+            int objectsNumber = Util.readLittleEndianInt(data);
             headerObjects = new ArrayList<ASFObject>(objectsNumber);
 
             // check the value of the two reserved bytes
