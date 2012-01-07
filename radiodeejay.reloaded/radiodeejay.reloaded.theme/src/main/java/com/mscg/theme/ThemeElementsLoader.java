@@ -1,11 +1,12 @@
 package com.mscg.theme;
 
-import java.io.InputStream;
+import java.net.URL;
+
 
 public interface ThemeElementsLoader {
 
     public String getThemeName();
 
-    public InputStream getStreamForImage(String imageName);
+    public URL getUrlForImage(IconType iconType);
 
 }

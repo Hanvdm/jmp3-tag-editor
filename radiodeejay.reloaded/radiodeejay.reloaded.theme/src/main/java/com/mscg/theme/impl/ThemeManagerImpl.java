@@ -1,6 +1,6 @@
 package com.mscg.theme.impl;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mscg.settings.SettingsService;
+import com.mscg.theme.IconType;
 import com.mscg.theme.ThemeElementsLoader;
 import com.mscg.theme.ThemeManager;
 
@@ -67,17 +68,17 @@ public class ThemeManagerImpl implements ThemeManager {
         }
     }
 
-    public synchronized InputStream getImageStream(String imageName) {
-        Set<ThemeElementsLoader> loaders = themeLoaders.get(settings.getValue("theme"));
-        InputStream is = null;
+    public synchronized URL getIcon(IconType iconType) {
+        Set<ThemeElementsLoader> loaders = themeLoaders.get(settings.getValue("window.theme"));
+        URL url = null;
         if(loaders != null) {
             for(ThemeElementsLoader loader : loaders) {
-                is = loader.getStreamForImage(imageName);
-                if(is != null)
+                url = loader.getUrlForImage(iconType);
+                if(url != null)
                     break;
             }
         }
-        return is;
+        return url;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.mscg.theme;
 
-import java.io.InputStream;
+import java.net.URL;
+
 
 public abstract class StandardAbstractThemeElementsLoader implements ThemeElementsLoader {
 
@@ -10,11 +11,12 @@ public abstract class StandardAbstractThemeElementsLoader implements ThemeElemen
         return "png";
     }
 
-    public InputStream getStreamForImage(String imageName) {
+    public URL getUrlForImage(IconType iconType) {
+        String imageName = iconType.getFileName();
         int index = imageName.lastIndexOf('.');
         if(index < 0)
             imageName += "." + getDefaultExtension();
-        return this.getClass().getClassLoader().getResourceAsStream(getThemeFolder() + imageName);
+        return this.getClass().getClassLoader().getResource(getThemeFolder() + imageName);
     }
 
 }
