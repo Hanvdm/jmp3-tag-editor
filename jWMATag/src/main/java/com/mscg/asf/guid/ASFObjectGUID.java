@@ -19,11 +19,11 @@ import com.mscg.asf.exception.GUIDSizeException;
 public class ASFObjectGUID {
 
     private static final GUIDOffset partsOffsets[] = new GUIDOffset[] {
-        new GUIDOffset(0, 3),
-        new GUIDOffset(4, 5),
-        new GUIDOffset(6, 7),
-        new GUIDOffset(8, 9),
-        new GUIDOffset(10, 15),
+        new GUIDOffset(0, 3, true),
+        new GUIDOffset(4, 5, true),
+        new GUIDOffset(6, 7, true),
+        new GUIDOffset(8, 9, false),
+        new GUIDOffset(10, 15, false),
     };
 
     private static Pattern guidPattern = Pattern.compile("([a-eA-F0-9]{8})-([a-eA-F0-9]{4})-([a-eA-F0-9]{4})-([a-eA-F0-9]{4})-([a-eA-F0-9]{12})");
@@ -38,7 +38,7 @@ public class ASFObjectGUID {
      * @throws GUIDSizeException If <code>guid</code> isn't 16 byte long.
      */
     public ASFObjectGUID(byte guid[]) throws NullPointerException, GUIDSizeException {
-        initFromArray(guid);
+        initFromByteArray(guid);
     }
 
 
@@ -57,7 +57,7 @@ public class ASFObjectGUID {
         int bytesRead = guidStream.read(guid);
         if(bytesRead < 16)
             throw new GUIDSizeException("GUID must be 16 bytes long");
-        initFromArray(guid);
+        initFromByteArray(guid);
     }
 
     /**
@@ -72,6 +72,41 @@ public class ASFObjectGUID {
      * @throws GUIDFormatException If <code>guidString</code> is in a non-valid format.
      */
     public ASFObjectGUID(String guidString) throws NullPointerException, GUIDFormatException {
+        initFromString(guidString);
+    }
+
+    /**
+     * Builds a GUID from a string in the format:
+     * <p>
+     * <code> AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEE </code>
+     * <p>
+     * where the string parts are hexadecimal values.
+     * This constructor doesn't throw any exception and should
+     * be used only when the string is surely in correct format.
+     *
+     * @param guidString The string representing the GUID.
+     * @param noThrow A dummy parameter to differentiate constructors.
+     * @throws NullPointerException If <code>guidString</code> is null.
+     * @throws GUIDFormatException If <code>guidString</code> is in a non-valid format.
+     */
+    public ASFObjectGUID(String guidString, boolean noThrow) {
+        try {
+            initFromString(guidString);
+        } catch(Exception e){}
+    }
+
+    /**
+     * Inits the GUID from a string in the format:
+     * <p>
+     * <code> AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEE </code>
+     * <p>
+     * where the string parts are hexadecimal values.
+     *
+     * @param guidString The string representing the GUID.
+     * @throws NullPointerException If <code>guidString</code> is null.
+     * @throws GUIDFormatException If <code>guidString</code> is in a non-valid format.
+     */
+    private void initFromString(String guidString) throws NullPointerException, GUIDFormatException, NumberFormatException {
         if(guidString == null)
             throw new NullPointerException("GUID is null");
         Matcher matcher = guidPattern.matcher(guidString);
@@ -84,7 +119,7 @@ public class ASFObjectGUID {
         for(int i = 0, l = partsOffsets.length; i < l; i++) {
             String partString = matcher.group(i + 1);
             for(int j = partsOffsets[i].end; j >= partsOffsets[i].start; j--) {
-                int startIndex = (partsOffsets[i].end - j) * 2;
+                int startIndex = 2 * (partsOffsets[i].reverse ? (partsOffsets[i].end - j) : (j - partsOffsets[i].start));
                 String byteStr = partString.substring(startIndex, startIndex + 2);
                 guid[j] = (byte)Integer.parseInt(byteStr, 16);
             }
@@ -98,7 +133,7 @@ public class ASFObjectGUID {
      * @throws NullPointerException If <code>guid</code> is null.
      * @throws GUIDSizeException If <code>guid</code> isn't 16 byte long.
      */
-    protected void initFromArray(byte[] guid) throws NullPointerException, GUIDSizeException {
+    protected void initFromByteArray(byte[] guid) throws NullPointerException, GUIDSizeException {
         if(guid == null)
             throw new NullPointerException("GUID is null");
         if(guid.length != 16)
@@ -145,8 +180,15 @@ public class ASFObjectGUID {
         for(GUIDOffset partOffset : partsOffsets) {
             if(sb.length() != 0)
                 sb.append("-");
-            for(int i = partOffset.end; i >= partOffset.start; i--) {
-                sb.append(String.format("%02X", ((int)guid[i]) & 0xFF));
+            if(partOffset.reverse) {
+                for(int i = partOffset.end; i >= partOffset.start; i--) {
+                    sb.append(String.format("%02X", ((int)guid[i]) & 0xFF));
+                }
+            }
+            else {
+                for(int i = partOffset.start; i <= partOffset.end; i++) {
+                    sb.append(String.format("%02X", ((int)guid[i]) & 0xFF));
+                }
             }
         }
         return sb.toString();
@@ -155,10 +197,12 @@ public class ASFObjectGUID {
     private static class GUIDOffset {
         int start;
         int end;
+        boolean reverse;
 
-        public GUIDOffset(int start, int end) {
+        public GUIDOffset(int start, int end, boolean reverse) {
             this.start = start;
             this.end = end;
+            this.reverse = reverse;
         }
 
     }

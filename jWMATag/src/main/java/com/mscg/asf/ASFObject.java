@@ -1,34 +1,125 @@
 package com.mscg.asf;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+
+import com.mscg.asf.exception.ASFObjectAllocationException;
+import com.mscg.asf.exception.GUIDSizeException;
+import com.mscg.asf.exception.InvalidObjectDataException;
 import com.mscg.asf.guid.ASFObjectGUID;
 
 /**
  * This class models and abstract ASF object,
- * wrappign its GUID, size and data load.
+ * wrapping its GUID, size and data load.
  *
  * @author Giuseppe Miscione
  *
  */
 public abstract class ASFObject {
 
+    public static final int ASF_OBJECT_HEADER_SIZE = 24;
+
+    /**
+     * This utility method parses an {@link InputStream} and
+     * returns the corresponding {@link ASFObject}
+     *
+     * @param is The {@link InputStream} to parse.
+     * @return An {@link ASFObject} containing the informations
+     * provided by the stream.
+     *
+     * @throws IOException If an I/O error occurs.
+     * @throws GUIDSizeException If the data in the stream are too small
+     * to contain the object GUID.
+     * @throws InvalidObjectDataException If the object data are not valid.
+     * @throws ASFObjectAllocationException If an error occurs while loading the ASF object class.
+     */
+    public static ASFObject parseStream(InputStream is) throws GUIDSizeException, IOException,
+                                                               InvalidObjectDataException,
+                                                               ASFObjectAllocationException {
+        ASFObjectGUID guid = new ASFObjectGUID(is);
+        Class<? extends ASFObject> objectClassForGUID = ASFObjectFactory.getObjectClassForGUID(guid);
+        try {
+            long dataSize = readLittleEndianLong(is);
+
+            Constructor<? extends ASFObject> constructor = objectClassForGUID.getConstructor(
+                new Class[]{ASFObjectGUID.class, long.class, InputStream.class});
+            ASFObject asfObject = constructor.newInstance(new Object[]{guid, dataSize, is});
+            return asfObject;
+        } catch (Exception e) {
+            throw new ASFObjectAllocationException("Cannot allocate object of class " + objectClassForGUID.getCanonicalName(),
+                                                   e);
+        }
+    }
+
+    /**
+     * Reads an integer from a little-endian byte array.
+     *
+     * @param data The little-endian {@link InputStream}.
+     * @return The integer value contained in the stream.
+     * @throws InvalidObjectDataException If the the stream doesn't contain at least 4 bytes or an error occurs.
+     */
+    protected static int readLittleEndianInt(InputStream data) throws InvalidObjectDataException {
+        try {
+            byte dataBytes[] = new byte[4];
+            int byteRead = data.read(dataBytes);
+            if(byteRead != dataBytes.length)
+                throw new InvalidObjectDataException("Cannot read int from stream");
+
+            int ret = 0;
+            for(int i = 0, l = dataBytes.length; i < l; i++) {
+                ret += ((int)dataBytes[i] & 0xFF) << (8 * i);
+            }
+            return ret;
+        } catch(IOException e) {
+            throw new InvalidObjectDataException("An I/O error occurs while reading an int", e);
+        }
+    }
+
+    /**
+     * Reads a long from a little-endian byte array.
+     *
+     * @param data The little-endian {@link InputStream}.
+     * @return The long value contained in the stream.
+     * @throws InvalidObjectDataException If the the stream doesn't contain at least 8 bytes or an error occurs.
+     */
+    protected static long readLittleEndianLong(InputStream data) throws InvalidObjectDataException {
+        try {
+            byte dataBytes[] = new byte[8];
+            int byteRead = data.read(dataBytes);
+            if(byteRead != dataBytes.length)
+                throw new InvalidObjectDataException("Cannot read long from stream");
+
+            int ret = 0;
+            for(int i = 0, l = dataBytes.length; i < l; i++) {
+                ret += ((int)dataBytes[i] & 0xFF) << (8 * i);
+            }
+            return ret;
+        } catch(IOException e) {
+            throw new InvalidObjectDataException("An I/O error occurs while reading a long", e);
+        }
+    }
+
     protected ASFObjectGUID guid;
-    protected byte data[];
+    protected long length;
 
     /**
      * Builds a new abstract ASF object.
      *
-     * @param guid The object GUID
-     * @param data The object data as a byte array. The data length
-     * is computed from the array length. This parameters can be <code>null</code>.
+     * @param guid The object GUID.
+     * @param length The length of the object, in bytes.
+     * @param data The object data as an {@link InputStream}.
+     * @throws InvalidObjectDataException If the object data are not valid.
      */
-    protected ASFObject(ASFObjectGUID guid, byte data[]) {
+    protected ASFObject(ASFObjectGUID guid, long length, InputStream data) throws InvalidObjectDataException {
         this.guid = guid;
-        setData(data);
+        updateData(length, data, true);
     }
 
     /**
-     * Returns the object GUID
-     * @return the object GUID
+     * Returns the object GUID.
+     *
+     * @return the object GUID.
      */
     public ASFObjectGUID getGuid() {
         return guid;
@@ -39,24 +130,37 @@ public abstract class ASFObject {
      *
      * @return The object data.
      */
-    public byte[] getData() {
-        return data;
-    }
+    public abstract Object getData();
 
     /**
-     * Changes the object data.
+     * Parse the provided {@link InputStream} to build the
+     * inner object data.
      *
-     * @param data The new data to set in the object
+     * @param data The {@link InputStream} to parse.
+     * @throws InvalidObjectDataException If the data are not valid for the object.
      */
-    public void setData(byte[] data) {
-        this.data = data;
+    protected abstract void parseData(InputStream data) throws InvalidObjectDataException;
+
+    /**
+     * Returns the data length, without the header bytes.
+     *
+     * @return the length The data length, without the header bytes.
+     */
+    public long getLength() {
+        return length;
     }
 
     /**
-     * @return the length
+     * Updates the inner data of the object.
+     *
+     * @param length The length of the data.
+     * @param data An {@link InputStream} with the object data.
+     * @param lengthIncludesHeader A boolean switch that indicates if the length
+     * includes also the header length (24 bytes).
+     * @throws InvalidObjectDataException If the data are not valid for the object.
      */
-    public int getLength() {
-        return data == null ? 0 : data.length;
+    public void updateData(long length, InputStream data, boolean lengthIncludesHeader) throws InvalidObjectDataException {
+        this.length = length - (lengthIncludesHeader ? ASF_OBJECT_HEADER_SIZE : 0);
+        parseData(data);
     }
-
 }
