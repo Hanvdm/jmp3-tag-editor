@@ -1,5 +1,7 @@
 package com.mscg.asf.guid;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,11 +38,26 @@ public class ASFObjectGUID {
      * @throws GUIDSizeException If <code>guid</code> isn't 16 byte long.
      */
     public ASFObjectGUID(byte guid[]) throws NullPointerException, GUIDSizeException {
-        if(guid == null)
+        initFromArray(guid);
+    }
+
+
+    /**
+     * Builds a GUID reading 16 bytes from the provided {@link InputStream}.
+     *
+     * @param guidStream The {@link InputStream} from which the GUID bytes are read.
+     * @throws NullPointerException If <code>guidStream</code> is null.
+     * @throws GUIDSizeException If <code>guidStream</code> contains less than 16 byte.
+     * @throws IOException If an I/O error occurs.
+     */
+    public ASFObjectGUID(InputStream guidStream) throws NullPointerException, GUIDSizeException, IOException {
+        if(guidStream == null)
             throw new NullPointerException("GUID is null");
-        if(guid.length != 16)
+        byte guid[] = new byte[16];
+        int bytesRead = guidStream.read(guid);
+        if(bytesRead < 16)
             throw new GUIDSizeException("GUID must be 16 bytes long");
-        this.guid = guid;
+        initFromArray(guid);
     }
 
     /**
@@ -72,6 +89,30 @@ public class ASFObjectGUID {
                 guid[j] = (byte)Integer.parseInt(byteStr, 16);
             }
         }
+    }
+
+    /**
+     * Inits the object using the passed byte array.
+     *
+     * @param guid The byte array that will be wrapped by the GUID
+     * @throws NullPointerException If <code>guid</code> is null.
+     * @throws GUIDSizeException If <code>guid</code> isn't 16 byte long.
+     */
+    protected void initFromArray(byte[] guid) throws NullPointerException, GUIDSizeException {
+        if(guid == null)
+            throw new NullPointerException("GUID is null");
+        if(guid.length != 16)
+            throw new GUIDSizeException("GUID must be 16 bytes long");
+        this.guid = guid;
+    }
+
+    /**
+     * Returns the internal GUID bytes.
+     *
+     * @return The internal GUID bytes.
+     */
+    public byte[] getGuid() {
+        return guid;
     }
 
     @Override
