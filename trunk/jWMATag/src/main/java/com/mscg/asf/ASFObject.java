@@ -8,6 +8,7 @@ import com.mscg.asf.exception.ASFObjectAllocationException;
 import com.mscg.asf.exception.GUIDSizeException;
 import com.mscg.asf.exception.InvalidObjectDataException;
 import com.mscg.asf.guid.ASFObjectGUID;
+import com.mscg.asf.util.Util;
 
 /**
  * This class models and abstract ASF object,
@@ -40,7 +41,7 @@ public abstract class ASFObject {
         ASFObjectGUID guid = new ASFObjectGUID(is);
         Class<? extends ASFObject> objectClassForGUID = ASFObjectFactory.getObjectClassForGUID(guid);
         try {
-            long dataSize = readLittleEndianLong(is);
+            long dataSize = Util.readLittleEndianLong(is);
 
             Constructor<? extends ASFObject> constructor = objectClassForGUID.getConstructor(
                 new Class[]{ASFObjectGUID.class, long.class, InputStream.class});
@@ -49,54 +50,6 @@ public abstract class ASFObject {
         } catch (Exception e) {
             throw new ASFObjectAllocationException("Cannot allocate object of class " + objectClassForGUID.getCanonicalName(),
                                                    e);
-        }
-    }
-
-    /**
-     * Reads an integer from a little-endian byte array.
-     *
-     * @param data The little-endian {@link InputStream}.
-     * @return The integer value contained in the stream.
-     * @throws InvalidObjectDataException If the the stream doesn't contain at least 4 bytes or an error occurs.
-     */
-    protected static int readLittleEndianInt(InputStream data) throws InvalidObjectDataException {
-        try {
-            byte dataBytes[] = new byte[4];
-            int byteRead = data.read(dataBytes);
-            if(byteRead != dataBytes.length)
-                throw new InvalidObjectDataException("Cannot read int from stream");
-
-            int ret = 0;
-            for(int i = 0, l = dataBytes.length; i < l; i++) {
-                ret += ((int)dataBytes[i] & 0xFF) << (8 * i);
-            }
-            return ret;
-        } catch(IOException e) {
-            throw new InvalidObjectDataException("An I/O error occurs while reading an int", e);
-        }
-    }
-
-    /**
-     * Reads a long from a little-endian byte array.
-     *
-     * @param data The little-endian {@link InputStream}.
-     * @return The long value contained in the stream.
-     * @throws InvalidObjectDataException If the the stream doesn't contain at least 8 bytes or an error occurs.
-     */
-    protected static long readLittleEndianLong(InputStream data) throws InvalidObjectDataException {
-        try {
-            byte dataBytes[] = new byte[8];
-            int byteRead = data.read(dataBytes);
-            if(byteRead != dataBytes.length)
-                throw new InvalidObjectDataException("Cannot read long from stream");
-
-            int ret = 0;
-            for(int i = 0, l = dataBytes.length; i < l; i++) {
-                ret += ((int)dataBytes[i] & 0xFF) << (8 * i);
-            }
-            return ret;
-        } catch(IOException e) {
-            throw new InvalidObjectDataException("An I/O error occurs while reading a long", e);
         }
     }
 
