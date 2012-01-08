@@ -2,6 +2,7 @@ package com.mscg.asf.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import com.mscg.asf.exception.InvalidObjectDataException;
 
@@ -12,6 +13,13 @@ import com.mscg.asf.exception.InvalidObjectDataException;
  *
  */
 public class Util {
+
+    /**
+     * Avoid allocation of this class.
+     */
+    protected Util() {
+
+    }
 
     /**
      * Reads a short integer from a little-endian stream.
@@ -103,6 +111,20 @@ public class Util {
             System.arraycopy(string, 0, ret, 0, ret.length);
             return ret;
         }
+    }
+
+    /**
+     * This method transforms a byte buffer into a string using the default
+     * UTF-16LE encoding used in ASF file format. This method trims the
+     * buffer if it contains a null string terminator.
+     *
+     * @param buffer The byte array that will be converted into a string.
+     * @return A string object.
+     * @throws UnsupportedEncodingException If the JVM doesn't support the
+     * UTF-16LE encoding.
+     */
+    public static String readStringFromBuffer(byte[] buffer) throws UnsupportedEncodingException {
+        return new String(Util.trimStringBytes(buffer), "UTF-16LE");
     }
 
 }

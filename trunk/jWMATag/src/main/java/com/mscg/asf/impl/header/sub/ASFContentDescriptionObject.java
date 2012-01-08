@@ -40,7 +40,7 @@ public class ASFContentDescriptionObject extends ASFObject {
                 byteRead = data.read(buffer);
                 if(byteRead != buffer.length)
                     throw new InvalidObjectDataException("Cannot read content title from stream");
-                this.data.setTitle(new String(Util.trimStringBytes(buffer), "UTF-16LE"));
+                this.data.setTitle(Util.readStringFromBuffer(buffer));
             }
 
             if(authorLength != 0) {
@@ -48,7 +48,7 @@ public class ASFContentDescriptionObject extends ASFObject {
                 byteRead = data.read(buffer);
                 if(byteRead != buffer.length)
                     throw new InvalidObjectDataException("Cannot read content author from stream");
-                this.data.setAuthor(new String(Util.trimStringBytes(buffer), "UTF-16LE"));
+                this.data.setAuthor(Util.readStringFromBuffer(buffer));
             }
 
             if(copyrightLength != 0) {
@@ -56,7 +56,7 @@ public class ASFContentDescriptionObject extends ASFObject {
                 byteRead = data.read(buffer);
                 if(byteRead != buffer.length)
                     throw new InvalidObjectDataException("Cannot read content copyright from stream");
-                this.data.setCopyright(new String(Util.trimStringBytes(buffer), "UTF-16LE"));
+                this.data.setCopyright(Util.readStringFromBuffer(buffer));
             }
 
             if(descriptionLength != 0) {
@@ -64,7 +64,7 @@ public class ASFContentDescriptionObject extends ASFObject {
                 byteRead = data.read(buffer);
                 if(byteRead != buffer.length)
                     throw new InvalidObjectDataException("Cannot read content description from stream");
-                this.data.setDescription(new String(Util.trimStringBytes(buffer), "UTF-16LE"));
+                this.data.setDescription(Util.readStringFromBuffer(buffer));
             }
 
             if(ratingLength != 0) {
@@ -72,7 +72,7 @@ public class ASFContentDescriptionObject extends ASFObject {
                 byteRead = data.read(buffer);
                 if(byteRead != buffer.length)
                     throw new InvalidObjectDataException("Cannot read content rating from stream");
-                this.data.setRating(new String(Util.trimStringBytes(buffer), "UTF-16LE"));
+                this.data.setRating(Util.readStringFromBuffer(buffer));
             }
 
         } catch(IOException e) {
