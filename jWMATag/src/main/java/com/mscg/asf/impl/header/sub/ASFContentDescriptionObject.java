@@ -22,6 +22,13 @@ public class ASFContentDescriptionObject extends ASFObject {
     }
 
     @Override
+    public long getLength() {
+        //TODO: implement this method to calculate dinamically the
+        // length of the object based on the real data size
+        return super.getLength();
+    }
+
+    @Override
     protected void parseData(InputStream data) throws InvalidObjectDataException {
         this.data = new ContentDescriptionData();
 

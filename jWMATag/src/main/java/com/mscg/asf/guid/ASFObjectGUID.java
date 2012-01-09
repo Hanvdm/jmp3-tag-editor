@@ -18,15 +18,20 @@ import com.mscg.asf.exception.GUIDSizeException;
  */
 public class ASFObjectGUID {
 
+    private static final Pattern guidPattern = Pattern.compile("([a-fA-F0-9]{8})-([a-fA-F0-9]{4})-([a-fA-F0-9]{4})-([a-fA-F0-9]{4})-([a-fA-F0-9]{12})");
+
     private static final GUIDOffset partsOffsets[] = new GUIDOffset[] {
-        new GUIDOffset(0, 3, true),
-        new GUIDOffset(4, 5, true),
-        new GUIDOffset(6, 7, true),
-        new GUIDOffset(8, 9, false),
-        new GUIDOffset(10, 15, false),
+       new GUIDOffset(0, 3, true),
+       new GUIDOffset(4, 5, true),
+       new GUIDOffset(6, 7, true),
+       new GUIDOffset(8, 9, false),
+       new GUIDOffset(10, 15, false),
     };
 
-    private static Pattern guidPattern = Pattern.compile("([a-eA-F0-9]{8})-([a-eA-F0-9]{4})-([a-eA-F0-9]{4})-([a-eA-F0-9]{4})-([a-eA-F0-9]{12})");
+    public static final ASFObjectGUID ASF_Reserved_1 = new ASFObjectGUID("ABD3D211-A9BA-11CF-8EE6-00C00C205365", true);
+    public static final ASFObjectGUID ASF_Reserved_2 = new ASFObjectGUID("86D15241-311D-11D0-A3A4-00A0C90348F6", true);
+    public static final ASFObjectGUID ASF_Reserved_3 = new ASFObjectGUID("4B1ACBE3-100B-11D0-A39B-00A0C90348F6", true);
+    public static final ASFObjectGUID ASF_Reserved_4 = new ASFObjectGUID("4CFEDB20-75F6-11CF-9C0F-00A0C90349CB", true);
 
     private byte guid[];
 
