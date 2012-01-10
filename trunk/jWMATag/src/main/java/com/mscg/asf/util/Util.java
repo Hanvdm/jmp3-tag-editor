@@ -14,6 +14,8 @@ import com.mscg.asf.exception.InvalidObjectDataException;
  */
 public class Util {
 
+    public static final byte EMPTY_BYTE_ARRAY[] = new byte[]{};
+
     /**
      * Avoid allocation of this class.
      */

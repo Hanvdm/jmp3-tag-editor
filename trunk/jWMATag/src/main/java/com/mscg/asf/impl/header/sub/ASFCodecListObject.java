@@ -9,6 +9,7 @@ import com.mscg.asf.ASFObject;
 import com.mscg.asf.exception.GUIDSizeException;
 import com.mscg.asf.exception.InvalidObjectDataException;
 import com.mscg.asf.guid.ASFObjectGUID;
+import com.mscg.asf.guid.ASFObjectGUID.ReservedGUID;
 import com.mscg.asf.util.Util;
 
 public class ASFCodecListObject extends ASFObject {
@@ -37,7 +38,7 @@ public class ASFCodecListObject extends ASFObject {
         codecsInformations.setCodecs(new ArrayList<ASFCodec>(1));
         try {
             codecsInformations.reservedGUID = new ASFObjectGUID(data);
-            if(!ASFObjectGUID.ASF_Reserved_2.equals(codecsInformations.reservedGUID))
+            if(!ReservedGUID.ASF_Reserved_2.equals(codecsInformations.reservedGUID))
                 throw new InvalidObjectDataException("Invalid reserved GUID for codecs object");
 
             int codecsCount = Util.readLittleEndianInt(data);
@@ -140,8 +141,6 @@ public class ASFCodecListObject extends ASFObject {
     }
 
     public static class ASFCodec {
-        private static final byte EMPTY_INFORMATIONS[] = new byte[]{};
-
         private CodecType type;
         private String name;
         private String description;
@@ -151,7 +150,7 @@ public class ASFCodecListObject extends ASFObject {
             type = CodecType.UNKNOWN;
             name = "";
             description = "";
-            informations = EMPTY_INFORMATIONS;
+            informations = Util.EMPTY_BYTE_ARRAY;
         }
 
         /**

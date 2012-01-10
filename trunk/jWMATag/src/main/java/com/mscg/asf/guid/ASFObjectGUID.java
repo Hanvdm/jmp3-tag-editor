@@ -28,10 +28,33 @@ public class ASFObjectGUID {
        new GUIDOffset(10, 15, false),
     };
 
-    public static final ASFObjectGUID ASF_Reserved_1 = new ASFObjectGUID("ABD3D211-A9BA-11CF-8EE6-00C00C205365", true);
-    public static final ASFObjectGUID ASF_Reserved_2 = new ASFObjectGUID("86D15241-311D-11D0-A3A4-00A0C90348F6", true);
-    public static final ASFObjectGUID ASF_Reserved_3 = new ASFObjectGUID("4B1ACBE3-100B-11D0-A39B-00A0C90348F6", true);
-    public static final ASFObjectGUID ASF_Reserved_4 = new ASFObjectGUID("4CFEDB20-75F6-11CF-9C0F-00A0C90349CB", true);
+    public static class ReservedGUID {
+
+        public static final ASFObjectGUID ASF_Reserved_1 = new ASFObjectGUID("ABD3D211-A9BA-11CF-8EE6-00C00C205365", true);
+        public static final ASFObjectGUID ASF_Reserved_2 = new ASFObjectGUID("86D15241-311D-11D0-A3A4-00A0C90348F6", true);
+        public static final ASFObjectGUID ASF_Reserved_3 = new ASFObjectGUID("4B1ACBE3-100B-11D0-A39B-00A0C90348F6", true);
+        public static final ASFObjectGUID ASF_Reserved_4 = new ASFObjectGUID("4CFEDB20-75F6-11CF-9C0F-00A0C90349CB", true);
+
+    }
+
+    public static class StreamTypeGUID {
+
+        public static final ASFObjectGUID ASF_Audio_Media           = new ASFObjectGUID("F8699E40-5B4D-11CF-A8FD-00805F5C442B", true);
+        public static final ASFObjectGUID ASF_Video_Media           = new ASFObjectGUID("BC19EFC0-5B4D-11CF-A8FD-00805F5C442B", true);
+        public static final ASFObjectGUID ASF_Command_Media         = new ASFObjectGUID("59DACFC0-59E6-11D0-A3AC-00A0C90348F6", true);
+        public static final ASFObjectGUID ASF_JFIF_Media            = new ASFObjectGUID("B61BE100-5B4E-11CF-A8FD-00805F5C442B", true);
+        public static final ASFObjectGUID ASF_Degradable_JPEG_Media = new ASFObjectGUID("35907DE0-E415-11CF-A917-00805F5C442B", true);
+        public static final ASFObjectGUID ASF_File_Transfer_Media   = new ASFObjectGUID("91BD222C-F21C-497A-8B6D-5AA86BFC0185", true);
+        public static final ASFObjectGUID ASF_Binary_Media          = new ASFObjectGUID("3AFB65E2-47EF-40F2-AC2C-70A90D71D343", true);
+
+    }
+
+    public static class ErrorCorrectionTypeGUID {
+
+        public static final ASFObjectGUID ASF_No_Error_Correction = new ASFObjectGUID("20FB5700-5B55-11CF-A8FD-00805F5C442B", true);
+        public static final ASFObjectGUID ASF_Audio_Spread        = new ASFObjectGUID("BFC3CD50-618F-11CF-8BB2-00AA00B4E220", true);
+
+    }
 
     private byte guid[];
 
