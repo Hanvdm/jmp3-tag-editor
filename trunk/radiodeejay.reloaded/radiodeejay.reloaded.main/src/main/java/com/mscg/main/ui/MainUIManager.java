@@ -6,7 +6,7 @@ public interface MainUIManager {
 
     public JMenuItem createMenu(String title, boolean isMenu);
 
-    public void showError(Exception e);
+    public void showError(Exception e, boolean logError);
 
     public void showMessage(String title, String message);
 

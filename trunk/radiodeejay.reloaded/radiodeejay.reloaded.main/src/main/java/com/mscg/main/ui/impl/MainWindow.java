@@ -73,7 +73,7 @@ public class MainWindow extends JFrame implements ComponentListener, WindowState
             if(maximized)
                 setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
         } catch(Exception e){
-            this.uiManager.showError(e);
+            this.uiManager.showError(e, true);
         }
     }
 
