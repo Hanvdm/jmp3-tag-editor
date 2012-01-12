@@ -57,13 +57,16 @@ public class MainUIManagerImpl implements MainUIManager {
         return menu;
     }
 
-    public void showError(Exception e) {
+    public void showError(Exception e, boolean logError) {
         LocalizationService localization = RadioDeejayReloadedMainActivator.getInstance().getLocalizationService();
         String message = localization.getString("error.message") + "\n" + e.getMessage();
         String title = localization.getString("error.title");
         String buttons[] = {localization.getString("error.close")};
         JOptionPane.showOptionDialog(MainWindow.getInstance(), message, title, JOptionPane.DEFAULT_OPTION,
                                      JOptionPane.ERROR_MESSAGE, null, buttons, buttons[0]);
+
+        if(logError)
+            LOG.error("An error occurred", e);
     }
 
     public void showMessage(String title, String message) {
@@ -75,7 +78,7 @@ public class MainUIManagerImpl implements MainUIManager {
 
     protected void manageError(Exception e) {
         LOG.error("An error occurred and the application will close.", e);
-        showError(e);
+        showError(e, false);
         System.exit(1);
     }
 
