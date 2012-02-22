@@ -3,6 +3,7 @@
 <!DOCTYPE deejay-reloaded SYSTEM "chrome://deejay-reloaded/locale/deejay-reloaded.dtd">
 <overlay id="deejay-reloaded" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+    <script src="deejay-reloaded-download-helper.js" />
     <script src="deejay-reloaded.js" />
     
     <keyset>
@@ -12,13 +13,13 @@
     
     <menupopup id="menu_ToolsPopup"> 
         <menuitem id="deejay-reloaded-download-menu" label="&menuitem;"
-                  key="deejay-reloaded-start-download" disabled="true"
+                  key="deejay-reloaded-start-download"
                   oncommand="radioDeejayDownloader.startDownload();" />
     </menupopup> 
     
     <menupopup id="contentAreaContextMenu">
         <menuitem id="deejay-reloaded-download-menu-popup" label="&menuitem;"
-                  key="deejay-reloaded-start-download" disabled="true"
+                  key="deejay-reloaded-start-download"
                   oncommand="radioDeejayDownloader.startDownload();" />
     </menupopup>
     
