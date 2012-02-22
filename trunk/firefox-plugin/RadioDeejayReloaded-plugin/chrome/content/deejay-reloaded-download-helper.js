@@ -7,8 +7,7 @@ RadioDeejayReloadedDownloadHelper.prototype = {
     // then prompt the user with a file picker
     saveHelper : function(linkURL, linkText, dialogTitle, bypassCache, doc) {
         // canonical def in nsURILoader.h
-        const
-        NS_ERROR_SAVE_LINK_AS_TIMEOUT = 0x805d0020;
+        const NS_ERROR_SAVE_LINK_AS_TIMEOUT = 0x805d0020;
 
         // an object to proxy the data through to
         // nsIExternalHelperAppService.doContent, which will wait for the
@@ -16,7 +15,6 @@ RadioDeejayReloadedDownloadHelper.prototype = {
         // file picker
         function saveAsListener() {
         }
-        ;
         saveAsListener.prototype = {
             extListener : null,
 
