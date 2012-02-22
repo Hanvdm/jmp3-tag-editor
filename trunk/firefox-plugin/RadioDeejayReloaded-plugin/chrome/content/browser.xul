@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://deejay-reloaded/skin/skin.css" type="text/css"?>
+<!DOCTYPE deejay-reloaded SYSTEM "chrome://deejay-reloaded/locale/deejay-reloaded.dtd">
+<overlay id="deejay-reloaded" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script src="deejay-reloaded.js" />
+    
+    <keyset>
+        <key id="deejay-reloaded-start-download" modifiers="accel alt" key="R"
+             oncommand="radioDeejayDownloader.startDownload();"/>
+    </keyset>
+    
+    <menupopup id="menu_ToolsPopup"> 
+        <menuitem id="deejay-reloaded-download-menu" label="&menuitem;"
+                  key="deejay-reloaded-start-download" disabled="true"
+                  oncommand="radioDeejayDownloader.startDownload();" />
+    </menupopup> 
+    
+</overlay>
