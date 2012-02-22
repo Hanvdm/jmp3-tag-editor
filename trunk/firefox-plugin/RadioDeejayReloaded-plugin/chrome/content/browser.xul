@@ -16,4 +16,10 @@
                   oncommand="radioDeejayDownloader.startDownload();" />
     </menupopup> 
     
+    <menupopup id="contentAreaContextMenu">
+        <menuitem id="deejay-reloaded-download-menu-popup" label="&menuitem;"
+                  key="deejay-reloaded-start-download" disabled="true"
+                  oncommand="radioDeejayDownloader.startDownload();" />
+    </menupopup>
+    
 </overlay>

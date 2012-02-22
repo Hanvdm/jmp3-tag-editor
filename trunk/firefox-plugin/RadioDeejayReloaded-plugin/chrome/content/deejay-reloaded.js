@@ -1,12 +1,17 @@
 function RadioDeejayReloadedDownload() {
     this.menuItem = null;
+    this.popupMenuItem = null;
 }
 
 RadioDeejayReloadedDownload.prototype = {
+    menuItem: null,
+    popupMenuItem: null,
+    
     init: function() {
         var me = this;
 
-        this.menuItem = gBrowser.ownerDocument.getElementById("deejay-reloaded-download-menu");
+        this.menuItem = document.getElementById("deejay-reloaded-download-menu");
+        this.popupMenuItem = document.getElementById("deejay-reloaded-download-menu-popup");
         gBrowser.addEventListener("load", function(event) {
             me.onPageLoad(event);
         }, true);
@@ -39,13 +44,19 @@ RadioDeejayReloadedDownload.prototype = {
     },
 
     checkTabLocation: function(host, path) {
-        if(!host || !path)
+        if(!host || !path) {
             this.menuItem.disabled = true;
+            this.popupMenuItem.disabled = true;
+        }
         else {
-            if(host.lastIndexOf("deejay.it") >= 0 && path.indexOf("/dj/radio/reloaded") >= 0)
+            if(host.lastIndexOf("deejay.it") >= 0 && path.indexOf("/dj/radio/reloaded") >= 0) {
                 this.menuItem.disabled = false;
-            else
+                this.popupMenuItem.disabled = false;
+            }
+            else {
                 this.menuItem.disabled = true;
+                this.popupMenuItem.disabled = true;
+            }
         }
     },
 
