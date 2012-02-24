@@ -11,13 +11,15 @@
              oncommand="radioDeejayDownloader.startDownload();"/>
     </keyset>
     
-    <menupopup id="menu_ToolsPopup"> 
+    <menupopup id="menu_ToolsPopup">
+        <menuseparator id="deejay-reloaded-download-menu-separator" />
         <menuitem id="deejay-reloaded-download-menu" label="&menuitem;"
                   key="deejay-reloaded-start-download"
                   oncommand="radioDeejayDownloader.startDownload();" />
     </menupopup> 
     
     <menupopup id="contentAreaContextMenu">
+        <menuseparator id="deejay-reloaded-download-menu-popup-separator" />
         <menuitem id="deejay-reloaded-download-menu-popup" label="&menuitem;"
                   key="deejay-reloaded-start-download"
                   oncommand="radioDeejayDownloader.startDownload();" />

@@ -4,7 +4,7 @@
 
     <Description about="urn:mozilla:install-manifest">
         <em:id>deejay-reloaded@mscg.com</em:id>
-        <em:version>1.0</em:version>
+        <em:version>1.0.1</em:version>
         <em:type>2</em:type>
 
         <em:targetApplication>
@@ -17,6 +17,8 @@
 
         <em:name>Radio Deejay Reloaded utility</em:name>
         <em:creator>MscG</em:creator>
+        
+        <em:iconURL>chrome://deejay-reloaded-icon/content/icon.png</em:iconURL>
         
         <em:description>Un'utility per scaricare i file di Radio Deejay Reloaded</em:description>
         

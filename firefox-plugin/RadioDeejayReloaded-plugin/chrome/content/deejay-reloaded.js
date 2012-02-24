@@ -6,6 +6,8 @@ function RadioDeejayReloadedDownload() {
 RadioDeejayReloadedDownload.urlPatter = new RegExp("http://.*\\.?deejay\.it/dj/radio/programma/reloaded/\\d+/\\d{4}-\\d{2}-\\d{2}/.+");
 RadioDeejayReloadedDownload.downloadPatter = new RegExp("createPlayerFLW\\(.+'(http://.*)',.+\\)");
 RadioDeejayReloadedDownload.downloadHelper = new RadioDeejayReloadedDownloadHelper();
+//RadioDeejayReloadedDownload.clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+//                                                   getService(Components.interfaces.nsIClipboardHelper);
 
 RadioDeejayReloadedDownload.prototype = {
     menuItem: null,
@@ -66,8 +68,17 @@ RadioDeejayReloadedDownload.prototype = {
             var match = RadioDeejayReloadedDownload.downloadPatter.exec(script);
             if(match != null && match.length >= 2) {
             	var url = match[1];
-            	RadioDeejayReloadedDownload.downloadHelper.saveHelper(url, "testo", null,
-            			                                              true, content.document);
+            	
+            	if("undefined" == typeof(DTA) || "undefined" == typeof(DTA.saveSingleLink)) {
+            		// DownThem All! is not installed, so use default download
+	            	RadioDeejayReloadedDownload.downloadHelper.saveHelper(url, "", null,
+	            			                                              true, content.document);
+            	}
+            	else {
+            		// DownThem All! is installed, so use it to download the file
+//            		RadioDeejayReloadedDownload.clipboard.copyString(url);
+            		DTA.saveSingleLink(window, false, url);
+            	}
             }
         }
     }
