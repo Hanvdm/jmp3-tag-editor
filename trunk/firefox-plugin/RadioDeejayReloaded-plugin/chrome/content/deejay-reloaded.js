@@ -1,9 +1,10 @@
 function RadioDeejayReloadedDownload() {
     this.menuItem = null;
     this.popupMenuItem = null;
+    this.popupMenuSeparator = null;
 }
 
-RadioDeejayReloadedDownload.urlPatter = new RegExp("http://.*\\.?deejay\.it/dj/radio/programma/reloaded/\\d+/\\d{4}-\\d{2}-\\d{2}/.+");
+RadioDeejayReloadedDownload.urlPatter = new RegExp("http://.*\\.?deejay\.it/dj/radio/programma/reloaded/\\d+/(\\d{4}-\\d{2}-\\d{2}/)?.+");
 RadioDeejayReloadedDownload.downloadPatter = new RegExp("createPlayerFLW\\(.+'(http://.*)',.+\\)");
 RadioDeejayReloadedDownload.downloadHelper = new RadioDeejayReloadedDownloadHelper();
 //RadioDeejayReloadedDownload.clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
@@ -12,12 +13,14 @@ RadioDeejayReloadedDownload.downloadHelper = new RadioDeejayReloadedDownloadHelp
 RadioDeejayReloadedDownload.prototype = {
     menuItem: null,
     popupMenuItem: null,
+    popupMenuSeparator: null,
 
     init: function() {
         var me = this;
 
         this.menuItem = document.getElementById("deejay-reloaded-download-menu");
         this.popupMenuItem = document.getElementById("deejay-reloaded-download-menu-popup");
+        this.popupMenuSeparator = document.getElementById("deejay-reloaded-download-menu-popup-separator");
         gBrowser.addEventListener("load", function(event) {
             me.onPageLoad(event);
         }, true);
@@ -58,6 +61,7 @@ RadioDeejayReloadedDownload.prototype = {
         this.menuItem.disabled = !enabled;
         this.popupMenuItem.disabled = !enabled;
         this.popupMenuItem.hidden = !enabled;
+        this.popupMenuSeparator.hidden = !enabled;
     },
 
     startDownload: function() {
