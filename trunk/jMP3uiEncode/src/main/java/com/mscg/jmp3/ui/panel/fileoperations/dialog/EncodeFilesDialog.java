@@ -152,7 +152,7 @@ public class EncodeFilesDialog extends GenericFilesOperationDialog {
 
         setContentPane(contentPanel);
 
-        setMinimumSize(new Dimension(380, 250 + (parallelProcesses - 1) * 80));
+        setMinimumSize(new Dimension(380, 250 + (parallelProcesses - 1) * 100));
         setPreferredSize(getMinimumSize());
         setResizable(false);
 
