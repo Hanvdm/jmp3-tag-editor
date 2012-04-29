@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -47,6 +48,7 @@ public class EncodeFileCard extends GenericStartableCard {
     private InputPanel bitrate;
     private InputPanel sampleFrequency;
     private InputPanel quality;
+    private InputPanel parallelEncodings;
     private InputPanel copyTag;
 
 
@@ -130,6 +132,32 @@ public class EncodeFileCard extends GenericStartableCard {
                                          defaultQuality);
         border.add(quality);
 
+        int maxParallelEncodings = 2 * Runtime.getRuntime().availableProcessors();
+        int parallelEncodingsValue = 0;
+        try {
+            parallelEncodingsValue = Integer.parseInt(Settings.getSetting("encode.parallel.processes"));
+        } catch(Exception e){}
+        Vector<QualityElement> parallelEncodingsModelElems = new Vector<EncodeFileCard.QualityElement>(maxParallelEncodings + 1);
+        parallelEncodingsModelElems.add(new QualityElement(Messages.getString("operations.file.encode.parallel.automatic"), 0));
+        for(int i = 1; i <= maxParallelEncodings; i++) {
+            parallelEncodingsModelElems.add(new QualityElement(Integer.toString(i), i));
+        }
+        DefaultComboBoxModel parallelEncodingsModel = new DefaultComboBoxModel(parallelEncodingsModelElems);
+        QualityElement selectedValue;
+        try {
+            selectedValue = parallelEncodingsModelElems.get(parallelEncodingsValue);
+        } catch(Exception e){
+            selectedValue = parallelEncodingsModelElems.get(0);
+        }
+        parallelEncodings = new ComboboxInputPanel(Messages.getString("operations.file.encode.parallel"),
+                                                   0, 10,
+                                                   parallelEncodingsModel,
+                                                   selectedValue);
+        ((JComboBox)parallelEncodings.getValueComponent()).addActionListener(
+            new SaveComboboxValueListener((JComboBox)parallelEncodings.getValueComponent(),
+                                          "encode.parallel.processes", null));
+        border.add(parallelEncodings);
+
         copyTag = new CheckboxInputPanel(Messages.getString("operations.file.encode.copytag"),
                                          0, 10,
                                          Boolean.parseBoolean(Settings.getSetting("encode.copytag")));
@@ -170,6 +198,10 @@ public class EncodeFileCard extends GenericStartableCard {
 
     public InputPanel getQuality() {
         return quality;
+    }
+
+    public InputPanel getParallelEncodings() {
+        return parallelEncodings;
     }
 
     public InputPanel getSampleFrequency() {
@@ -249,9 +281,17 @@ public class EncodeFileCard extends GenericStartableCard {
         public void actionPerformed(ActionEvent e) {
             if(defaultIndex != null && comboBox.getSelectedIndex() == defaultIndex)
                 Settings.setSetting(settingsKey, "");
-            else
-                Settings.setSetting(settingsKey,
-                                    (String)comboBox.getSelectedItem());
+            else {
+                Object selected = comboBox.getSelectedItem();
+                String value;
+                if(selected instanceof String)
+                    value = (String)selected;
+                else if(selected instanceof QualityElement)
+                    value = Integer.toString(((QualityElement)selected).getValue());
+                else
+                    value = selected.toString();
+                Settings.setSetting(settingsKey, value);
+            }
         }
     }
 

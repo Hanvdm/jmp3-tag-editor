@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mscg</groupId>
 	<artifactId>jMP3uiEncode</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>jMP3uiEncode</name>
 	<description>Provides the card with the lame encoder UI</description>
 	<dependencies>
