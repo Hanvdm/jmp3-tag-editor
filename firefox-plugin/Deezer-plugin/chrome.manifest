@@ -1,0 +1,9 @@
+content     deezer-plugin      chrome/content/
+content     deezer-plugin      chrome/content/ contentaccessible=yes
+content     deezer-plugin-icon chrome/icon/
+overlay chrome://browser/content/browser.xul chrome://deezer-plugin/content/browser.xul
+
+locale  deezer-plugin    it-IT   locale/it-IT/
+
+skin    deezer-plugin    classic/1.0 skin/
+style   chrome://global/content/customizeToolbar.xul    chrome://deezer-plugin/skin/skin.css
