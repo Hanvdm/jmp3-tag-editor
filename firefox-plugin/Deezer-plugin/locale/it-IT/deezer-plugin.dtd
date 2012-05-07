@@ -1,5 +1,6 @@
-<!ENTITY deezer.menu.test "Esegui codice...">
-<!ENTITY deezer.player.play  "Play">
-<!ENTITY deezer.player.pause "Pausa">
-<!ENTITY deezer.player.next  "Prossima">
-<!ENTITY deezer.player.prev  "Precedente">
+<!ENTITY deezer.player.group  "Controlli Deezer">
+<!ENTITY deezer.player.play   "Play">
+<!ENTITY deezer.player.pause  "Pausa">
+<!ENTITY deezer.player.next   "Prossima">
+<!ENTITY deezer.player.prev   "Precedente">
+<!ENTITY deezer.player.nosong "Nessuna canzone">
