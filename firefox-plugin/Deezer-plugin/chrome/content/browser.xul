@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://deezer-plugin/skin/skin.css" type="text/css"?>
 <!DOCTYPE deejay-reloaded SYSTEM "chrome://deezer-plugin/locale/deezer-plugin.dtd">
-<overlay id="deezer-plugin" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="deezer-plugin"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
     <script src="deezer-plugin.js" />
-    
-    <keyset>
-        <key id="deezer-plugin-execute" modifiers="accel alt" key="E"
-             oncommand="deezerPluginManager.execute();" />
-    </keyset>
-    
-    <menupopup id="menu_ToolsPopup">
-        <menuseparator id="deezer-plugin-menu-separator" />
-        <menuitem id="deezer-plugin-menu" label="&menuitem;"
-                  key="deezer-plugin-execute"
-                  oncommand="deezerPluginManager.execute();" />
-    </menupopup> 
-    
-    <menupopup id="contentAreaContextMenu">
-        <menuseparator id="deezer-plugin-menu-popup-separator" />
-        <menuitem id="deezer-plugin-menu-popup" label="&menuitem;"
-                  key="deezer-plugin-execute"
-                  oncommand="deezerPluginManager.execute();" />
-    </menupopup>
-    
+
+    <toolbarpalette id="BrowserToolbarPalette">
+        <toolbarbutton id="deezer-plugin-toolbar-play-button" class="toolbarbutton-1"
+            label="&deezer.player.play;" tooltiptext="&deezer.player.play;"
+            oncommand="deezerPluginManager.play();" />
+            
+        <toolbarbutton id="deezer-plugin-toolbar-pause-button" class="toolbarbutton-1"
+            label="&deezer.player.pause;" tooltiptext="&deezer.player.pause;"
+            oncommand="deezerPluginManager.pause();" />
+            
+        <toolbarbutton id="deezer-plugin-toolbar-prev-button" class="toolbarbutton-1"
+            label="&deezer.player.prev;" tooltiptext="&deezer.player.prev;"
+            oncommand="deezerPluginManager.previous();" />
+
+        <toolbarbutton id="deezer-plugin-toolbar-next-button" class="toolbarbutton-1"
+            label="&deezer.player.next;" tooltiptext="&deezer.player.next;"
+            oncommand="deezerPluginManager.next();" />
+    </toolbarpalette>
+
 </overlay>

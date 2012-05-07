@@ -1,1 +1,5 @@
-<!ENTITY menuitem "Esegui codice...">
+<!ENTITY deezer.menu.test "Esegui codice...">
+<!ENTITY deezer.player.play  "Play">
+<!ENTITY deezer.player.pause "Pausa">
+<!ENTITY deezer.player.next  "Prossima">
+<!ENTITY deezer.player.prev  "Precedente">
