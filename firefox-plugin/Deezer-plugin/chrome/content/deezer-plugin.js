@@ -34,17 +34,19 @@ DeezerPluginManager.prototype = {
     },
     
     initReferences: function(event) {
-    	var me = this;
-    	this.tools = document.getElementById("deezer-plugin-toolbar-tools"); 
-        if(this.tools != null) {
-	        this.playButton = document.getElementById("deezer-plugin-toolbar-play-button");
-	        this.pauseButton = document.getElementById("deezer-plugin-toolbar-pause-button");
-	        this.nextButton = document.getElementById("deezer-plugin-toolbar-next-button");
-	        this.prevButton = document.getElementById("deezer-plugin-toolbar-prev-button");
-	        this.noSong = document.getElementById("deezer-plugin-toolbar-nosong");
-	        this.currentSong = document.getElementById("deezer-plugin-toolbar-song");
-	        this.disableButtons();
-	        pollingInterval = setInterval(function(){me.pollTabs();}, 1500);
+    	if(this.tools == null) {
+	    	var me = this;
+	    	this.tools = document.getElementById("deezer-plugin-toolbar-tools");
+	    	if(this.tools != null) {
+		        this.playButton = document.getElementById("deezer-plugin-toolbar-play-button");
+		        this.pauseButton = document.getElementById("deezer-plugin-toolbar-pause-button");
+		        this.nextButton = document.getElementById("deezer-plugin-toolbar-next-button");
+		        this.prevButton = document.getElementById("deezer-plugin-toolbar-prev-button");
+		        this.noSong = document.getElementById("deezer-plugin-toolbar-nosong");
+		        this.currentSong = document.getElementById("deezer-plugin-toolbar-song");
+		        this.disableButtons();
+		        pollingInterval = setInterval(function(){me.pollTabs();}, 1500);
+	    	}
         }
     },
     
