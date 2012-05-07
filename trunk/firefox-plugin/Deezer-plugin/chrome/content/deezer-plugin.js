@@ -1,9 +1,12 @@
 function DeezerPluginManager() {
 	this.pollingInterval = null;
 	this.playercontrol = null;
+	this.tools = null;
 	this.playButton = null;
 	this.pauseButton = null;
 	this.prevButton = null;
+	this.noSong = null;
+	this.currentSong = null;
 }
 
 DeezerPluginManager.urlPatter = new RegExp("http[s]?://.*\\.?deezer\.com.*");
@@ -12,25 +15,37 @@ DeezerPluginManager.prototype = {
     
     pollingInterval: null,
     playercontrol: null,
+    tools: null,
     playButton: null,
     pauseButton: null,
     nextButton: null,
     prevButton: null,
+    noSong: null,
+    currentSong: null,
 		
     init: function() {
         var me = this;
 
-        this.playButton = document.getElementById("deezer-plugin-toolbar-play-button");
-        this.pauseButton = document.getElementById("deezer-plugin-toolbar-pause-button");
-        this.nextButton = document.getElementById("deezer-plugin-toolbar-next-button");
-        this.prevButton = document.getElementById("deezer-plugin-toolbar-prev-button");
-        
         gBrowser.addEventListener("load", function(event) {
             me.onPageLoad(event);
         }, true);
-
-        this.disableButtons();
-        pollingInterval = setInterval(function(){me.pollTabs();}, 1500);
+        
+        this.initReferences(null);
+    },
+    
+    initReferences: function(event) {
+    	var me = this;
+    	this.tools = document.getElementById("deezer-plugin-toolbar-tools"); 
+        if(this.tools != null) {
+	        this.playButton = document.getElementById("deezer-plugin-toolbar-play-button");
+	        this.pauseButton = document.getElementById("deezer-plugin-toolbar-pause-button");
+	        this.nextButton = document.getElementById("deezer-plugin-toolbar-next-button");
+	        this.prevButton = document.getElementById("deezer-plugin-toolbar-prev-button");
+	        this.noSong = document.getElementById("deezer-plugin-toolbar-nosong");
+	        this.currentSong = document.getElementById("deezer-plugin-toolbar-song");
+	        this.disableButtons();
+	        pollingInterval = setInterval(function(){me.pollTabs();}, 1500);
+        }
     },
     
     destroy: function() {
@@ -42,22 +57,30 @@ DeezerPluginManager.prototype = {
     },
     
     pollTabs: function() {
-    	for(var i = 0, l = gBrowser.tabContainer.itemCount; i < l; i++) {
-    		var browser = gBrowser.getBrowserForTab(gBrowser.tabContainer.getItemAtIndex(i));
-    		var match = DeezerPluginManager.urlPatter.exec(browser.currentURI.spec);
-    		if(match != null) {
-    			if(this.playercontrol == null) {
-    	    		this.enableButtons();
-    	    		this.initPlayerControl();
-    			}
-    			this.updateFromPage(browser);
-    			
-    			break;
-    		}
-    		else {
-    			this.disableButtons();
-    			this.playercontrol = null;
-    		}
+    	var windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"].
+    	                         getService(Components.interfaces.nsIWindowMediator);
+    	var winEnum = windowMediator.getEnumerator(null);
+    	
+    	var exitLoop = false;
+    	while(winEnum.hasMoreElements() && !exitLoop) {
+    		var win = winEnum.getNext();
+    		for(var i = 0, l = win.gBrowser.tabContainer.itemCount; i < l && !exitLoop; i++) {
+        		var browser = win.gBrowser.getBrowserForTab(win.gBrowser.tabContainer.getItemAtIndex(i));
+        		var match = DeezerPluginManager.urlPatter.exec(browser.currentURI.spec);
+        		if(match != null) {
+        			if(this.playercontrol == null) {
+        	    		this.enableButtons();
+        	    		this.initPlayerControl();
+        			}
+        			this.updateFromPage(browser);
+        			
+        			exitLoop = true;
+        		}
+        		else {
+        			this.disableButtons();
+        			this.playercontrol = null;
+        		}
+        	}
     	}
     },
     
@@ -81,6 +104,8 @@ DeezerPluginManager.prototype = {
     	this.switchPlay(true);
     	this.nextButton.disabled = true;
     	this.prevButton.disabled = true;
+    	this.currentSong.hidden = true;
+    	this.noSong.hidden = false;
     },
     
     switchPlay: function(pause) {
@@ -94,6 +119,13 @@ DeezerPluginManager.prototype = {
     	var playLink = playBox.getElementsByClassName("h_icn_play");
     	playLink = playLink[0];
     	this.switchPlay(playLink.style.display != "none");
+    	
+    	var currentTrack = document.getElementById("current-track");
+    	var currentArtist = document.getElementById("current-artist");
+    	var song = currentTrack.innerHTML + " - " + currentArtist.innerHTML;
+    	this.currentSong.value = song;
+    	this.currentSong.hidden = false;
+    	this.noSong.hidden = true;
     },
     
     play: function() {
@@ -126,3 +158,4 @@ var deezerPluginManager = new DeezerPluginManager();
 
 window.addEventListener("load", function(){deezerPluginManager.init()}, false);
 window.addEventListener("unload", function(){deezerPluginManager.destroy()}, false);
+window.addEventListener("aftercustomization", function(event){deezerPluginManager.initReferences(event);}, false); 

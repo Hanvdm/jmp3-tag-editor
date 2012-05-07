@@ -1,31 +1,35 @@
 #deezer-plugin-toolbar-play-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/play.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/play.png");
 }
 
 toolbar[iconsize="small"] #deezer-plugin-toolbar-play-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/play-small.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/play-small.png");
 }
 
 #deezer-plugin-toolbar-pause-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/pause.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/pause.png");
 }
 
 toolbar[iconsize="small"] #deezer-plugin-toolbar-pause-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/pause-small.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/pause-small.png");
 }
 
 #deezer-plugin-toolbar-prev-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/prev.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/prev.png");
 }
 
 toolbar[iconsize="small"] #deezer-plugin-toolbar-prev-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/prev-small.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/prev-small.png");
 }
 
 #deezer-plugin-toolbar-next-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/next.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/next.png");
 }
 
 toolbar[iconsize="small"] #deezer-plugin-toolbar-next-button {
-  list-style-image: url("chrome://deezer-plugin-buttons/content/next-small.png");
+    list-style-image: url("chrome://deezer-plugin-buttons/content/next-small.png");
+}
+
+.deezer-song-label {
+    margin: 7px 20px;
 }
