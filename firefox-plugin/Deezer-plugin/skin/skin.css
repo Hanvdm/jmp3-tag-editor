@@ -30,6 +30,18 @@ toolbar[iconsize="small"] #deezer-plugin-toolbar-next-button {
     list-style-image: url("chrome://deezer-plugin-buttons/content/next-small.png");
 }
 
+#deezer-plugin-toolbar-song-title {
+    font-weight: bold; 
+}
+
 .deezer-song-label {
     margin: 7px 20px;
+}
+
+.deezer-song-label-left {
+    margin: 7px 0px 7px 20px;
+}
+
+.deezer-song-label-right {
+    margin: 7px 20px 7px 0px;
 }

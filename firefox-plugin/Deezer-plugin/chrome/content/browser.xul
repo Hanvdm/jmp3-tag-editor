@@ -7,13 +7,19 @@
     <script src="deezer-plugin.js" />
 
     <toolbarpalette id="BrowserToolbarPalette">
-        <toolbaritem id="deezer-plugin-toolbar-tools"
-            label="&deezer.player.group;" tooltiptext="&deezer.player.group;">
-            
-            <label id="deezer-plugin-toolbar-song" class="deezer-song-label" />
+        <toolbaritem id="deezer-plugin-toolbar-labels"
+            label="&deezer.player.labels;" tooltiptext="&deezer.player.labels;">
+        
+            <label id="deezer-plugin-toolbar-song-title" class="deezer-song-label-left" tooltiptext="&deezer.player.song.tooltip;" />
+            <label id="deezer-plugin-toolbar-song-author" class="deezer-song-label-right" tooltiptext="&deezer.player.song.tooltip;" />
                 
             <label id="deezer-plugin-toolbar-nosong" class="deezer-song-label"
                 value="&deezer.player.nosong;" tooltiptext="&deezer.player.nosong;" />
+                
+        </toolbaritem>
+    
+        <toolbaritem id="deezer-plugin-toolbar-tools"
+            label="&deezer.player.controls;" tooltiptext="&deezer.player.controls;">
             
             <toolbarbutton id="deezer-plugin-toolbar-prev-button" class="toolbarbutton-1"
                 label="&deezer.player.prev;" tooltiptext="&deezer.player.prev;"
