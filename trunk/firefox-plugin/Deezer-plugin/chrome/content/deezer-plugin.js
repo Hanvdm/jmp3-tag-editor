@@ -2,11 +2,13 @@ function DeezerPluginManager() {
 	this.pollingInterval = null;
 	this.playercontrol = null;
 	this.tools = null;
+	this.toolsLabels = null;
 	this.playButton = null;
 	this.pauseButton = null;
 	this.prevButton = null;
 	this.noSong = null;
-	this.currentSong = null;
+	this.currentSongTitle = null;
+	this.currentSongAuthor = null;
 }
 
 DeezerPluginManager.urlPatter = new RegExp("http[s]?://.*\\.?deezer\.com.*");
@@ -16,12 +18,14 @@ DeezerPluginManager.prototype = {
     pollingInterval: null,
     playercontrol: null,
     tools: null,
+    toolsLabels: null,
     playButton: null,
     pauseButton: null,
     nextButton: null,
     prevButton: null,
     noSong: null,
-    currentSong: null,
+    currentSongTitle: null,
+    currentSongAuthor: null,
 		
     init: function() {
         var me = this;
@@ -34,24 +38,36 @@ DeezerPluginManager.prototype = {
     },
     
     initReferences: function(event) {
-    	if(this.tools == null) {
+    	this.destroy();
+    	
+    	this.tools = document.getElementById("deezer-plugin-toolbar-tools");
+    	this.toolsLabels = document.getElementById("deezer-plugin-toolbar-labels");
+    	
+    	if(this.tools != null || this.toolsLabels != null) {
 	    	var me = this;
-	    	this.tools = document.getElementById("deezer-plugin-toolbar-tools");
+	    	
 	    	if(this.tools != null) {
 		        this.playButton = document.getElementById("deezer-plugin-toolbar-play-button");
 		        this.pauseButton = document.getElementById("deezer-plugin-toolbar-pause-button");
 		        this.nextButton = document.getElementById("deezer-plugin-toolbar-next-button");
 		        this.prevButton = document.getElementById("deezer-plugin-toolbar-prev-button");
-		        this.noSong = document.getElementById("deezer-plugin-toolbar-nosong");
-		        this.currentSong = document.getElementById("deezer-plugin-toolbar-song");
-		        this.disableButtons();
-		        pollingInterval = setInterval(function(){me.pollTabs();}, 1500);
 	    	}
+	    	if(this.toolsLabels != null) {
+	    		this.noSong = document.getElementById("deezer-plugin-toolbar-nosong");
+		        this.currentSongTitle = document.getElementById("deezer-plugin-toolbar-song-title");
+		        this.currentSongAuthor = document.getElementById("deezer-plugin-toolbar-song-author");
+	    	}
+	    	
+	    	this.disableButtons();
+	    	pollingInterval = setInterval(function(){me.pollTabs();}, 1500);
         }
     },
     
     destroy: function() {
-    	clearInterval(this.pollingInterval);
+    	if(this.pollingInterval != null) {
+	    	clearInterval(this.pollingInterval);
+	    	this.pollingInterval = null;
+    	}
     },
 
     onPageLoad: function(event) {
@@ -66,8 +82,11 @@ DeezerPluginManager.prototype = {
     	var exitLoop = false;
     	while(winEnum.hasMoreElements() && !exitLoop) {
     		var win = winEnum.getNext();
-    		for(var i = 0, l = win.gBrowser.tabContainer.itemCount; i < l && !exitLoop; i++) {
-        		var browser = win.gBrowser.getBrowserForTab(win.gBrowser.tabContainer.getItemAtIndex(i));
+    		var winBrowser = win.gBrowser;
+    		if(!winBrowser)
+    			winBrowser = gBrowser;
+    		for(var i = 0, l = winBrowser.tabContainer.itemCount; i < l && !exitLoop; i++) {
+        		var browser = winBrowser.getBrowserForTab(winBrowser.tabContainer.getItemAtIndex(i));
         		var match = DeezerPluginManager.urlPatter.exec(browser.currentURI.spec);
         		if(match != null) {
         			if(this.playercontrol == null) {
@@ -94,20 +113,27 @@ DeezerPluginManager.prototype = {
     },
     
     enableButtons: function() {
-    	this.playButton.disabled = false;
-    	this.pauseButton.disabled = false;
-    	this.nextButton.disabled = false;
-    	this.prevButton.disabled = false;
+    	if(this.tools != null) {
+	    	this.playButton.disabled = false;
+	    	this.pauseButton.disabled = false;
+	    	this.nextButton.disabled = false;
+	    	this.prevButton.disabled = false;
+    	}
     },
     
     disableButtons: function() {
-    	this.playButton.disabled = true;
-    	this.pauseButton.disabled = true;
-    	this.switchPlay(true);
-    	this.nextButton.disabled = true;
-    	this.prevButton.disabled = true;
-    	this.currentSong.hidden = true;
-    	this.noSong.hidden = false;
+    	if(this.tools != null) {
+	    	this.playButton.disabled = true;
+	    	this.pauseButton.disabled = true;
+	    	this.switchPlay(true);
+	    	this.nextButton.disabled = true;
+	    	this.prevButton.disabled = true;
+    	}
+    	if(this.toolsLabels != null) {
+	    	this.currentSongTitle.hidden = true;
+	    	this.currentSongAuthor.hidden = true;
+	    	this.noSong.hidden = false;
+    	}
     },
     
     switchPlay: function(pause) {
@@ -117,17 +143,23 @@ DeezerPluginManager.prototype = {
     
     updateFromPage: function(browser) {
     	var document = browser.contentDocument;
-    	var playBox = document.getElementById("h_play");
-    	var playLink = playBox.getElementsByClassName("h_icn_play");
-    	playLink = playLink[0];
-    	this.switchPlay(playLink.style.display != "none");
     	
-    	var currentTrack = document.getElementById("current-track");
-    	var currentArtist = document.getElementById("current-artist");
-    	var song = currentTrack.innerHTML + " - " + currentArtist.innerHTML;
-    	this.currentSong.value = song;
-    	this.currentSong.hidden = false;
-    	this.noSong.hidden = true;
+    	if(this.tools != null) {
+	    	var playBox = document.getElementById("h_play");
+	    	var playLink = playBox.getElementsByClassName("h_icn_play");
+	    	playLink = playLink[0];
+	    	this.switchPlay(playLink.style.display != "none");
+    	}
+    	
+    	if(this.toolsLabels != null) {
+	    	var currentTrack = document.getElementById("current-track");
+	    	var currentArtist = document.getElementById("current-artist");
+	    	this.currentSongTitle.value = (currentTrack.innerHTML + " ").replace("&amp;", "&");
+	    	this.currentSongTitle.hidden = false;
+	    	this.currentSongAuthor.value = ("- " + currentArtist.innerHTML).replace("&amp;", "&");
+	    	this.currentSongAuthor.hidden = false;
+	    	this.noSong.hidden = true;
+    	}
     },
     
     play: function() {
