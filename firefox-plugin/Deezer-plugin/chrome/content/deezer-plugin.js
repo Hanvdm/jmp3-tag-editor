@@ -86,12 +86,13 @@ DeezerPluginManager.prototype = {
     		if(!winBrowser)
     			winBrowser = gBrowser;
     		for(var i = 0, l = winBrowser.tabContainer.itemCount; i < l && !exitLoop; i++) {
-        		var browser = winBrowser.getBrowserForTab(winBrowser.tabContainer.getItemAtIndex(i));
+    			var actualTab = winBrowser.tabContainer.getItemAtIndex(i);
+        		var browser = winBrowser.getBrowserForTab(actualTab);
         		var match = DeezerPluginManager.urlPatter.exec(browser.currentURI.spec);
         		if(match != null) {
         			if(this.playercontrol == null) {
+        				this.initPlayerControl(actualTab);
         	    		this.enableButtons();
-        	    		this.initPlayerControl();
         			}
         			this.updateFromPage(browser);
         			
@@ -105,8 +106,8 @@ DeezerPluginManager.prototype = {
     	}
     },
     
-    initPlayerControl: function() {
-    	var browser = gBrowser.getBrowserForTab(gBrowser.selectedTab);
+    initPlayerControl: function(actualTab) {
+    	var browser = gBrowser.getBrowserForTab(actualTab);
     	var win = browser.contentWindow;
     	
     	this.playercontrol = win.wrappedJSObject.playercontrol;
