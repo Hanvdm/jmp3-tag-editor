@@ -17,31 +17,50 @@ public class FileSelectionInputPanel extends GenericJFileChooserSelectionInputPa
     private static final long serialVersionUID = 2069577375813574841L;
 
     private IconType iconType;
+    private IconType clearValueType;
     private List<FileFilter> fileFilters;
 
     public FileSelectionInputPanel(String label, int topBorder, int bottomBorder,
                                    String fileSelectionTooltip) {
-        this(label, topBorder, bottomBorder, fileSelectionTooltip, null, null);
+        this(label, topBorder, bottomBorder, fileSelectionTooltip, null, null, null, null);
     }
 
     public FileSelectionInputPanel(String label, String fileSelectionTooltip) {
-        this(label, fileSelectionTooltip, null, null);
+        this(label, fileSelectionTooltip, null, null, null, null);
     }
 
     public FileSelectionInputPanel(String label, int topBorder, int bottomBorder,
                                    String fileSelectionTooltip, IconType iconType) {
-        this(label, topBorder, bottomBorder, fileSelectionTooltip, iconType, null);
+        this(label, topBorder, bottomBorder, fileSelectionTooltip, null, iconType, null, null);
+    }
+
+    public FileSelectionInputPanel(String label, int topBorder, int bottomBorder,
+                                   String fileSelectionTooltip, String clearValueTooltip,
+                                   IconType iconType, IconType clearValueType) {
+        this(label, topBorder, bottomBorder, fileSelectionTooltip, clearValueTooltip, iconType, clearValueType, null);
     }
 
     public FileSelectionInputPanel(String label, String fileSelectionTooltip, IconType iconType) {
-        this(label, fileSelectionTooltip, iconType, null);
+        this(label, fileSelectionTooltip, null, iconType, null, null);
+    }
+
+    public FileSelectionInputPanel(String label, String fileSelectionTooltip, String clearValueTooltip,
+                                   IconType iconType, IconType clearValueType) {
+        this(label, fileSelectionTooltip, clearValueTooltip, iconType, clearValueType, null);
     }
 
     public FileSelectionInputPanel(String label, int topBorder, int bottomBorder,
                                    String fileSelectionTooltip, IconType iconType,
                                    List<FileFilter> fileFilters) {
-        super(label, topBorder, bottomBorder, fileSelectionTooltip, false);
+        this(label, topBorder, bottomBorder, fileSelectionTooltip, null, iconType, null, fileFilters);
+    }
+
+    public FileSelectionInputPanel(String label, int topBorder, int bottomBorder,
+                                   String fileSelectionTooltip, String clearValueTooltip,
+                                   IconType iconType, IconType clearValueType, List<FileFilter> fileFilters) {
+        super(label, topBorder, bottomBorder, fileSelectionTooltip, clearValueTooltip, false);
         this.iconType = iconType;
+        this.clearValueType = clearValueType;
         if(fileFilters != null)
             this.fileFilters = new LinkedList<FileFilter>(fileFilters);
         initComponent(topBorder, bottomBorder);
@@ -49,12 +68,24 @@ public class FileSelectionInputPanel extends GenericJFileChooserSelectionInputPa
 
     public FileSelectionInputPanel(String label, String fileSelectionTooltip, IconType iconType,
                                    List<FileFilter> fileFilters) {
-        this(label, defaultTopBorder, defaultBottomBorder, fileSelectionTooltip, iconType, fileFilters);
+        this(label, fileSelectionTooltip, null, iconType, null, fileFilters);
+    }
+
+    public FileSelectionInputPanel(String label, String fileSelectionTooltip, String clearValueTooltip,
+                                   IconType iconType, IconType clearValueType, List<FileFilter> fileFilters) {
+        this(label, defaultTopBorder, defaultBottomBorder, fileSelectionTooltip, clearValueTooltip,
+             iconType, clearValueType, fileFilters);
     }
 
     @Override
     protected ImageIcon getButtonIcon() throws FileNotFoundException {
         return new ImageIcon(ThemeManager.getIcon((iconType != null ? iconType : IconType.FILE_GENERIC_SMALL)));
+    }
+
+    @Override
+    protected ImageIcon getClearButtonIcon() throws FileNotFoundException {
+        return clearValueType == null ? super.getClearButtonIcon() :
+                                        new ImageIcon(ThemeManager.getIcon(clearValueType));
     }
 
     @Override

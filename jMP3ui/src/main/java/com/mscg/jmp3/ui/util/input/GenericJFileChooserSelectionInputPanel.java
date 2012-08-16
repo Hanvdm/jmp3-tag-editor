@@ -27,18 +27,31 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
     protected JPanel wrapperPanel;
     protected JTextField selectedFileField;
     protected JButton selectButton;
+    protected JButton clearValueButton;
     protected String tooltip;
+    protected String clearValueTootip;
 
     protected GenericJFileChooserSelectionInputPanel(String label, int topBorder, int bottomBorder,
                                                      String tooltip, boolean init) {
-        super(label, topBorder, bottomBorder, init);
-        this.tooltip = tooltip;
+        this(label, topBorder, bottomBorder, tooltip, null, init);
     }
 
-    protected GenericJFileChooserSelectionInputPanel(String label, String tooltip,
+    protected GenericJFileChooserSelectionInputPanel(String label, String tooltip, boolean init) {
+        this(label, tooltip, null, init);
+    }
+
+    protected GenericJFileChooserSelectionInputPanel(String label, int topBorder, int bottomBorder,
+                                                     String tooltip, String clearValueTooltip, boolean init) {
+        super(label, topBorder, bottomBorder, init);
+        this.tooltip = tooltip;
+        this.clearValueTootip = clearValueTooltip;
+    }
+
+    protected GenericJFileChooserSelectionInputPanel(String label, String tooltip, String clearValueTooltip,
                                                      boolean init) {
         super(label, init);
         this.tooltip = tooltip;
+        this.clearValueTootip = clearValueTooltip;
     }
 
     @Override
@@ -62,7 +75,7 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
             selectedFileField.setMaximumSize(new Dimension(Short.MAX_VALUE, panelSize));
             selectedFileField.setMinimumSize(new Dimension(10, panelSize));
             //selectedFileField.setPreferredSize(selectedFileField.getMaximumSize());
-            selectedFileField.setToolTipText(label);
+            setValue("");
             selectedFileField.setEnabled(false);
             textFieldWrapper.add(Box.createVerticalGlue());
             textFieldWrapper.add(selectedFileField);
@@ -83,7 +96,27 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
             selectButton.addActionListener(this);
             buttonWrapper.add(Box.createHorizontalGlue());
             buttonWrapper.add(selectButton);
+
+            ImageIcon clearIcon = null;
+            try {
+                clearIcon = getClearButtonIcon();
+            } catch(FileNotFoundException e) {
+
+            }
+            if(clearIcon != null) {
+                clearValueButton = new JButton(clearIcon);
+                if(Util.isNotEmptyOrWhiteSpaceOnly(clearValueTootip))
+                    clearValueButton.setToolTipText(clearValueTootip);
+                clearValueButton.setMaximumSize(Util.maxSmallIconButtonSize);
+                clearValueButton.setPreferredSize(Util.maxSmallIconButtonSize);
+                clearValueButton.setMinimumSize(Util.maxSmallIconButtonSize);
+                clearValueButton.addActionListener(this);
+
+                buttonWrapper.add(clearValueButton);
+            }
+
             buttonWrapper.add(Box.createHorizontalGlue());
+
             wrapperPanel.add(buttonWrapper, BorderLayout.LINE_END);
         }
         return wrapperPanel;
@@ -97,35 +130,44 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
     @Override
     public void setValue(String value) {
         selectedFileField.setText(value);
+        selectedFileField.setToolTipText(label + (Util.isEmptyOrWhiteSpaceOnly(value) ? "" : ": " + value));
     }
 
     protected abstract ImageIcon getButtonIcon() throws FileNotFoundException;
+
+    protected ImageIcon getClearButtonIcon() throws FileNotFoundException {
+        return null;
+    }
 
     protected abstract String getLastFolderSettingName();
 
     protected abstract void initFileChooser(JFileChooser fileChooser);
 
     public void actionPerformed(ActionEvent e) {
-        String startDirectoryName = Settings.getSetting(getLastFolderSettingName()).
-            replace("${user.home}", System.getProperty("user.home"));
+        if(e.getSource() == selectButton) {
+            String startDirectoryName = Settings.getSetting(getLastFolderSettingName()).
+                replace("${user.home}", System.getProperty("user.home"));
 
-        File startDirectory = new File(startDirectoryName);
-        if(!startDirectory.exists() || !startDirectory.isDirectory()) {
-            startDirectory = new File(System.getProperty("user.home"));
-        }
-
-        JFileChooser fileChooser = new JFileChooser(startDirectory);
-        initFileChooser(fileChooser);
-        int returnVal = fileChooser.showOpenDialog(MainWindowInterface.getInstance());
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            if(file != null) {
-                String absolutePath = file.isDirectory() ? file.getAbsolutePath() : file.getParentFile().getAbsolutePath();
-                Settings.setSetting(getLastFolderSettingName(), absolutePath);
-                selectedFileField.setText(file.getAbsolutePath());
-                selectedFileField.setToolTipText(label + ": " + file.getAbsolutePath());
+            File startDirectory = new File(startDirectoryName);
+            if(!startDirectory.exists() || !startDirectory.isDirectory()) {
+                startDirectory = new File(System.getProperty("user.home"));
             }
+
+            JFileChooser fileChooser = new JFileChooser(startDirectory);
+            initFileChooser(fileChooser);
+            int returnVal = fileChooser.showOpenDialog(MainWindowInterface.getInstance());
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                if(file != null) {
+                    String absolutePath = file.isDirectory() ? file.getAbsolutePath() : file.getParentFile().getAbsolutePath();
+                    Settings.setSetting(getLastFolderSettingName(), absolutePath);
+                    setValue(file.getAbsolutePath());
+                }
+            }
+        }
+        else if(e.getSource() == clearValueButton) {
+            setValue("");
         }
     }
 
