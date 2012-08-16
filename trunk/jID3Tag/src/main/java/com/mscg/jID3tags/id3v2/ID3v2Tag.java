@@ -109,6 +109,16 @@ public class ID3v2Tag {
      */
     public static final byte tagId[] = {0x49, 0x44, 0x33};
 
+    /**
+     * The default major version of the supported tags
+     */
+    public static final int DEFAULT_MAJOR_VERSION = 0x03;
+
+    /**
+     * The default minor version of the supported tags
+     */
+    public static final int DEFAULT_MINOR_VERSION = 0x00;
+
     static {
         if (!Util.areFramesLoaded()) {
             // register default frames
@@ -123,7 +133,7 @@ public class ID3v2Tag {
     protected Map<String, ID3v2Frame> frames;
 
     public ID3v2Tag() {
-        this(3, 0);
+        this(DEFAULT_MAJOR_VERSION, DEFAULT_MINOR_VERSION);
     }
 
     public ID3v2Tag(int majorVersion, int minorVersion) {

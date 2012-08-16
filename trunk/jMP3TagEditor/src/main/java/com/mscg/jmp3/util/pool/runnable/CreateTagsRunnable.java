@@ -91,6 +91,8 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                             mp3File.getID3v2tag().getAllframes().clear();
                         mp3File.setID3v11tag(null);
                     }
+                    mp3File.getID3v2tag().setMajorVersion(ID3v2Tag.DEFAULT_MAJOR_VERSION);
+                    mp3File.getID3v2tag().setMinorVersion(ID3v2Tag.DEFAULT_MINOR_VERSION);
 
                     fieldKey = "operations.file.taginfo.info.author";
                     value = tab.getAuthorPanel().getValue();
