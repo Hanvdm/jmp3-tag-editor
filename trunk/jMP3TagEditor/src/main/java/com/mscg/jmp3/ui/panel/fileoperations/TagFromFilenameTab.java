@@ -121,7 +121,8 @@ public class TagFromFilenameTab extends GenericFileoperationTab implements ItemL
         fileFilters.add(new ImageFileFilter());
         coverPanel = new FileSelectionInputPanel(Messages.getString("operations.file.taginfo.info.cover"),
                                                  Messages.getString("operations.file.taginfo.info.cover.tooltip"),
-                                                 IconType.FILE_IMAGE_SMALL, fileFilters);
+                                                 Messages.getString("operations.file.taginfo.info.remove.tooltip"),
+                                                 IconType.FILE_IMAGE_SMALL, IconType.REMOVE_SMALL, fileFilters);
         infoPanel.add(coverPanel);
         removeTagsPanel = new CheckboxInputPanel(Messages.getString("operations.file.taginfo.info.removeold"));
         infoPanel.add(removeTagsPanel);
