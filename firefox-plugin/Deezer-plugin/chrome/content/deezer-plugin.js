@@ -79,13 +79,13 @@ DeezerPluginManager.prototype = {
     	                         getService(Components.interfaces.nsIWindowMediator);
     	var winEnum = windowMediator.getEnumerator(null);
     	
-    	var exitLoop = false;
-    	while(winEnum.hasMoreElements() && !exitLoop) {
+    	var tabFound = false;
+    	while(winEnum.hasMoreElements() && !tabFound) {
     		var win = winEnum.getNext();
     		var winBrowser = win.gBrowser;
     		if(!winBrowser)
     			winBrowser = gBrowser;
-    		for(var i = 0, l = winBrowser.tabContainer.itemCount; i < l && !exitLoop; i++) {
+    		for(var i = 0, l = winBrowser.tabContainer.itemCount; i < l && !tabFound; i++) {
     			var actualTab = winBrowser.tabContainer.getItemAtIndex(i);
         		var browser = winBrowser.getBrowserForTab(actualTab);
         		var match = DeezerPluginManager.urlPatter.exec(browser.currentURI.spec);
@@ -96,13 +96,14 @@ DeezerPluginManager.prototype = {
         			}
         			this.updateFromPage(browser);
         			
-        			exitLoop = true;
-        		}
-        		else {
-        			this.disableButtons();
-        			this.playercontrol = null;
+        			tabFound = true;
         		}
         	}
+    	}
+    	
+    	if(!tabFound) {
+    		this.disableButtons();
+    		this.playercontrol = null;
     	}
     },
     
