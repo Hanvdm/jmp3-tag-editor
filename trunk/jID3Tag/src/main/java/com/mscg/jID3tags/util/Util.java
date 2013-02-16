@@ -196,6 +196,7 @@ public class Util {
      * @param lister
      *            The {@link FrameLister} which provides class names.
      */
+    @SuppressWarnings("rawtypes")
     public static void registerFrameTypes(FrameLister lister) {
         for (String clazzName : lister.listFrames()) {
             Class clazz = null;
