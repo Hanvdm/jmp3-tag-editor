@@ -100,6 +100,7 @@ public class TransformationsPreviewPanel extends JPanel implements ComponentList
         add(buttonsWrapper, BorderLayout.LINE_END);
 
         EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     ((MainWindow)MainWindowInterface.getInstance()).getFilenameOperationsCard().addComponentListener(TransformationsPreviewPanel.this);
@@ -134,7 +135,7 @@ public class TransformationsPreviewPanel extends JPanel implements ComponentList
             Object transformatorElement = transformationListModel.getElementAt(i);
             if(transformatorElement instanceof StringTransformatorElement) {
                 StringTransformator transformator = ((StringTransformatorElement)transformatorElement).getTransformator();
-                shownFileName = transformator.transformString(shownFileName);
+                shownFileName = transformator.transformString(shownFileName, (i + 1));
             }
         }
 

@@ -1,7 +1,6 @@
 package com.mscg.jmp3.ui.util.transformation;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -10,9 +9,10 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
-import java.security.InvalidParameterException;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -34,8 +34,8 @@ import com.mscg.jmp3.theme.ThemeManager;
 import com.mscg.jmp3.theme.ThemeManager.IconType;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.transformator.StringTransformatorFactory;
+import com.mscg.jmp3.transformator.exception.InvalidTransformatorParameterException;
 import com.mscg.jmp3.ui.util.input.InputPanel;
-import com.mscg.jmp3.ui.util.input.TextBoxInputPanel;
 
 public class AddTransformationDialog extends JDialog {
 
@@ -87,6 +87,10 @@ public class AddTransformationDialog extends JDialog {
         initComponents();
     }
 
+    protected void initTransformatorsListSelection() {
+        transformators.setSelectedIndex(0);
+    }
+
     protected void initComponents() throws FileNotFoundException {
         LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -110,7 +114,7 @@ public class AddTransformationDialog extends JDialog {
         initTransformatorsModel();
         transformators = new JComboBox(transformatorsModel);
         transformators.addActionListener(new TransformatorSelectedListener());
-        transformators.setSelectedIndex(0);
+        initTransformatorsListSelection();
         comboboxPanel.add(transformators);
 
         contentPanel.add(comboboxPanel, BorderLayout.PAGE_START);
@@ -163,39 +167,24 @@ public class AddTransformationDialog extends JDialog {
      */
     public void setTransformator(StringTransformator transformator) {
         if(transformator != null) {
-            this.transformator = transformator;
-
             int index = 0;
-            int j = 0;
-            for(StringTransformator tmp : transformatorInstances) {
+            for(ListIterator<StringTransformator> it = transformatorInstances.listIterator(); it.hasNext();) {
+                int j = it.nextIndex();
+                StringTransformator tmp = it.next();
                 if(tmp.getClass() == transformator.getClass()) {
                     index = j;
+                    it.set(transformator);
                     break;
                 }
-                j++;
             }
             transformators.setSelectedIndex(index);
-
-            int parametersCount = parametersPanel.getComponentCount();
-            if(parametersCount != 0) {
-                for(int i = 0; i < parametersCount; i++) {
-                    InputPanel paramPanel = null;
-                    Component childComponent = parametersPanel.getComponent(i);
-                    if(!(childComponent instanceof InputPanel))
-                        continue;
-
-                    paramPanel = (InputPanel)parametersPanel.getComponent(i);
-                    paramPanel.setValue(transformator.getParameters()[i]);
-                }
-            }
-
         }
     }
 
     protected void initTransformatorsModel() {
         transformatorsModel = new DefaultComboBoxModel();
         List<Class<? extends StringTransformator>> transformatorsClasses = StringTransformatorFactory.getStringTransformators();
-        transformatorInstances = new LinkedList<StringTransformator>();
+        transformatorInstances = new ArrayList<StringTransformator>(transformatorsClasses.size());
         for(Class<? extends StringTransformator> transformatorClass : transformatorsClasses) {
             try {
                 StringTransformator transformator = transformatorClass.newInstance();
@@ -205,6 +194,7 @@ public class AddTransformationDialog extends JDialog {
                 LOG.error("Cannot allocate string transformer", e);
             }
         }
+        ((ArrayList<StringTransformator>)transformatorInstances).trimToSize();
     }
 
     protected class TransformatorSelectedListener implements ActionListener {
@@ -216,10 +206,10 @@ public class AddTransformationDialog extends JDialog {
             parametersPanel.setLayout(new BoxLayout(parametersPanel, BoxLayout.PAGE_AXIS));
             parametersScroller.setViewportView(parametersPanel);
 
-            if(transformator.getParametersNames() != null && transformator.getParametersNames().length != 0) {
-                for(String parameterName : transformator.getParametersNames()) {
-                    parametersPanel.add(new TextBoxInputPanel(parameterName));
-                }
+            Collection<InputPanel> parameterPanels = transformator.getParameterPanels();
+            if(parameterPanels != null && !parameterPanels.isEmpty()) {
+                for(InputPanel paramPanel : parameterPanels)
+                    parametersPanel.add(paramPanel);
             }
             else {
                 parametersPanel.add(new JLabel(Messages.getString("operations.file.maintransform.parameters.noparam")));
@@ -243,30 +233,18 @@ public class AddTransformationDialog extends JDialog {
         public void actionPerformed(ActionEvent ev) {
             saved = false;
 
-            int parametersCount = parametersPanel.getComponentCount();
-            if(parametersCount != 0) {
-                for(int i = 0; i < parametersCount; i++) {
-                    InputPanel paramPanel = null;
-                    Component childComponent = parametersPanel.getComponent(i);
-                    if(!(childComponent instanceof InputPanel))
-                        continue;
-
-                    paramPanel = (InputPanel)parametersPanel.getComponent(i);
-
-                    try {
-                        transformator.setParameter(i, paramPanel.getValue());
-                    } catch(InvalidParameterException e) {
-                        LOG.error("Cannot set parameter " + i + " for transformator " +
-                                  transformator.getClass().getCanonicalName(), e);
-                        String message = Messages.getString("operations.file.maintransform.adddialod.save.error").
-                                         replace("${paramName}", paramPanel.getInputLabel());
-                        MainWindowInterface.showError(new Exception(message));
-                        return;
-                    } catch(Exception e) {
-                        MainWindowInterface.showError(e);
-                        return;
-                    }
-                }
+            try {
+                transformator.saveParameters();
+            } catch (InvalidTransformatorParameterException e) {
+                InputPanel inputPanel = e.getInputPanel();
+                LOG.error("Cannot set parameter " + e.getParameterIndex() + " for transformator " + transformator.getClass().getCanonicalName(), e);
+                String message = Messages.getString("operations.file.maintransform.adddialod.save.error")
+                                         .replace("${paramName}", inputPanel == null ? "" : inputPanel.getInputLabel());
+                MainWindowInterface.showError(new Exception(message));
+                return;
+            } catch (Exception e) {
+                MainWindowInterface.showError(e);
+                return;
             }
 
             saved = true;

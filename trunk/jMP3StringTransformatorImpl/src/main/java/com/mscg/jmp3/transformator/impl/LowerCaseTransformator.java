@@ -1,35 +1,39 @@
 package com.mscg.jmp3.transformator.impl;
 
-import java.security.InvalidParameterException;
-
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.transformator.StringTransformator;
+import com.mscg.jmp3.transformator.SimpleParametrizedStringTransformator;
+import com.mscg.jmp3.transformator.exception.InvalidTransformatorParameterException;
 
-public class LowerCaseTransformator implements StringTransformator {
+public class LowerCaseTransformator extends SimpleParametrizedStringTransformator {
 
     private static final long serialVersionUID = 4652661443805921852L;
 
+    @Override
     public String getName() {
         return Messages.getString("transform.string.lowercase.name");
     }
 
+    @Override
     public String getListValue() {
         return getName();
     }
 
+    @Override
     public String[] getParametersNames() {
-        return new String[]{};
-    }
-
-    public void setParameter(int index, String parameter) throws InvalidParameterException {
-        throw new InvalidParameterException(this.getClass().getSimpleName() + " doesn't need parameters");
-    }
-
-    public String[] getParameters() {
         return new String[0];
     }
 
-    public String transformString(String orig) {
+    @Override
+    protected void initParameterPanels() {
+    }
+
+    @Override
+    public void saveParameters() throws InvalidTransformatorParameterException {
+        throw new InvalidTransformatorParameterException(1, null, this.getClass().getSimpleName() + " doesn't need parameters");
+    }
+
+    @Override
+    public String transformString(String orig, Integer indexInList) {
         return orig.toLowerCase();
     }
 

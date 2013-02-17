@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mscg</groupId>
 	<artifactId>jMP3TagEditor</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 	<name>jMP3TagEditor</name>
 	<description>jMP3TagEditor</description>
 	<dependencies>
@@ -52,14 +52,14 @@
 		<dependency>
 			<groupId>com.mscg</groupId>
 			<artifactId>jMP3StringTransformator</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
             <groupId>com.mscg</groupId>
             <artifactId>jMP3StringTransformatorImpl</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -90,6 +90,40 @@
                 </configuration>
             </plugin>
 			<plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <attach>false</attach>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/src/main/assembly/deploy.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <attach>false</attach>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.2</version>
@@ -108,7 +142,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
