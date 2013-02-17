@@ -5,6 +5,7 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.regex.PatternSyntaxException;
 
 import javax.swing.BoundedRangeModel;
@@ -75,8 +76,9 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                     int index = startName.toLowerCase().lastIndexOf(".mp3");
                     startName = startName.substring(0, index);
 
-                    for(StringTransformator transformator : tab.getTransformationsPanel().getTransformators()) {
-                        startName = transformator.transformString(startName);
+                    for(ListIterator<StringTransformator> it = tab.getTransformationsPanel().getTransformators().listIterator(); it.hasNext();) {
+                        StringTransformator transformator = it.next();
+                        startName = transformator.transformString(startName, it.nextIndex());
                     }
 
                     filenamePatternParser.setFilename(startName);

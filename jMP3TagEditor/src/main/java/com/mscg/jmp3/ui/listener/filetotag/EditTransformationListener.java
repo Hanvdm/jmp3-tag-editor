@@ -8,6 +8,7 @@ import com.mp3.ui.MainWindowInterface;
 import com.mscg.jmp3.transformator.StringTransformator;
 import com.mscg.jmp3.ui.renderer.elements.StringTransformatorElement;
 import com.mscg.jmp3.ui.util.transformation.AddTransformationDialog;
+import com.mscg.jmp3.ui.util.transformation.EditTransformationDialog;
 
 public class EditTransformationListener extends RemoveTransformationsListener {
 
@@ -24,7 +25,7 @@ public class EditTransformationListener extends RemoveTransformationsListener {
         try {
             StringTransformatorElement element = (StringTransformatorElement)actionsList.getModel().getElementAt(index);
 
-            AddTransformationDialog addDialog = new AddTransformationDialog(MainWindowInterface.getInstance(), true);
+            AddTransformationDialog addDialog = new EditTransformationDialog(MainWindowInterface.getInstance(), true);
             addDialog.setTransformator(element.getTransformator());
             addDialog.setVisible(true);
 

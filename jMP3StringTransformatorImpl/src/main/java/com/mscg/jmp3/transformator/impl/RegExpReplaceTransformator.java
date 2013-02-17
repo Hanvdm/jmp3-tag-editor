@@ -1,12 +1,16 @@
 package com.mscg.jmp3.transformator.impl;
 
-import java.security.InvalidParameterException;
 import java.util.regex.Pattern;
 
 import com.mscg.jmp3.i18n.Messages;
-import com.mscg.jmp3.transformator.StringTransformator;
+import com.mscg.jmp3.transformator.SimpleParametrizedStringTransformator;
+import com.mscg.jmp3.transformator.exception.InvalidTransformatorParameterException;
+import com.mscg.jmp3.ui.util.input.InputPanel;
 
-public class RegExpReplaceTransformator implements StringTransformator {
+public class RegExpReplaceTransformator extends SimpleParametrizedStringTransformator {
+
+    private static final String PARAM_REGEXP = "transform.string.replace.regexp.regexp";
+    private static final String PARAM_REPLACE = "transform.string.replace.regexp.replace";
 
     private static final long serialVersionUID = -3014262173616813237L;
 
@@ -14,45 +18,47 @@ public class RegExpReplaceTransformator implements StringTransformator {
     private String regexpStr;
     private String replace;
 
+    @Override
     public String getName() {
         return Messages.getString("transform.string.replace.regexp.name");
     }
 
+    @Override
     public String getListValue() {
         return Messages.getString("transform.string.replace.regexp.list").
             replace("${regExp}", regexpStr).
             replace("${replace}", replace);
     }
 
+    @Override
     public String[] getParametersNames() {
-        return new String[]{Messages.getString("transform.string.replace.regexp.regexp"),
-                            Messages.getString("transform.string.replace.regexp.replace")};
+        return new String[]{PARAM_REGEXP, PARAM_REPLACE};
     }
 
-    public void setParameter(int index, String parameter) throws InvalidParameterException {
-        switch(index) {
-        case 0:
-            try {
-                regexp = Pattern.compile(parameter);
-                regexpStr = parameter;
-            } catch(Exception e) {
-                throw new InvalidParameterException("Invalid regular expression");
-            }
-            break;
-        case 1:
-            replace = parameter;
-            break;
-        default:
-            throw new InvalidParameterException(this.getClass().getSimpleName() +
-                                                " requires exactly 2 parameters.");
+    @Override
+    protected void initParameterPanels() {
+        if(regexpStr != null)
+            panels.get(PARAM_REGEXP).setValue(regexpStr);
+
+        if(replace != null)
+            panels.get(PARAM_REPLACE).setValue(replace);
+    }
+
+    @Override
+    public void saveParameters() throws InvalidTransformatorParameterException {
+        InputPanel inputPanel = panels.get(PARAM_REGEXP);
+        try {
+            String parameter = inputPanel.getValue();
+            regexp = Pattern.compile(parameter);
+            regexpStr = parameter;
+        } catch(Exception e) {
+            throw new InvalidTransformatorParameterException(1, inputPanel, "Invalid regular expression", e);
         }
+        replace = panels.get(PARAM_REPLACE).getValue();
     }
 
-    public String[] getParameters() {
-        return new String[]{regexpStr, replace};
-    }
-
-    public String transformString(String orig) {
+    @Override
+    public String transformString(String orig, Integer indexInList) {
         try {
             return regexp.matcher(orig).replaceAll(replace);
         } catch(Exception e) {
