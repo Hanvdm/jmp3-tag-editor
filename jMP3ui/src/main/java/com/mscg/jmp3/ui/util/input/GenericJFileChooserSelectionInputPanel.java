@@ -55,8 +55,8 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
     }
 
     @Override
-    protected void setDimensions(int topBorder, int bottomBorder) {
-        super.setDimensions(topBorder, bottomBorder);
+    protected void setDimensions(Integer panelHeight, int topBorder, int bottomBorder) {
+        super.setDimensions(panelHeight, topBorder, bottomBorder);
         Dimension maxDim = getMaximumSize();
         if(maxDim.height < Util.maxSmallIconButtonSize.height + topBorder + bottomBorder) {
             maxDim = new Dimension(maxDim.width, Util.maxSmallIconButtonSize.height + topBorder + bottomBorder);
@@ -72,8 +72,7 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
             JPanel textFieldWrapper = new JPanel();
             textFieldWrapper.setLayout(new BoxLayout(textFieldWrapper, BoxLayout.PAGE_AXIS));
             selectedFileField = new JTextField();
-            selectedFileField.setMaximumSize(new Dimension(Short.MAX_VALUE, panelSize));
-            selectedFileField.setMinimumSize(new Dimension(10, panelSize));
+            setComponentDimensions(selectedFileField, panelSize, 0, 0);
             //selectedFileField.setPreferredSize(selectedFileField.getMaximumSize());
             setValue("");
             selectedFileField.setEnabled(false);
@@ -143,6 +142,7 @@ public abstract class GenericJFileChooserSelectionInputPanel extends InputPanel 
 
     protected abstract void initFileChooser(JFileChooser fileChooser);
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == selectButton) {
             String startDirectoryName = Settings.getSetting(getLastFolderSettingName()).
