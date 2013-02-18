@@ -135,7 +135,7 @@ public class TransformationsPreviewPanel extends JPanel implements ComponentList
             Object transformatorElement = transformationListModel.getElementAt(i);
             if(transformatorElement instanceof StringTransformatorElement) {
                 StringTransformator transformator = ((StringTransformatorElement)transformatorElement).getTransformator();
-                shownFileName = transformator.transformString(shownFileName, (i + 1));
+                shownFileName = transformator.transformString(shownFileName, shownFileIndex + 1);
             }
         }
 
