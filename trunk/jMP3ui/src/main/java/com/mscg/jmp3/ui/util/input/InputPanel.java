@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -42,23 +43,36 @@ public abstract class InputPanel extends JPanel {
             initComponent(topBorder, bottomBorder);
     }
 
-    protected void setDimensions(int topBorder, int bottomBorder) {
-        Dimension maximumSize = new Dimension(Short.MAX_VALUE, panelSize + topBorder + bottomBorder);
-        setMaximumSize(maximumSize);
-        setMinimumSize(new Dimension(10, maximumSize.height));
+    protected void setDimensions(Integer panelHeight, int topBorder, int bottomBorder) {
+        setComponentDimensions(this, panelHeight, topBorder, bottomBorder);
+    }
+
+    protected void setComponentDimensions(JComponent component, Integer componentHeight, int topBorder, int bottomBorder) {
+        setComponentDimensions(component, componentHeight, 10, Short.MAX_VALUE, topBorder, bottomBorder);
+    }
+
+    protected void setComponentDimensions(JComponent component, Integer componentHeight, int minWidth, int maxWidth, int topBorder, int bottomBorder) {
+        Dimension maximumSize = new Dimension(maxWidth, componentHeight + topBorder + bottomBorder);
+        component.setMaximumSize(maximumSize);
+        component.setMinimumSize(new Dimension(minWidth, maximumSize.height));
+    }
+
+    protected Integer getPanelHeight(Component valueBox) {
+        if(panelSize == null) {
+            panelSize = Util.getPanelHeightForFont(valueBox.getFont());
+        }
+        return panelSize;
     }
 
     protected void initComponent(int topBorder, int bottomBorder) {
         JLabel inputLabel = new JLabel(label.endsWith(":") ? label : label + ":");
         Component valueBox = getValueComponent();
 
-        if(panelSize == null) {
-            panelSize = Util.getPanelHeightForFont(valueBox.getFont());
-        }
+        Integer panelHeight = getPanelHeight(valueBox);
 
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setBorder(BorderFactory.createEmptyBorder(topBorder, 0, bottomBorder, 0));
-        setDimensions(topBorder, bottomBorder);
+        setDimensions(panelHeight, topBorder, bottomBorder);
 
         Font font = inputLabel.getFont();
         Rectangle2D bounds = font.getStringBounds(inputLabel.getText(),
@@ -66,7 +80,7 @@ public abstract class InputPanel extends JPanel {
 
         JPanel wrapper = new JPanel();
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.LINE_AXIS));
-        wrapper.setMinimumSize(new Dimension(Math.max(140, (int)bounds.getWidth()), panelSize));
+        wrapper.setMinimumSize(new Dimension(Math.max(140, (int)bounds.getWidth()), panelHeight));
         wrapper.setPreferredSize(wrapper.getMinimumSize());
         wrapper.add(inputLabel);
         add(wrapper);
