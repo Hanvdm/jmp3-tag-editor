@@ -62,7 +62,10 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
             filenamePatternParser.initParser();
 
             int progess = 0;
-            for(File file : files) {
+            for(ListIterator<File> it = files.listIterator(); it.hasNext();) {
+                File file = it.next();
+                int fileIndex = it.nextIndex();
+
                 if(isInterrupted())
                     return;
 
@@ -76,10 +79,8 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                     int index = startName.toLowerCase().lastIndexOf(".mp3");
                     startName = startName.substring(0, index);
 
-                    for(ListIterator<StringTransformator> it = tab.getTransformationsPanel().getTransformators().listIterator(); it.hasNext();) {
-                        StringTransformator transformator = it.next();
-                        startName = transformator.transformString(startName, it.nextIndex());
-                    }
+                    for(StringTransformator transformator : tab.getTransformationsPanel().getTransformators())
+                        startName = transformator.transformString(startName, fileIndex);
 
                     filenamePatternParser.setFilename(startName);
 
