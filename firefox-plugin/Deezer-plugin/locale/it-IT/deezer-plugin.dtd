@@ -1,9 +1,0 @@
-<!ENTITY deezer.player.controls "Controlli Deezer">
-<!ENTITY deezer.player.labels   "Brano corrente">
-<!ENTITY deezer.player.play     "Play">
-<!ENTITY deezer.player.pause    "Pausa">
-<!ENTITY deezer.player.next     "Prossima">
-<!ENTITY deezer.player.prev     "Precedente">
-<!ENTITY deezer.player.nosong   "Nessun brano">
-<!ENTITY deezer.player.nosong.tooltip "Nessun brano in riproduzione">
-<!ENTITY deezer.player.song.tooltip   "Il brano attualmente in riproduzione su Deezer">
