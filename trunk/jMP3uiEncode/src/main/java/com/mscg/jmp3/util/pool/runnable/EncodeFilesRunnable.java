@@ -247,8 +247,14 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable {
                 is = Thread.currentThread().getContextClassLoader().getResourceAsStream("lame/lame.exe");
             }
             else if(Platform.isLinux()) {
+                int systemBits = 32;
+                try {
+                    systemBits = Integer.parseInt(System.getProperty("sun.arch.data.model"));
+                } catch(Exception e){}
                 encoderFile = new File(".", "lame");
-                is = Thread.currentThread().getContextClassLoader().getResourceAsStream("lame/lame");
+                String sourceStream = "lame/lame" + (systemBits == 32 ? "" : "-64bit");
+                LOG.debug("Extracting executable \"{}\"", sourceStream);
+                is = Thread.currentThread().getContextClassLoader().getResourceAsStream(sourceStream);
             } else {
                 MainWindowInterface.showError(new Exception(Messages.getString("operations.file.encode.dialog.notsupported")));
                 return;
