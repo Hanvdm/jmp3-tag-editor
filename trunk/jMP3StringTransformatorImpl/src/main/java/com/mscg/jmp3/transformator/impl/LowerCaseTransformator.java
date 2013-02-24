@@ -29,7 +29,7 @@ public class LowerCaseTransformator extends SimpleParametrizedStringTransformato
 
     @Override
     public void saveParameters() throws InvalidTransformatorParameterException {
-        throw new InvalidTransformatorParameterException(1, null, this.getClass().getSimpleName() + " doesn't need parameters");
+        //throw new InvalidTransformatorParameterException(1, null, this.getClass().getSimpleName() + " doesn't need parameters");
     }
 
     @Override
