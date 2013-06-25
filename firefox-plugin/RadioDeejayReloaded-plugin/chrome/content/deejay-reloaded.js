@@ -4,7 +4,7 @@ function RadioDeejayReloadedDownload() {
     this.popupMenuSeparator = null;
 }
 
-RadioDeejayReloadedDownload.urlPatter = new RegExp("http://.*\\.?deejay\.it/audio/(\\d{4}\\d{2}\\d{2})/\\d+?.+");
+RadioDeejayReloadedDownload.urlPatter = new RegExp("http://.*\\.?deejay\.it/audio/(\\d{4}\\d{2}\\d{2})(-\\d+)?/\\d+?.+");
 RadioDeejayReloadedDownload.downloadPatter = new RegExp(".*file=(http://.*).*");
 RadioDeejayReloadedDownload.downloadHelper = new RadioDeejayReloadedDownloadHelper();
 //RadioDeejayReloadedDownload.clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
