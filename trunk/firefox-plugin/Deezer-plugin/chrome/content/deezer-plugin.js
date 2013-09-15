@@ -114,12 +114,20 @@ DeezerPluginManager.prototype = {
     	this.playercontrol = win.wrappedJSObject.playercontrol;
     },
     
-    enableButtons: function() {
+    enableButtons: function(document) {
     	if(this.tools != null) {
-	    	this.playButton.disabled = false;
-	    	this.pauseButton.disabled = false;
-	    	this.nextButton.disabled = false;
-	    	this.prevButton.disabled = false;
+    		this.playButton.disabled = false;
+    		this.pauseButton.disabled = false;
+    		if(!document) {
+		    	this.nextButton.disabled = false;
+		    	this.prevButton.disabled = false;
+    		}
+    		else {
+    			var nextLink = document.getElementById("player_control_next");
+    			this.nextButton.disabled = nextLink.className.indexOf("disabled") >= 0;
+    			var prevLink = document.getElementById("player_control_prev");
+		    	this.prevButton.disabled = prevLink.className.indexOf("disabled") >= 0;
+    		}
     	}
     },
     
@@ -147,18 +155,17 @@ DeezerPluginManager.prototype = {
     	var document = browser.contentDocument;
     	
     	if(this.tools != null) {
-	    	var playBox = document.getElementById("h_play");
-	    	var playLink = playBox.getElementsByClassName("h_icn_play");
-	    	playLink = playLink[0];
+	    	var playLink = document.getElementById("player_control_play");
 	    	this.switchPlay(playLink.style.display != "none");
+	    	this.enableButtons(document);
     	}
     	
     	if(this.toolsLabels != null) {
-	    	var currentTrack = document.getElementById("current-track");
-	    	var currentArtist = document.getElementById("current-artist");
-	    	this.currentSongTitle.value = (currentTrack.innerHTML + " ").replace("&amp;", "&");
+	    	var currentTrack = document.getElementById("player_track_title");
+	    	var currentArtist = document.getElementById("player_track_artist");
+	    	this.currentSongTitle.value = currentTrack.innerHTML.replace("&amp;", "&") + " ";
 	    	this.currentSongTitle.hidden = false;
-	    	this.currentSongAuthor.value = ("- " + currentArtist.innerHTML).replace("&amp;", "&");
+	    	this.currentSongAuthor.value = "- " + currentArtist.innerHTML.replace("&amp;", "&");
 	    	this.currentSongAuthor.hidden = false;
 	    	this.noSong.hidden = true;
     	}
