@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mscg</groupId>
 	<artifactId>jMP3TagEditor</artifactId>
-	<version>1.2.3</version>
+	<version>1.2.4</version>
 	<name>jMP3TagEditor</name>
 	<description>jMP3TagEditor</description>
 	<dependencies>
@@ -153,6 +153,9 @@
 							<classpathPrefix>lib/</classpathPrefix>
 							<mainClass>com.mscg.jmp3.main.AppLaunch</mainClass>
 						</manifest>
+						<manifestEntries>
+                            <Class-Path>./conf/</Class-Path>
+                        </manifestEntries>
 					</archive>
 				</configuration>
 				<executions>
