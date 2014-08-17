@@ -27,7 +27,7 @@ public abstract class MainWindowInterface extends JFrame {
         MainWindowInterface.instance = instance;
     }
 
-    public static void showError(Exception e) {
+    public static void showError(Throwable e) {
         String message = Messages.getString("error.message") + "\n" + e.getMessage();
         String title = Messages.getString("error.title");
         String buttons[] = {Messages.getString("error.close")};
