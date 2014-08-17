@@ -94,13 +94,14 @@ public class ID3v2Frame {
             // read 4 bytes to find frame ID
             byte idBytes[] = new byte[4];
             bytesRead = input.read(idBytes);
-            boolean isPadding = true;
-            for (int i = 0; i < bytesRead; i++) {
-                if (idBytes[i] != 0) {
-                    isPadding = false;
-                    break;
-                }
-            }
+//            boolean isPadding = true;
+//            for (int i = 0; i < bytesRead; i++) {
+//                if (idBytes[i] != 0) {
+//                    isPadding = false;
+//                    break;
+//                }
+//            }
+            boolean isPadding = idBytes[0] == 0;
             if (isPadding) {
                 ID3v2PaddingFrame padding = new ID3v2PaddingFrame();
                 padding.setDeclaredSize(bytesRead);
