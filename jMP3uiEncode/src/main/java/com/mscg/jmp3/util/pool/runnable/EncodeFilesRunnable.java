@@ -174,7 +174,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable {
                 actualFileLabel.setText(Messages.getString("operations.file.encode.execute.actualfile.terminated"));
                 actualFileModel.setValue(actualFileModel.getMaximum());
 
-            } catch(Exception e) {
+            } catch(Throwable e) {
                 LOG.error("Cannot encode files", e);
                 if(!(e instanceof IOException && encodingTerminated))
                     MainWindowInterface.showError(e);
@@ -261,9 +261,10 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable {
             }
             os = new FileOutputStream(encoderFile);
             IOUtils.copy(is, os);
-        } catch(Exception e) {
+        } catch(Throwable e) {
             LOG.error("Cannot extract encoder executable", e);
             MainWindowInterface.showError(e);
+            dialog.setVisible(false);
             return;
         } finally {
             IOUtils.closeQuietly(is);
@@ -304,7 +305,7 @@ public class EncodeFilesRunnable extends GenericFileOperationRunnable {
                 MainWindowInterface.showMessage(Messages.getString("operations.file.encode.execute.done.title"),
                                                 Messages.getString("operations.file.encode.execute.done.message").
                                                     replace("${number}", "" + filesModel.getSize()));
-        } catch(Exception e) {
+        } catch(Throwable e) {
             LOG.error("Cannot encode files", e);
             MainWindowInterface.showError(e);
         } finally {
