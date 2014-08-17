@@ -2,7 +2,7 @@
 BASEDIR=$(dirname $0)
 cd "$BASEDIR"
 JAVA=java
-CLASSPATH=
+CLASSPATH=./conf
 for f in jMP3TagEditor*.jar;
 do
 	CLASSPATH="$CLASSPATH:$f"

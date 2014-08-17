@@ -106,7 +106,7 @@ public class RenameFilesRunnable extends GenericFileOperationRunnable {
             LOG.error("Cannot rename file", e);
             MainWindowInterface.showError(new Exception(Messages.getString("operations.file.error.file.exists").
                                                   replace("${filepath}", newFile.getAbsolutePath())));
-        } catch(Exception e) {
+        } catch(Throwable e) {
             LOG.error("Cannot rename file", e);
             MainWindowInterface.showError(e);
         } finally {

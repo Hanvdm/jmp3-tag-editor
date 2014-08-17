@@ -189,7 +189,7 @@ public class CreateTagsRunnable extends GenericFileOperationRunnable {
                         Messages.getString("operations.file.error.regex.undefined").
                             replace("${field}", Messages.getString(fieldKey))));
                     return;
-                } catch(Exception e) {
+                } catch(Throwable e) {
                     LOG.error("Cannot generate tag for file \"" + file.getAbsolutePath() + "\"", e);
                     MainWindowInterface.showError(e);
                     return;

@@ -7,7 +7,7 @@ if "x%JAVA_HOME%" == "x" (
 )
 set BASEFOLDER=%~dp0%
 cd %BASEFOLDER%
-set CLASSPATH=
+set CLASSPATH=./conf
 for %%f IN (jMP3TagEditor*.jar) DO set CLASSPATH=!CLASSPATH!;%%f
 for %%f IN (lib\*.jar) DO set CLASSPATH=!CLASSPATH!;%%f
 start "jMP3 Tag Editor" "%JAVA%" -classpath %CLASSPATH% com.mscg.jmp3.main.AppLaunch %*

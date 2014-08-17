@@ -32,6 +32,7 @@ public class AppLaunch {
              Toolkit.getDefaultToolkit().getSystemEventQueue().push(new CutAndPasteEventQueue());
 
              EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     try {
                         MainWindowInterface.setInstance(new MainWindow());
@@ -42,12 +43,12 @@ public class AppLaunch {
                  }
              });
 
-         } catch(Exception e) {
+         } catch(Throwable e) {
              manageError(e);
          }
      }
 
-     public static void manageError(Exception e) {
+     public static void manageError(Throwable e) {
          LOG.error("An error occurred and the application will close.", e);
          MainWindowInterface.showError(e);
          System.exit(1);
