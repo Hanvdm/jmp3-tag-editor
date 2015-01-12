@@ -5,7 +5,7 @@ function RadioDeejayReloadedDownload() {
 }
 
 RadioDeejayReloadedDownload.urlPatter = new RegExp("http://.*\\.?deejay\.it/audio/(\\d{4}-?\\d{2}-?\\d{2})(-\\d+)?/\\d+?.+");
-RadioDeejayReloadedDownload.downloadPatter = new RegExp(".*file=(http://.*).*");
+RadioDeejayReloadedDownload.downloadPatter = new RegExp(".*file=(https?://.*).*");
 RadioDeejayReloadedDownload.downloadHelper = new RadioDeejayReloadedDownloadHelper();
 //RadioDeejayReloadedDownload.clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
 //                                                   getService(Components.interfaces.nsIClipboardHelper);
@@ -66,12 +66,15 @@ RadioDeejayReloadedDownload.prototype = {
 
     startDownload: function() {
         if(!this.menuItem.disabled) {
-            var xPathScript = content.document.evaluate("//object[@id='flashadvplayer']/param[@name='flashvars']/@value",
+            var xPathScript = content.document.evaluate("//div[@id='playerCont']/iframe/@src",
             		                                    content.document, null, XPathResult.ANY_TYPE, null);
             var script = xPathScript.iterateNext().textContent;
             var match = RadioDeejayReloadedDownload.downloadPatter.exec(script);
             if(match != null && match.length >= 2) {
             	var url = match[1];
+            	var index = url.indexOf('&');
+            	if(index > 0)
+            		url = url.substring(0, index);
             	
             	if("undefined" == typeof(DTA) || "undefined" == typeof(DTA.saveSingleLink)) {
             		// DownThem All! is not installed, so use default download
